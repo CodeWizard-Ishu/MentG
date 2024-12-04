@@ -60,10 +60,12 @@ const LandingPage = () => {
               Login
             </button>
           </Link>
-          
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-            Join as Mentor
-          </button>
+
+          <Link to="signup">
+            <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+              Join as Mentor
+            </button>
+          </Link>
         </div>
       </header>
 
