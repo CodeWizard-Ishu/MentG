@@ -1,41 +1,48 @@
-import React, { useState } from 'react';
-import { 
-  Building2, 
-  Users, 
-  Globe, 
-  ChevronRight, 
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Building2,
+  Users,
+  Globe,
+  ChevronRight,
   CheckCircle,
-  Search 
-} from 'lucide-react';
+  Search,
+} from "lucide-react";
 
 const LandingPage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const expertCategories = [
-    'Technology', 'Business', 'Design', 'Marketing', 
-    'Finance', 'Coaching', 'Writing', 'Engineering'
+    "Technology",
+    "Business",
+    "Design",
+    "Marketing",
+    "Finance",
+    "Coaching",
+    "Writing",
+    "Engineering",
   ];
 
   const features = [
     {
       icon: <Building2 size={32} className="text-blue-500" />,
       title: "Professional Network",
-      description: "Connect with experts across industries"
+      description: "Connect with experts across industries",
     },
     {
       icon: <Users size={32} className="text-green-500" />,
       title: "Direct Consultations",
-      description: "Book 1:1 sessions with top professionals"
+      description: "Book 1:1 sessions with top professionals",
     },
     {
       icon: <Globe size={32} className="text-purple-500" />,
       title: "Global Reach",
-      description: "Access talent from anywhere in the world"
-    }
+      description: "Access talent from anywhere in the world",
+    },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Searching for:', searchQuery);
+    console.log("Searching for:", searchQuery);
     // Implement actual search logic here
   };
 
@@ -48,9 +55,12 @@ const LandingPage = () => {
           <span className="font-bold text-xl">MentG</span>
         </div>
         <div className="space-x-4">
-          <button className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-md">
-            Login
-          </button>
+          <Link to="/login">
+            <button className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-md">
+              Login
+            </button>
+          </Link>
+          
           <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
             Join as Mentor
           </button>
@@ -62,23 +72,26 @@ const LandingPage = () => {
           Connect with Top Professionals Instantly
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-          Book personalized consultation sessions with experts from tech, business, 
-          creative fields, and more.
+          Book personalized consultation sessions with experts from tech,
+          business, creative fields, and more.
         </p>
-        
+
         {/* Search Section */}
-        <form onSubmit={handleSearch} className="max-w-xl mx-auto mb-8 relative">
+        <form
+          onSubmit={handleSearch}
+          className="max-w-xl mx-auto mb-8 relative"
+        >
           <div className="flex items-center">
             <Search className="absolute left-3 text-gray-400" />
-            <input 
-              type="text" 
-              placeholder="Find experts by name, category, or skill" 
+            <input
+              type="text"
+              placeholder="Find experts by name, category, or skill"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="ml-2 bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition"
             >
               Search
@@ -98,8 +111,8 @@ const LandingPage = () => {
         {/* Quick Category Links */}
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           {expertCategories.map((category) => (
-            <span 
-              key={category} 
+            <span
+              key={category}
               className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200 cursor-pointer"
             >
               {category}
@@ -111,9 +124,14 @@ const LandingPage = () => {
       <section className="container mx-auto px-4 py-16">
         <div className="grid md:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition">
+            <div
+              key={index}
+              className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition"
+            >
               {feature.icon}
-              <h3 className="text-xl font-semibold mt-4 mb-2">{feature.title}</h3>
+              <h3 className="text-xl font-semibold mt-4 mb-2">
+                {feature.title}
+              </h3>
               <p className="text-gray-600">{feature.description}</p>
             </div>
           ))}
@@ -130,7 +148,7 @@ const LandingPage = () => {
                 "Verified Expert Profiles",
                 "Flexible Scheduling",
                 "Secure Payment System",
-                "Transparent Pricing"
+                "Transparent Pricing",
               ].map((benefit, index) => (
                 <li key={index} className="flex items-center space-x-3">
                   <CheckCircle className="text-green-500" />
@@ -140,9 +158,9 @@ const LandingPage = () => {
             </ul>
           </div>
           <div className="md:w-1/2 mt-8 md:mt-0">
-            <img 
-              src="https://img.freepik.com/free-vector/internship-job-illustration_52683-50829.jpg?t=st=1733331624~exp=1733335224~hmac=e3e9781622115c757183070a44cfee180c65ac111ac0ede0c3936c10971610df&w=900" 
-              alt="Platform Benefits" 
+            <img
+              src="https://img.freepik.com/free-vector/internship-job-illustration_52683-50829.jpg?t=st=1733331624~exp=1733335224~hmac=e3e9781622115c757183070a44cfee180c65ac111ac0ede0c3936c10971610df&w=900"
+              alt="Platform Benefits"
               className="rounded-lg shadow-xl"
             />
           </div>
@@ -152,7 +170,9 @@ const LandingPage = () => {
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-16 text-center">
         <div className="bg-blue-600 text-white py-16 rounded-2xl">
-          <h2 className="text-4xl font-bold mb-6">Start Your Professional Journey</h2>
+          <h2 className="text-4xl font-bold mb-6">
+            Start Your Professional Journey
+          </h2>
           <p className="text-xl mb-8">
             Discover opportunities, gain insights, and accelerate your growth
           </p>
@@ -171,7 +191,11 @@ const LandingPage = () => {
             <h4 className="font-bold mb-4">Platform</h4>
             <ul className="space-y-2">
               {["How it Works", "Features", "Pricing"].map((link, index) => (
-                <li key={index}><a href="#" className="hover:text-blue-400">{link}</a></li>
+                <li key={index}>
+                  <a href="#" className="hover:text-blue-400">
+                    {link}
+                  </a>
+                </li>
               ))}
             </ul>
           </div>
@@ -179,7 +203,11 @@ const LandingPage = () => {
             <h4 className="font-bold mb-4">Company</h4>
             <ul className="space-y-2">
               {["About Us", "Careers"].map((link, index) => (
-                <li key={index}><a href="#" className="hover:text-blue-400">{link}</a></li>
+                <li key={index}>
+                  <a href="#" className="hover:text-blue-400">
+                    {link}
+                  </a>
+                </li>
               ))}
             </ul>
           </div>
@@ -187,7 +215,11 @@ const LandingPage = () => {
             <h4 className="font-bold mb-4">Resources</h4>
             <ul className="space-y-2">
               {["Blog", "Help Center", "Community"].map((link, index) => (
-                <li key={index}><a href="#" className="hover:text-blue-400">{link}</a></li>
+                <li key={index}>
+                  <a href="#" className="hover:text-blue-400">
+                    {link}
+                  </a>
+                </li>
               ))}
             </ul>
           </div>
@@ -195,7 +227,11 @@ const LandingPage = () => {
             <h4 className="font-bold mb-4">Connect</h4>
             <ul className="space-y-2">
               {["Contact", "Support"].map((link, index) => (
-                <li key={index}><a href="#" className="hover:text-blue-400">{link}</a></li>
+                <li key={index}>
+                  <a href="#" className="hover:text-blue-400">
+                    {link}
+                  </a>
+                </li>
               ))}
             </ul>
           </div>
