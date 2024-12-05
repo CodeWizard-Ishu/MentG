@@ -6,11 +6,16 @@ import SignupPage from "./pages/Signup";
 import ProfilePage from "./pages/ProfilePage";
 
 function App() {
+  const handleLogin = (email : string, token : string) => {
+    localStorage.setItem('userToken', `Bearer ${token}`);
+    console.log(`Logged in as: ${email}`);
+  };
+
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Landing/>}/>
-        <Route path="/login" element={<LoginPage/>}/>
+        <Route path="/login" element={<LoginPage onLogin={handleLogin}/>}/>
         <Route path="/signup" element={<SignupPage/>}/>
         <Route path="/profile" element={<ProfilePage/>}/>
       </Routes>

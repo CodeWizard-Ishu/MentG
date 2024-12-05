@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, Lock, LogIn } from "lucide-react";
+import BACKEND_URL from "../endpoint";
 
 interface LoginPageProps {
   onLogin?: (email: string, password: string) => void;
@@ -14,9 +15,23 @@ const LoginPage: React.FC<LoginPageProps> = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin(email, password);
+    try {
+      const response = await fetch(`${BACKEND_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await response.json();
+      console.log(data);
+      onLogin(data.user.email, data.token);
+    } catch(error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -32,7 +47,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
           </div>
           <nav>
             <Link to="/signup">
-              <button className="text-blue-600 hover:underline">Sign up</button>
+              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Join Now</button>
             </Link>
           </nav>
         </div>

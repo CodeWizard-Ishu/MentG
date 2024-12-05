@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { User, Mail, Lock, LogIn } from "lucide-react";
+import BACKEND_URL from "../endpoint";
 
 interface SignupPageProps {
   onSignup?: (userData: {
@@ -21,8 +22,40 @@ const SignupPage: React.FC<SignupPageProps> = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleJoinAsMentee = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      const response = await fetch(`${BACKEND_URL}/auth/signup/mentee`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ firstName,lastName,email,password }),
+      });
+      
+      const data = await response.json();
+      console.log(data);
+    } catch(error) {
+      console.error(error);
+    }
+  };
+  const handleJoinAsMentor = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${BACKEND_URL}/auth/signup/mentor`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ firstName,lastName,email,password }),
+      });
+      
+      const data = await response.json();
+      console.log(data);
+    } catch(error) {
+      console.error(error);
+    }
+    // will need to fix this later
     onSignup({
       firstName,
       lastName,
@@ -54,7 +87,7 @@ const SignupPage: React.FC<SignupPageProps> = ({
           </div>
           <nav>
             <Link to="/login">
-              <button className="text-blue-600 hover:underline">Login</button>
+              <button className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-md">Login</button>
             </Link>
           </nav>
         </div>
@@ -127,7 +160,7 @@ const SignupPage: React.FC<SignupPageProps> = ({
             <div className="flex-grow border-t border-gray-300"></div>
           </div>
 
-          <form onSubmit={handleSignup} className="space-y-4">
+          <form className="space-y-4">
             <div className="flex space-x-4">
               <div className="relative w-1/2">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -182,12 +215,23 @@ const SignupPage: React.FC<SignupPageProps> = ({
               />
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
-            >
-              Sign up
-            </button>
+            <div className="flex space-x-4">
+              <button
+                type="button"
+                onClick={handleJoinAsMentor}
+                className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold"
+              >
+                Join as Mentor
+              </button>
+
+              <button
+                type="button"
+                onClick={handleJoinAsMentee}
+                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+              >
+                Join as Mentee
+              </button>
+            </div>
           </form>
 
           <div className="text-center mt-6">
