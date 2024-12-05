@@ -47,7 +47,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
           </div>
           <nav>
             <Link to="/signup">
-              <button className="text-blue-600 hover:underline">Sign up</button>
+              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Join Now</button>
             </Link>
           </nav>
         </div>
