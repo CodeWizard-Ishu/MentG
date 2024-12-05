@@ -12,7 +12,7 @@ export const signup = async (req : any, res : any) => {
             where: { email },
         });
 
-        if (existingUser) {
+        if (existingUser && existingUser.isActive==true) {
             return res.status(400).json({ msg: "Email already in use" });
         }
 
@@ -25,6 +25,7 @@ export const signup = async (req : any, res : any) => {
                 lastName,
                 email,
                 password: passwordHash,
+                isActive: true,
             },
         });
 
@@ -44,7 +45,7 @@ export const login = async (req : any, res : any) => {
             where: { email },
         });
 
-        if (!user) {
+        if (!user || user.isActive==false) {
             return res.status(401).json({ msg: "Invalid credentials" });
         }
 
@@ -58,7 +59,7 @@ export const login = async (req : any, res : any) => {
             expiresIn: '1h', // Token expiration time
         });
 
-        res.status(200).json({ msg: "Login Success", token });
+        res.status(200).json({ msg: "Login Success", token, email });
     } catch (e) {
         console.error(e);
         res.status(500).json({ msg: "Login Failed" });
