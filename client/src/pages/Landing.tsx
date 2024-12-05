@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, User, ChevronRight, Star } from 'lucide-react';
+import { Search, ChevronRight, Star } from 'lucide-react';
 
 const Landing: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
