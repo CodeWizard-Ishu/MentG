@@ -28,7 +28,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
       
       const data = await response.json();
       console.log(data);
-      onLogin(data.email, data.token);
+      onLogin(data.user.email, data.token);
     } catch(error) {
       console.error(error);
     }

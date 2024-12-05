@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { User, Mail, Lock, LogIn } from "lucide-react";
+import BACKEND_URL from "../endpoint";
 
 interface SignupPageProps {
   onSignup?: (userData: {
@@ -21,17 +22,40 @@ const SignupPage: React.FC<SignupPageProps> = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleJoinAsMentee = (e: React.FormEvent) => {
+  const handleJoinAsMentee = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSignup({
-      firstName,
-      lastName,
-      email,
-      password,
-    });
+    try {
+      const response = await fetch(`${BACKEND_URL}/auth/signup/mentee`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ firstName,lastName,email,password }),
+      });
+      
+      const data = await response.json();
+      console.log(data);
+    } catch(error) {
+      console.error(error);
+    }
   };
-  const handleJoinAsMentor = (e: React.FormEvent) => {
+  const handleJoinAsMentor = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      const response = await fetch(`${BACKEND_URL}/auth/signup/mentor`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ firstName,lastName,email,password }),
+      });
+      
+      const data = await response.json();
+      console.log(data);
+    } catch(error) {
+      console.error(error);
+    }
+    // will need to fix this later
     onSignup({
       firstName,
       lastName,
