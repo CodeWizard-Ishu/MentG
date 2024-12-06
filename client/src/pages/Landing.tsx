@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Building2,
@@ -9,8 +9,18 @@ import {
   Search,
 } from "lucide-react";
 
-const LandingPage = () => {
+interface LandingPageProps {
+  loggedIn: boolean;
+  mentor: boolean;
+  onLogout: () => void;
+}
+
+const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor, onLogout }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  
+  useEffect(() => {
+  }, [loggedIn, mentor]);
+
   const expertCategories = [
     "Technology",
     "Business",
@@ -54,19 +64,45 @@ const LandingPage = () => {
           <img src="../assets/logo.png" alt="Logo" className="h-10 w-10" />
           <span className="font-bold text-xl">MentG</span>
         </div>
-        <div className="space-x-4">
-          <Link to="/login">
-            <button className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-md">
-              Login
-            </button>
-          </Link>
+        {!loggedIn ? (
+          <div className="space-x-4">
+            <Link to="/login">
+              <button className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-md">
+                Login
+              </button>
+            </Link>
 
-          <Link to="/signup">
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-              Join Now
-            </button>
-          </Link>
-        </div>
+            <Link to="/signup">
+              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                Join Now
+              </button>
+            </Link>
+          </div>
+        ) : (
+          <div className="space-x-4">
+            <Link to="/">
+              <button
+                onClick={onLogout}
+                className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-md"
+              >
+                Logout
+              </button>
+            </Link>
+            {mentor ? (
+              <Link to="/dashboard">
+                <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                  Dashboard
+                </button>
+              </Link>
+            ) : (
+              <Link to="/login">
+                <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                  Dashboard
+                </button>
+              </Link>
+            )}
+          </div>
+        )}
       </header>
 
       <main className="container mx-auto px-4 pt-16 text-center">
