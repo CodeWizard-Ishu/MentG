@@ -1,26 +1,20 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { User, Mail, Lock, LogIn } from "lucide-react";
 import BACKEND_URL from "../endpoint";
 
 interface SignupPageProps {
-  onSignup?: (userData: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-  }) => void;
   onLoginClick?: () => void;
 }
 
 const SignupPage: React.FC<SignupPageProps> = ({
-  onSignup = () => {},
   onLoginClick = () => {},
 }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleJoinAsMentee = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,10 +29,12 @@ const SignupPage: React.FC<SignupPageProps> = ({
       
       const data = await response.json();
       console.log(data);
+      navigate('/login');
     } catch(error) {
       console.error(error);
     }
   };
+
   const handleJoinAsMentor = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -52,16 +48,10 @@ const SignupPage: React.FC<SignupPageProps> = ({
       
       const data = await response.json();
       console.log(data);
+      navigate('/login');
     } catch(error) {
       console.error(error);
     }
-    // will need to fix this later
-    onSignup({
-      firstName,
-      lastName,
-      email,
-      password,
-    });
   };
 
   const handleGoogleSignup = () => {

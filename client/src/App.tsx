@@ -7,9 +7,10 @@ import ProfilePage from "./pages/ProfilePage";
 import ExpertDashboard from "./pages/ExpertDashboard";
 
 function App() {
-  const handleLogin = (email : string, token : string) => {
+  const handleLogin = (email : string, token : string, isMentor : boolean) => {
     localStorage.setItem('userToken', `Bearer ${token}`);
     console.log(`Logged in as: ${email}`);
+    console.log(`Mento : ${isMentor}`);
   };
 
   return (

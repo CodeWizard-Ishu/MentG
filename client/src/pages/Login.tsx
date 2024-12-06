@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, LogIn } from "lucide-react";
 import BACKEND_URL from "../endpoint";
 
 interface LoginPageProps {
-  onLogin?: (email: string, password: string) => void;
+  onLogin?: (email: string, token: string, isMentor: boolean) => void;
   onSignupClick?: () => void;
 }
 
@@ -14,6 +14,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +29,11 @@ const LoginPage: React.FC<LoginPageProps> = ({
       
       const data = await response.json();
       console.log(data);
-      onLogin(data.user.email, data.token);
+      onLogin(data.user.email, data.token, data.user.isMentor);
+      if(data.user.isMentor)
+        navigate('/dashboard');
+      else
+        navigate('/');
     } catch(error) {
       console.error(error);
     }
