@@ -31,7 +31,7 @@ interface NavItem {
   tab: string;
 }
 
-const ExpertDashboard: React.FC = () => {
+const MenteeDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("overview");
 
   const stats: Stat[] = [
@@ -122,19 +122,18 @@ const ExpertDashboard: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-8">
+        <div className="flex-1">
           <div className="p-6 border-b">
-            <div className="flex items-start">
+            <div className="flex items-center">
               <img
                 src="https://img.freepik.com/free-vector/internship-job-illustration_52683-50829.jpg?t=st=1733331624~exp=1733335224~hmac=e3e9781622115c757183070a44cfee180c65ac111ac0ede0c3936c10971610df&w=900"
                 alt="Expert Profile"
                 className="w-30 h-20 rounded-full"
               />
               <div>
-                <h2 className="text-xl font-bold">John Doe</h2>
-                <p className="text-gray-500">Web Development Expert</p>
+                <h1 className="text-3xl font-bold">John Doe</h1>
               </div>
-              <div className="">
+              <div className="absolute top-6 right-6">
                 <button
                   onClick={handleLogOut}
                   className="bg-red-500 text-white 
@@ -150,47 +149,48 @@ const ExpertDashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-3 gap-6 mb-8">
-            {stats.map((stat, index) => (
-              <div
-                key={index}
-                className="bg-white shadow-md rounded-lg p-6 flex items-center"
-              >
-                <div className="mr-4">{stat.icon}</div>
-                <div>
-                  <p className="text-gray-500 text-sm">{stat.title}</p>
-                  <h3 className="text-2xl font-bold">{stat.value}</h3>
+          <div className="p-8">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-3 gap-6 mb-8">
+              {stats.map((stat, index) => (
+                <div
+                  key={index}
+                  className="bg-white shadow-md rounded-lg p-6 flex items-center"
+                >
+                  <div className="mr-4">{stat.icon}</div>
+                  <div>
+                    <p className="text-gray-500 text-sm">{stat.title}</p>
+                    <h3 className="text-2xl font-bold">{stat.value}</h3>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          {/* Recent Meetings */}
-          <div className="bg-white shadow-md rounded-lg p-6">
-            <h2 className="text-xl font-bold mb-4">Recent Meetings</h2>
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  {["Client", "Date", "Duration", "Status"].map((header) => (
-                    <th
-                      key={header}
-                      className="text-left p-3 text-gray-500 font-medium"
-                    >
-                      {header}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {recentMeetings.map((meeting, index) => (
-                  <tr key={index} className="border-b hover:bg-gray-50">
-                    <td className="p-3">{meeting.client}</td>
-                    <td className="p-3">{meeting.date}</td>
-                    <td className="p-3">{meeting.duration}</td>
-                    <td className="p-3">
-                      <span
-                        className={`
+            {/* Recent Meetings */}
+            <div className="bg-white shadow-md rounded-lg p-6">
+              <h2 className="text-xl font-bold mb-4">Recent Meetings</h2>
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    {["Client", "Date", "Duration", "Status"].map((header) => (
+                      <th
+                        key={header}
+                        className="text-left p-3 text-gray-500 font-medium"
+                      >
+                        {header}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentMeetings.map((meeting, index) => (
+                    <tr key={index} className="border-b hover:bg-gray-50">
+                      <td className="p-3">{meeting.client}</td>
+                      <td className="p-3">{meeting.date}</td>
+                      <td className="p-3">{meeting.duration}</td>
+                      <td className="p-3">
+                        <span
+                          className={`
                       px-3 py-1 rounded-full text-xs 
                       ${
                         meeting.status === "Completed"
@@ -198,14 +198,15 @@ const ExpertDashboard: React.FC = () => {
                           : "bg-blue-100 text-blue-800"
                       }
                     `}
-                      >
-                        {meeting.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        >
+                          {meeting.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -224,4 +225,4 @@ const ExpertDashboard: React.FC = () => {
   );
 };
 
-export default ExpertDashboard;
+export default MenteeDashboard;
