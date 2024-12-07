@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, LogIn } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
 import BACKEND_URL from "../endpoint";
 
 interface LoginPageProps {
@@ -26,15 +26,13 @@ const LoginPage: React.FC<LoginPageProps> = ({
         },
         body: JSON.stringify({ email, password }),
       });
-      
+
       const data = await response.json();
       console.log(data);
       onLogin(data.user.email, data.token, data.user.isMentor);
-      if(data.user.isMentor)
-        navigate('/dashboard');
-      else
-        navigate('/');
-    } catch(error) {
+      if (data.user.isMentor) navigate("/dashboard");
+      else navigate("/dashboard/mentee");
+    } catch (error) {
       console.error(error);
     }
   };
@@ -44,15 +42,21 @@ const LoginPage: React.FC<LoginPageProps> = ({
       {/* Header */}
       <header className="border-b border-gray-200 py-4">
         <div className="container mx-auto flex justify-between items-center px-4">
-          <div className="flex items-center space-x-2">
-            <Link to="/">
-              <LogIn className="text-blue-600" size={24} />
-            </Link>
-            <span className="text-xl font-bold text-gray-800">MentG</span>
-          </div>
+        <div>
+          <a href="/" className="flex items-center space-x-2">
+            <img
+              src="https://i.ibb.co/tPzj54M/logo.png"
+              alt="Logo"
+              className="h-10 w-10"
+            />
+            <span className="font-bold text-2xl">MentG</span>
+          </a>
+        </div>
           <nav>
             <Link to="/signup">
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Join Now</button>
+              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                Join Now
+              </button>
             </Link>
           </nav>
         </div>

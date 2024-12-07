@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User, Mail, Lock, LogIn } from "lucide-react";
+import { User, Mail, Lock } from "lucide-react";
 import BACKEND_URL from "../endpoint";
 
 interface SignupPageProps {
   onLoginClick?: () => void;
 }
 
-const SignupPage: React.FC<SignupPageProps> = ({
-  onLoginClick = () => {},
-}) => {
+const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -24,13 +22,13 @@ const SignupPage: React.FC<SignupPageProps> = ({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ firstName,lastName,email,password }),
+        body: JSON.stringify({ firstName, lastName, email, password }),
       });
-      
+
       const data = await response.json();
       console.log(data);
-      navigate('/login');
-    } catch(error) {
+      navigate("/dashboard/mentee");
+    } catch (error) {
       console.error(error);
     }
   };
@@ -43,13 +41,13 @@ const SignupPage: React.FC<SignupPageProps> = ({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ firstName,lastName,email,password }),
+        body: JSON.stringify({ firstName, lastName, email, password }),
       });
-      
+
       const data = await response.json();
       console.log(data);
-      navigate('/login');
-    } catch(error) {
+      navigate("/dashboard");
+    } catch (error) {
       console.error(error);
     }
   };
@@ -69,15 +67,21 @@ const SignupPage: React.FC<SignupPageProps> = ({
       {/* Header */}
       <header className="border-b border-gray-200 py-4">
         <div className="container mx-auto flex justify-between items-center px-4">
-          <div className="flex items-center space-x-2">
-            <Link to="/">
-              <LogIn className="text-blue-600" size={24} />
-            </Link>
-            <span className="text-xl font-bold text-gray-800">MentG</span>
+          <div>
+            <a href="/" className="flex items-center space-x-2">
+              <img
+                src="https://i.ibb.co/tPzj54M/logo.png"
+                alt="Logo"
+                className="h-10 w-10"
+              />
+              <span className="font-bold text-2xl">MentG</span>
+            </a>
           </div>
           <nav>
             <Link to="/login">
-              <button className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-md">Login</button>
+              <button className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-md">
+                Login
+              </button>
             </Link>
           </nav>
         </div>
