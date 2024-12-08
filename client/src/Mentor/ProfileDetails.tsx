@@ -54,19 +54,7 @@ const ProfileDetails: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="top-0 z-50 bg-white/90 backdrop-blur-md flex justify-between items-center p-6 shadow-sm">
-        <div>
-          <a href="/" className="flex items-center space-x-2">
-            <img
-              src="https://i.ibb.co/tPzj54M/logo.png"
-              alt="Logo"
-              className="h-10 w-10"
-            />
-            <span className="font-bold text-2xl">MentG</span>
-          </a>
-        </div>
-      </header>
-      <div className="max-w-4xl mx-auto p-8">
+      <div className="mx-auto">
         <h1 className="text-3xl font-bold mb-8">Profile</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Profile photo */}

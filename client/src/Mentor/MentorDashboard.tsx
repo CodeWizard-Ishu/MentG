@@ -1,8 +1,6 @@
 import React, { useState, ReactNode } from "react";
 import {
   Calendar,
-  User,
-  DollarSign,
   MessageCircle,
   Edit,
   LogOut,
@@ -14,21 +12,17 @@ import {
   Wallet,
   UserPen,
 } from "lucide-react";
+import Home from "./Home";
+import Meetings from "./Meetings";
+import Messages from "./Messages";
+import ProfileDetails from "./ProfileDetails";
+import Testimonials from "./Testimonials";
+import Analytics from "./Analytics";
+import Calender from "./Calender";
+import Payments from "./Payments";
+import Services from "./Services";
 
 // Define interfaces for type safety
-interface Stat {
-  icon: ReactNode;
-  title: string;
-  value: string;
-}
-
-interface Meeting {
-  client: string;
-  date: string;
-  duration: string;
-  status: "Completed" | "Upcoming";
-}
-
 interface NavItem {
   name: string;
   icon: ReactNode;
@@ -36,51 +30,18 @@ interface NavItem {
 }
 
 const MentorDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>("overview");
-
-  const stats: Stat[] = [
-    {
-      icon: <DollarSign className="text-green-500" />,
-      title: "Total Earnings",
-      value: "$4,520",
-    },
-    {
-      icon: <Calendar className="text-blue-500" />,
-      title: "Upcoming Meetings",
-      value: "12",
-    },
-    {
-      icon: <User className="text-purple-500" />,
-      title: "Total Clients",
-      value: "42",
-    },
-  ];
-
-  const recentMeetings: Meeting[] = [
-    {
-      client: "Sarah Johnson",
-      date: "Dec 3, 2024",
-      duration: "45 mins",
-      status: "Completed",
-    },
-    {
-      client: "Mike Anderson",
-      date: "Dec 5, 2024",
-      duration: "30 mins",
-      status: "Upcoming",
-    },
-  ];
+  const [activeTab, setActiveTab] = useState<string>("home");
 
   const navItems: NavItem[] = [
     { name: "Home", icon: <HomeIcon />, tab: "home" },
     { name: "Messages", icon: <MessageCircle />, tab: "messages" },
     { name: "Bookings", icon: <PhoneCall />, tab: "meetings" },
-    { name: "Services", icon: <Building2 />, tab: "Services" },
-    { name: "Testimonials", icon: <MessageCircleHeart />, tab: "Testimonials" },
-    { name: "Calender", icon: <Calendar />, tab: "Calender" },
-    { name: "Analytics", icon: <ChartLine />, tab: "Analytics" },
-    { name: "Payments", icon: <Wallet />, tab: "Payments" },
-    { name: "Profile", icon: <UserPen />, tab: "Settings" },
+    { name: "Services", icon: <Building2 />, tab: "services" },
+    { name: "Testimonials", icon: <MessageCircleHeart />, tab: "testimonials" },
+    { name: "Calender", icon: <Calendar />, tab: "calender" },
+    { name: "Analytics", icon: <ChartLine />, tab: "analytics" },
+    { name: "Payments", icon: <Wallet />, tab: "payments" },
+    { name: "Profile", icon: <UserPen />, tab: "settings" },
   ];
 
   const handleEditPage = () => {
@@ -97,13 +58,38 @@ const MentorDashboard: React.FC = () => {
     // 3. Resetting application state
   };
 
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "home":
+        return <Home />;
+      case "messages":
+        return <Messages />;
+      case "meetings":
+        return <Meetings />;
+      case "services":
+        return <Services />;
+      case "testimonials":
+        return <Testimonials />;
+      case "calender":
+        return <Calender />;
+      case "analytics":
+        return <Analytics />;
+      case "payments":
+        return <Payments />;
+      case "settings":
+        return <ProfileDetails />;
+      default:
+        return <div>404 Not Found...</div>;
+    }
+  };
+
   return (
     <div>
-      <div className="min-h-screen bg-gray-50 flex">
+      <div className="min-h-screen flex">
         {/* Sidebar */}
-        <div className="w-64 bg-white shadow-md border-r fixed left-0 top-0 bottom-0 overflow-y-auto">
-          <div className="space-x-2 top-0 z-50 bg-white/90 backdrop-blur-md flex items-center p-6 shadow-sm">
-            <a href="/" className="flex items-center space-x-2">
+        <div className="w-64 bg-sky-100 shadow-md border-r fixed left-0 top-0 bottom-0 overflow-y-auto">
+          <div className="space-x-2 top-0 z-50 bg-sky-100 backdrop-blur-md flex items-center p-6 shadow-sm">
+            <a href="/" className="flex items-center">
               <img
                 src="https://i.ibb.co/tPzj54M/logo.png"
                 alt="Logo"
@@ -119,8 +105,8 @@ const MentorDashboard: React.FC = () => {
                 onClick={() => setActiveTab(item.tab)}
                 className={`w-full flex items-center p-3 rounded-lg mb-2 ${
                   activeTab === item.tab
-                    ? "bg-blue-50 text-blue-600"
-                    : "hover:bg-gray-100 text-gray-600"
+                    ? "bg-gray-400 text-black"
+                    : "hover:bg-sky-200 text-gray-900"
                 }`}
               >
                 {item.icon}
@@ -145,11 +131,7 @@ const MentorDashboard: React.FC = () => {
               <div className="absolute top-4 right-4">
                 <button
                   onClick={handleLogOut}
-                  className="bg-red-500 text-white 
-                       px-4 py-2 rounded-full 
-                       flex items-center space-x-2 
-                       hover:bg-red-600 transition-colors 
-                       focus:outline-none focus:ring-2 focus:ring-red-400"
+                  className="text-red-500 px-4 py-2 border-2 border-red-500 rounded-md flex items-center space-x-2 hover:transition-all hover:shadow-red-200 hover:shadow-md hover:text-red-400"
                 >
                   <LogOut className="w-5 h-5" />
                   <span>Log Out</span>
@@ -157,75 +139,16 @@ const MentorDashboard: React.FC = () => {
               </div>
             </div>
           </div>
-
-          <div className="p-8">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-3 gap-6 mb-8">
-              {stats.map((stat, index) => (
-                <div
-                  key={index}
-                  className="bg-white shadow-md rounded-lg p-6 flex items-center"
-                >
-                  <div className="mr-4">{stat.icon}</div>
-                  <div>
-                    <p className="text-gray-500 text-sm">{stat.title}</p>
-                    <h3 className="text-2xl font-bold">{stat.value}</h3>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Recent Meetings */}
-            <div className="bg-white shadow-md rounded-lg p-6">
-              <h2 className="text-xl font-bold mb-4">Recent Meetings</h2>
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    {["Client", "Date", "Duration", "Status"].map((header) => (
-                      <th
-                        key={header}
-                        className="text-left p-3 text-gray-500 font-medium"
-                      >
-                        {header}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentMeetings.map((meeting, index) => (
-                    <tr key={index} className="border-b hover:bg-gray-50">
-                      <td className="p-3">{meeting.client}</td>
-                      <td className="p-3">{meeting.date}</td>
-                      <td className="p-3">{meeting.duration}</td>
-                      <td className="p-3">
-                        <span
-                          className={`
-                      px-3 py-1 rounded-full text-xs 
-                      ${
-                        meeting.status === "Completed"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-blue-100 text-blue-800"
-                      }
-                    `}
-                        >
-                          {meeting.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <div className="p-8">{renderTabContent()}</div>
         </div>
       </div>
       <button
         onClick={handleEditPage}
-        className="fixed bottom-6 left-6 bg-blue-600 text-white 
+        className="fixed bottom-6 left-6 bg-black text-white 
                    px-4 py-2 rounded-full shadow-lg 
                    flex items-center space-x-2 
-                   hover:bg-blue-700 transition-colors 
-                   focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   hover:bg-gray-700 transition-colors 
+                   focus:outline-none focus:ring-2 focus:ring-gray-500"
       >
         <Edit className="w-5 h-5" />
         <span>Edit Page</span>

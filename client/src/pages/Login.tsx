@@ -40,23 +40,23 @@ const LoginPage: React.FC<LoginPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-sky-100">
       {/* Header */}
-      <header className="border-b border-gray-200 py-4">
-        <div className="container mx-auto flex justify-between items-center px-4">
+      <header className="shadow-md p-6">
+        <div className="container mx-auto flex justify-between items-center">
         <div>
-          <a href="/" className="flex items-center space-x-2">
+          <a href="/" className="flex items-center">
             <img
               src="https://i.ibb.co/tPzj54M/logo.png"
               alt="Logo"
-              className="h-10 w-10"
+              className="h-12 w-12"
             />
             <span className="font-bold text-2xl">MentG</span>
           </a>
         </div>
           <nav>
             <Link to="/signup">
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+              <button className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-700">
                 Join Now
               </button>
             </Link>
@@ -68,7 +68,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
       <div className="container mx-auto px-4 flex items-center justify-center min-h-[calc(100vh-72px)]">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
+            <h1 className="text-5xl font-bold text-gray-900">Welcome Back</h1>
             <p className="text-gray-600 mt-2">Login to continue</p>
           </div>
 
@@ -82,7 +82,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                 required
               />
             </div>
@@ -96,7 +96,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                 required
               />
             </div>
@@ -104,7 +104,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
             <div className="text-right">
               <button
                 type="button"
-                className="text-sm text-blue-600 hover:underline"
+                className="text-sm text-gray-600 hover:underline"
               >
                 Forgot password?
               </button>
@@ -112,7 +112,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+              className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-700 transition-colors font-semibold"
             >
               Login
             </button>
@@ -124,7 +124,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
               <Link to="/signup">
                 <button
                   onClick={onSignupClick}
-                  className="text-blue-600 hover:underline ml-1 font-semibold"
+                  className="text-black hover:underline ml-1 font-semibold"
                 >
                   Sign up
                 </button>

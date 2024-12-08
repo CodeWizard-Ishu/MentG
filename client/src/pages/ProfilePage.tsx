@@ -77,10 +77,10 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <header className="top-0 z-50 bg-white/90 backdrop-blur-md flex justify-between items-center p-6 shadow-sm">
+    <div className="min-h-screen bg-sky-100">
+      <header className="top-0 z-50 bg-sky-100 backdrop-blur-md flex justify-between items-center p-6 shadow-md">
         <div>
-          <a href="/" className="flex items-center space-x-2">
+          <a href="/" className="flex items-center">
             <img
               src="https://i.ibb.co/tPzj54M/logo.png"
               alt="Logo"
@@ -169,9 +169,9 @@ const ProfilePage: React.FC = () => {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`flex-1 py-4 text-sm font-medium border-b-2 transition-colors ${
+                    className={`flex-1 py-4 text-md font-medium border-b-2 transition-colors ${
                       activeTab === tab
-                        ? "border-indigo-500 text-indigo-500"
+                        ? "border-black text-black"
                         : "border-transparent text-gray-500 hover:border-gray-300"
                     }`}
                   >
@@ -215,7 +215,7 @@ const ProfilePage: React.FC = () => {
                   </div>
 
                   <div className="p-8 pt-0">
-                    <button className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-4 rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all flex items-center justify-center space-x-3">
+                    <button className="w-full bg-black text-white py-4 rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all flex items-center justify-center space-x-3">
                       <MessageCircle className="w-6 h-6" />
                       <span className="font-semibold text-lg">
                         Book a Session

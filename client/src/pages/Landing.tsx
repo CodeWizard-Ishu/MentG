@@ -60,15 +60,15 @@ const LandingPage: React.FC<LandingPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-sky-100">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md flex justify-between items-center p-6 shadow-sm">
+      <header className="sticky top-0 z-50  backdrop-blur-md flex justify-between items-center p-6 shadow-md">
         <div>
-          <a href="/" className="flex items-center space-x-2">
+          <a href="/" className="flex items-center">
             <img
               src="https://i.ibb.co/tPzj54M/logo.png"
               alt="Logo"
-              className="h-10 w-10"
+              className="h-12 w-12"
             />
             <span className="font-bold text-2xl">MentG</span>
           </a>
@@ -76,13 +76,13 @@ const LandingPage: React.FC<LandingPageProps> = ({
         {!loggedIn ? (
           <div className="space-x-4">
             <Link to="/login">
-              <button className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-md">
+              <button className="px-4 py-2 text-black border rounded-lg hover:border-black transition">
                 Login
               </button>
             </Link>
 
             <Link to="/signup">
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+              <button className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-700">
                 Join Now
               </button>
             </Link>
@@ -92,20 +92,20 @@ const LandingPage: React.FC<LandingPageProps> = ({
             <Link to="/">
               <button
                 onClick={onLogout}
-                className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-md"
+                className="px-4 py-2 text-black border rounded-lg hover:border-black transition"
               >
                 Logout
               </button>
             </Link>
             {mentor ? (
               <Link to="/dashboard">
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                <button className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
                   Dashboard
                 </button>
               </Link>
             ) : (
               <Link to="/dashboard/mentee">
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                <button className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
                   Dashboard
                 </button>
               </Link>
@@ -115,7 +115,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
       </header>
 
       <main className="container mx-auto px-4 pt-16 text-center">
-        <h1 className="text-5xl font-bold text-gray-900 mb-6">
+        <h1 className="text-6xl font-bold text-gray-900 mb-6">
           Connect with Top Professionals Instantly
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
@@ -139,7 +139,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
             />
             <button
               type="submit"
-              className="ml-2 bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition"
+              className="ml-2 bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800 transition"
             >
               Search
             </button>
@@ -147,10 +147,10 @@ const LandingPage: React.FC<LandingPageProps> = ({
         </form>
 
         <div className="flex justify-center space-x-4">
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+          <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition">
             Start Exploring
           </button>
-          <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition">
+          <button className="border border-gray-400 text-black px-6 py-3 rounded-lg hover:border-black transition">
             Learn More
           </button>
         </div>
@@ -160,7 +160,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           {expertCategories.map((category) => (
             <span
               key={category}
-              className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200 cursor-pointer"
+              className="text-black px-3 py-1 rounded-full text-sm hover: bg-gray-300 cursor-pointer"
             >
               {category}
             </span>
@@ -186,7 +186,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* Benefits Section */}
-      <section className="bg-gray-50 py-16">
+      <section className="bg-sky-200 py-16">
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
           <div className="md:w-1/2">
             <h2 className="text-3xl font-bold mb-6">Why Choose Our Platform</h2>
@@ -216,15 +216,15 @@ const LandingPage: React.FC<LandingPageProps> = ({
 
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-16 text-center">
-        <div className="bg-blue-600 text-white py-16 rounded-2xl">
-          <h2 className="text-4xl font-bold mb-6">
+        <div className="bg-sky-200 text-white py-16 rounded-2xl">
+          <h2 className="text-4xl font-bold mb-6 text-black">
             Start Your Professional Journey
           </h2>
-          <p className="text-xl mb-8">
+          <p className="text-xl mb-8 text-black">
             Discover opportunities, gain insights, and accelerate your growth
           </p>
           <div className="flex justify-center space-x-4">
-            <button className="bg-white text-blue-600 px-8 py-3 rounded-lg hover:bg-gray-100 transition flex items-center">
+            <button className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition flex items-center">
               Get Started <ChevronRight className="ml-2" />
             </button>
           </div>
@@ -232,14 +232,14 @@ const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-black text-white py-12">
         <div className="container mx-auto px-4 grid md:grid-cols-4 gap-8">
           <div>
             <h4 className="font-bold mb-4">Platform</h4>
             <ul className="space-y-2">
               {["How it Works", "Features", "Pricing"].map((link, index) => (
                 <li key={index}>
-                  <a href="#" className="hover:text-blue-400">
+                  <a href="#">
                     {link}
                   </a>
                 </li>
@@ -251,7 +251,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
             <ul className="space-y-2">
               {["About Us", "Careers"].map((link, index) => (
                 <li key={index}>
-                  <a href="#" className="hover:text-blue-400">
+                  <a href="#">
                     {link}
                   </a>
                 </li>
@@ -263,7 +263,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
             <ul className="space-y-2">
               {["Blog", "Help Center", "Community"].map((link, index) => (
                 <li key={index}>
-                  <a href="#" className="hover:text-blue-400">
+                  <a href="#">
                     {link}
                   </a>
                 </li>
@@ -275,7 +275,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
             <ul className="space-y-2">
               {["Contact", "Support"].map((link, index) => (
                 <li key={index}>
-                  <a href="#" className="hover:text-blue-400">
+                  <a href="#">
                     {link}
                   </a>
                 </li>

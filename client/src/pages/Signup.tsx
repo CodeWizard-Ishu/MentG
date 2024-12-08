@@ -63,23 +63,23 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-sky-100">
       {/* Header */}
-      <header className="border-b border-gray-200 py-4">
-        <div className="container mx-auto flex justify-between items-center px-4">
+      <header className="shadow-md p-6">
+        <div className="container mx-auto flex justify-between items-center">
           <div>
-            <a href="/" className="flex items-center space-x-2">
+            <a href="/" className="flex items-center">
               <img
                 src="https://i.ibb.co/tPzj54M/logo.png"
                 alt="Logo"
-                className="h-10 w-10"
+                className="h-12 w-12"
               />
               <span className="font-bold text-2xl">MentG</span>
             </a>
           </div>
           <nav>
             <Link to="/login">
-              <button className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-md">
+              <button className="px-4 py-2 bg-black text-white hover:bg-gray-700 rounded-md">
                 Login
               </button>
             </Link>
@@ -91,7 +91,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
       <div className="container mx-auto px-4 flex items-center justify-center min-h-[calc(100vh-72px)]">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-5xl font-bold text-gray-900">
               Create an Account
             </h1>
             <p className="text-gray-600 mt-2">Start your journey</p>
@@ -101,7 +101,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
           <div className="flex space-x-4 mb-6">
             <button
               onClick={handleGoogleSignup}
-              className="flex-1 flex items-center justify-center border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 flex items-center justify-center bg-white border border-gray-300 py-2 rounded-lg hover:bg-gray-300 transition-colors"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +130,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
             </button>
             <button
               onClick={handleLinkedInSignup}
-              className="flex-1 flex items-center justify-center border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 flex items-center justify-center bg-white border border-gray-300 py-2 rounded-lg hover:bg-gray-300 transition-colors"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -234,7 +234,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
               <Link to="/login">
                 <button
                   onClick={onLoginClick}
-                  className="text-blue-600 hover:underline ml-1 font-semibold"
+                  className="text-black hover:underline ml-1 font-semibold"
                 >
                   Login
                 </button>

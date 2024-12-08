@@ -6,7 +6,7 @@ import {
   HomeIcon,
   UserPen,
 } from "lucide-react";
-import Overview from "./Home";
+import Home from "./Home";
 import Meetings from "./Meetings";
 import Messages from "./Messages";
 import Settings from "./Settings";
@@ -34,7 +34,7 @@ const MenteeDashboard: React.FC = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case "home":
-        return <Overview />;
+        return <Home />;
       case "meetings":
         return <Meetings />;
       case "messages":
@@ -45,15 +45,13 @@ const MenteeDashboard: React.FC = () => {
         return <div>404 Not Found...</div>;
     }
   };
-  
-  
 
   return (
     <div>
-      <div className="min-h-screen bg-gray-50 flex">
+      <div className="min-h-screen flex">
         {/* Sidebar */}
-        <div className="w-64 bg-white shadow-md border-r fixed left-0 top-0 bottom-0 overflow-y-auto">
-          <div className="space-x-2 top-0 z-50 bg-white/90 backdrop-blur-md flex items-center p-6 shadow-sm">
+        <div className="w-64 bg-sky-100 shadow-md border-r fixed left-0 top-0 bottom-0 overflow-y-auto">
+          <div className="space-x-2 top-0 z-50 bg-sky-100 backdrop-blur-md flex items-center p-6 shadow-md">
             <a href="/" className="flex items-center space-x-2">
               <img
                 src="https://i.ibb.co/tPzj54M/logo.png"
@@ -70,8 +68,8 @@ const MenteeDashboard: React.FC = () => {
                 onClick={() => setActiveTab(item.tab)}
                 className={`w-full flex items-center p-3 rounded-lg mb-2 ${
                   activeTab === item.tab
-                    ? "bg-blue-50 text-blue-600"
-                    : "hover:bg-gray-100 text-gray-600"
+                    ? "bg-gray-400 text-black"
+                    : "hover:bg-sky-200 text-gray-900"
                 }`}
               >
                 {item.icon}
@@ -82,8 +80,8 @@ const MenteeDashboard: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 ml-64 relative">
-          <div className="p-6 border-b">
+        <div className="flex-1 ml-64 relative bg-white">
+          <div className="border-b p-6">
             <div className="flex items-center">
               <img
                 src="https://img.freepik.com/premium-vector/young-man-face-avater-vector-illustration-design_968209-13.jpg"
@@ -96,7 +94,7 @@ const MenteeDashboard: React.FC = () => {
               <div className="absolute top-6 right-6">
                 <button
                   onClick={handleLogOut}
-                  className="bg-red-500 text-white px-4 py-2 rounded-full flex items-center space-x-2 hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400"
+                  className="text-red-500 px-4 py-2 border-2 border-red-500 rounded-md flex items-center space-x-2 hover:transition-all hover:shadow-red-200 hover:shadow-md hover:text-red-400"
                 >
                   <LogOut className="w-5 h-5" />
                   <span>Log Out</span>

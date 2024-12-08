@@ -1,4 +1,4 @@
-const Overview = () => {
+const Home = () => {
     return (
         <>
         <h1>Home Tab</h1>
@@ -6,4 +6,4 @@ const Overview = () => {
     );
 };
 
-export default Overview;
+export default Home;
