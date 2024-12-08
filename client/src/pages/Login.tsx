@@ -33,7 +33,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
       if(data.user.isMentor)
         navigate('/dashboard');
       else
-        navigate('/');
+        navigate('/dashboard/mentee');
     } catch(error) {
       console.error(error);
     }
