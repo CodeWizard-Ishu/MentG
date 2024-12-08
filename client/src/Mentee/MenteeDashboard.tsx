@@ -5,17 +5,11 @@ import {
   LogOut,
   HomeIcon,
   UserPen,
-  // CreditCard
 } from "lucide-react";
-
-// Define interfaces for type safety
-
-interface Meeting {
-  client: string;
-  date: string;
-  duration: string;
-  status: "Completed" | "Upcoming";
-}
+import Overview from "./Overview";
+import Meetings from "./Meetings";
+import Messages from "./Messages";
+import Settings from "./Settings";
 
 interface NavItem {
   name: string;
@@ -26,36 +20,33 @@ interface NavItem {
 const MenteeDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("overview");
 
-  const recentMeetings: Meeting[] = [
-    {
-      client: "Sarah Johnson",
-      date: "Dec 3, 2024",
-      duration: "45 mins",
-      status: "Completed",
-    },
-    {
-      client: "Mike Anderson",
-      date: "Dec 5, 2024",
-      duration: "30 mins",
-      status: "Upcoming",
-    },
-  ];
-
   const navItems: NavItem[] = [
     { name: "Home", icon: <HomeIcon />, tab: "overview" },
     { name: "All Meetings", icon: <Calendar />, tab: "meetings" },
     { name: "Messages", icon: <MessageCircle />, tab: "messages" },
-    { name: "Profile", icon: <UserPen />, tab: "Settings" },
+    { name: "Profile", icon: <UserPen />, tab: "settings" },
   ];
 
   const handleLogOut = () => {
-    // Placeholder for logout functionality
     alert("Logout functionality to be implemented");
-    // Typically, this would involve:
-    // 1. Clearing authentication tokens
-    // 2. Redirecting to login page
-    // 3. Resetting application state
   };
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "overview":
+        return <Overview />;
+      case "meetings":
+        return <Meetings />;
+      case "messages":
+        return <Messages />;
+      case "settings":
+        return <Settings />;
+      default:
+        return <div>404 Not Found...</div>;
+    }
+  };
+  
+  
 
   return (
     <div>
@@ -105,11 +96,7 @@ const MenteeDashboard: React.FC = () => {
               <div className="absolute top-6 right-6">
                 <button
                   onClick={handleLogOut}
-                  className="bg-red-500 text-white 
-                       px-4 py-2 rounded-full 
-                       flex items-center space-x-2 
-                       hover:bg-red-600 transition-colors 
-                       focus:outline-none focus:ring-2 focus:ring-red-400"
+                  className="bg-red-500 text-white px-4 py-2 rounded-full flex items-center space-x-2 hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400"
                 >
                   <LogOut className="w-5 h-5" />
                   <span>Log Out</span>
@@ -118,49 +105,7 @@ const MenteeDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="p-8">
-            {/* Recent Meetings */}
-            <div className="bg-white shadow-md rounded-lg p-6">
-              <h2 className="text-xl font-bold mb-4">Recent Meetings</h2>
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    {["Client", "Date", "Duration", "Status"].map((header) => (
-                      <th
-                        key={header}
-                        className="text-left p-3 text-gray-500 font-medium"
-                      >
-                        {header}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentMeetings.map((meeting, index) => (
-                    <tr key={index} className="border-b hover:bg-gray-50">
-                      <td className="p-3">{meeting.client}</td>
-                      <td className="p-3">{meeting.date}</td>
-                      <td className="p-3">{meeting.duration}</td>
-                      <td className="p-3">
-                        <span
-                          className={`
-                      px-3 py-1 rounded-full text-xs 
-                      ${
-                        meeting.status === "Completed"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-blue-100 text-blue-800"
-                      }
-                    `}
-                        >
-                          {meeting.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <div className="p-8">{renderTabContent()}</div>
         </div>
       </div>
     </div>

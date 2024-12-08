@@ -5,8 +5,8 @@ import Landing from "./pages/Landing";
 import LoginPage from "./pages/Login";
 import SignupPage from "./pages/Signup";
 import ProfilePage from "./pages/ProfilePage";
-import MentorDashboard from "./pages/MentorDashboard";
-import MenteeDashboard from "./pages/MenteeDashboard";
+import MentorDashboard from "./Mentor/MentorDashboard";
+import MenteeDashboard from "./Mentee/MenteeDashboard";
 import ProfileDetails from "./pages/ProfileDetails";
 
 function App() {
