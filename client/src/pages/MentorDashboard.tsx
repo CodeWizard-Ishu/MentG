@@ -1,14 +1,18 @@
 import React, { useState, ReactNode } from "react";
 import {
   Calendar,
-  Clock,
   User,
   DollarSign,
   MessageCircle,
-  Settings,
   Edit,
   LogOut,
-  // CreditCard
+  HomeIcon,
+  Building2,
+  MessageCircleHeart,
+  PhoneCall,
+  ChartLine,
+  Wallet,
+  UserPen,
 } from "lucide-react";
 
 // Define interfaces for type safety
@@ -68,10 +72,15 @@ const MentorDashboard: React.FC = () => {
   ];
 
   const navItems: NavItem[] = [
-    { name: "Overview", icon: <Clock />, tab: "overview" },
-    { name: "Meetings", icon: <Calendar />, tab: "meetings" },
+    { name: "Home", icon: <HomeIcon />, tab: "home" },
     { name: "Messages", icon: <MessageCircle />, tab: "messages" },
-    { name: "Settings", icon: <Settings />, tab: "settings" },
+    { name: "Bookings", icon: <PhoneCall />, tab: "meetings" },
+    { name: "Services", icon: <Building2 />, tab: "Services" },
+    { name: "Testimonials", icon: <MessageCircleHeart />, tab: "Testimonials" },
+    { name: "Calender", icon: <Calendar />, tab: "Calender" },
+    { name: "Analytics", icon: <ChartLine />, tab: "Analytics" },
+    { name: "Payments", icon: <Wallet />, tab: "Payments" },
+    { name: "Profile", icon: <UserPen />, tab: "Settings" },
   ];
 
   const handleEditPage = () => {
@@ -89,19 +98,19 @@ const MentorDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div>
       <div className="min-h-screen bg-gray-50 flex">
         {/* Sidebar */}
-        <div className="w-64 bg-white shadow-md border-r">
+        <div className="w-64 bg-white shadow-md border-r fixed left-0 top-0 bottom-0 overflow-y-auto">
           <div className="space-x-2 top-0 z-50 bg-white/90 backdrop-blur-md flex items-center p-6 shadow-sm">
-            <a href="/">
+            <a href="/" className="flex items-center">
               <img
-                src="/client/src/assets/logo.png"
+                src="https://i.ibb.co/tPzj54M/logo.png"
                 alt="Logo"
                 className="h-10 w-10"
               />
+              <span className="text-2xl font-bold text-gray-800">MentG</span>
             </a>
-            <span className="font-bold text-xl">MentG</span>
           </div>
           <nav className="p-4">
             {navItems.map((item) => (
@@ -122,16 +131,16 @@ const MentorDashboard: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1">
+        <div className="flex-1 ml-64 relative">
           <div className="p-6 border-b">
             <div className="flex items-center">
               <img
-                src="https://img.freepik.com/free-vector/internship-job-illustration_52683-50829.jpg?t=st=1733331624~exp=1733335224~hmac=e3e9781622115c757183070a44cfee180c65ac111ac0ede0c3936c10971610df&w=900"
-                alt="Expert Profile"
-                className="w-30 h-20 rounded-full"
+                src="https://img.freepik.com/premium-photo/fun-unique-cartoon-profile-picture-that-represents-your-style-personality_1283595-14000.jpg"
+                alt="User Image"
+                className="w-20 h-20 rounded-full"
               />
               <div>
-                <h2 className="text-3xl font-bold">John Doe</h2>
+                <h2 className="text-3xl font-bold p-2">Mentor</h2>
               </div>
               <div className="absolute top-4 right-4">
                 <button

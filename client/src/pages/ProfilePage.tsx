@@ -79,15 +79,15 @@ const ProfilePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       <header className="top-0 z-50 bg-white/90 backdrop-blur-md flex justify-between items-center p-6 shadow-sm">
-        <div className="flex items-center space-x-2">
-          <a href="/">
+        <div>
+          <a href="/" className="flex items-center space-x-2">
             <img
-              src="/client/src/assets/logo.png"
+              src="https://i.ibb.co/tPzj54M/logo.png"
               alt="Logo"
               className="h-10 w-10"
             />
+            <span className="font-bold text-2xl">MentG</span>
           </a>
-          <span className="font-bold text-xl">MentG</span>
         </div>
       </header>
       <div className="min-h-screen flex justify-center items-center">

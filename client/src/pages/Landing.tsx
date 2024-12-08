@@ -15,11 +15,14 @@ interface LandingPageProps {
   onLogout: () => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor, onLogout }) => {
+const LandingPage: React.FC<LandingPageProps> = ({
+  loggedIn,
+  mentor,
+  onLogout,
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
-  
-  useEffect(() => {
-  }, [loggedIn, mentor]);
+
+  useEffect(() => {}, [loggedIn, mentor]);
 
   const expertCategories = [
     "Technology",
@@ -60,9 +63,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor, onLogout })
     <div className="min-h-screen bg-white">
       {/* Sticky Header */}
       <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md flex justify-between items-center p-6 shadow-sm">
-        <div className="flex items-center space-x-2">
-          <img src="../assets/logo.png" alt="Logo" className="h-10 w-10" />
-          <span className="font-bold text-xl">MentG</span>
+        <div>
+          <a href="/" className="flex items-center space-x-2">
+            <img
+              src="https://i.ibb.co/tPzj54M/logo.png"
+              alt="Logo"
+              className="h-10 w-10"
+            />
+            <span className="font-bold text-2xl">MentG</span>
+          </a>
         </div>
         {!loggedIn ? (
           <div className="space-x-4">
