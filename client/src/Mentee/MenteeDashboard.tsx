@@ -6,7 +6,7 @@ import {
   HomeIcon,
   UserPen,
 } from "lucide-react";
-import Overview from "./Overview";
+import Overview from "./Home";
 import Meetings from "./Meetings";
 import Messages from "./Messages";
 import Settings from "./Settings";
@@ -18,10 +18,10 @@ interface NavItem {
 }
 
 const MenteeDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>("overview");
+  const [activeTab, setActiveTab] = useState<string>("home");
 
   const navItems: NavItem[] = [
-    { name: "Home", icon: <HomeIcon />, tab: "overview" },
+    { name: "Home", icon: <HomeIcon />, tab: "home" },
     { name: "All Meetings", icon: <Calendar />, tab: "meetings" },
     { name: "Messages", icon: <MessageCircle />, tab: "messages" },
     { name: "Profile", icon: <UserPen />, tab: "settings" },
@@ -33,7 +33,7 @@ const MenteeDashboard: React.FC = () => {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case "overview":
+      case "home":
         return <Overview />;
       case "meetings":
         return <Meetings />;
@@ -54,13 +54,13 @@ const MenteeDashboard: React.FC = () => {
         {/* Sidebar */}
         <div className="w-64 bg-white shadow-md border-r fixed left-0 top-0 bottom-0 overflow-y-auto">
           <div className="space-x-2 top-0 z-50 bg-white/90 backdrop-blur-md flex items-center p-6 shadow-sm">
-            <a href="/" className="flex items-center">
+            <a href="/" className="flex items-center space-x-2">
               <img
                 src="https://i.ibb.co/tPzj54M/logo.png"
                 alt="Logo"
                 className="h-10 w-10"
               />
-              <span className="text-2xl font-bold text-gray-800">MentG</span>
+              <span className="text-2xl font-bold">MentG</span>
             </a>
           </div>
           <nav className="p-4">

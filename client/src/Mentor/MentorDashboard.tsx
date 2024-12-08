@@ -103,13 +103,13 @@ const MentorDashboard: React.FC = () => {
         {/* Sidebar */}
         <div className="w-64 bg-white shadow-md border-r fixed left-0 top-0 bottom-0 overflow-y-auto">
           <div className="space-x-2 top-0 z-50 bg-white/90 backdrop-blur-md flex items-center p-6 shadow-sm">
-            <a href="/" className="flex items-center">
+            <a href="/" className="flex items-center space-x-2">
               <img
                 src="https://i.ibb.co/tPzj54M/logo.png"
                 alt="Logo"
                 className="h-10 w-10"
               />
-              <span className="text-2xl font-bold text-gray-800">MentG</span>
+              <span className="text-2xl font-bold">MentG</span>
             </a>
           </div>
           <nav className="p-4">
