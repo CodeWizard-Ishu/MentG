@@ -105,7 +105,7 @@ const ProfilePage: React.FC = () => {
 
             <div className="flex flex-col items-center">
               <img
-                src="https://img.freepik.com/free-vector/internship-job-illustration_52683-50829.jpg?t=st=1733331624~exp=1733335224~hmac=e3e9781622115c757183070a44cfee180c65ac111ac0ede0c3936c10971610df&w=900"
+                src="https://img.freepik.com/free-photo/portrait-handsome-hipster-man-glasses-3d-rendering_1142-51612.jpg?t=st=1733590809~exp=1733594409~hmac=9e08d769b04a2fdaf8018054b9eabb4bd1bb0fc810193338363431e4b0f3707c&w=740"
                 //   src="/api/placeholder/200/200"
                 alt="Profile"
                 className="w-36 h-36 rounded-full border-4 border-white/30 mb-6 shadow-lg"

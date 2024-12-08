@@ -7,6 +7,7 @@ import SignupPage from "./pages/Signup";
 import ProfilePage from "./pages/ProfilePage";
 import MentorDashboard from "./pages/MentorDashboard";
 import MenteeDashboard from "./pages/MenteeDashboard";
+import ProfileDetails from "./pages/ProfileDetails";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(() => {
@@ -43,6 +44,7 @@ function App() {
         <Route path="/dashboard" element={<MentorDashboard/>}/>
         <Route path="/dashboard/mentee" element={<MenteeDashboard/>}/>
         <Route path="/profile" element={<ProfilePage/>}/>
+        <Route path="/profile/details" element={<ProfileDetails/>}/>
       </Routes>
     </Router>
   );
