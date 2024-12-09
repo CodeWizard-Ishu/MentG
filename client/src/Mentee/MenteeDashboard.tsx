@@ -1,4 +1,5 @@
 import React, { useState, ReactNode } from "react";
+import { Link } from "react-router-dom";
 import {
   Calendar,
   MessageCircle,
@@ -17,7 +18,10 @@ interface NavItem {
   tab: string;
 }
 
-const MenteeDashboard: React.FC = () => {
+interface MenteeDashboardProps {
+  onLogout: () => void;
+}
+const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
 
   const navItems: NavItem[] = [
@@ -26,10 +30,6 @@ const MenteeDashboard: React.FC = () => {
     { name: "Messages", icon: <MessageCircle />, tab: "messages" },
     { name: "Profile", icon: <UserPen />, tab: "settings" },
   ];
-
-  const handleLogOut = () => {
-    alert("Logout functionality to be implemented");
-  };
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -92,13 +92,15 @@ const MenteeDashboard: React.FC = () => {
                 <h1 className="text-3xl font-bold p-2">Mentee</h1>
               </div>
               <div className="absolute top-6 right-6">
-                <button
-                  onClick={handleLogOut}
-                  className="text-red-500 px-4 py-2 border-2 border-red-500 rounded-md flex items-center space-x-2 hover:transition-all hover:shadow-red-200 hover:shadow-md hover:text-red-400"
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span>Log Out</span>
-                </button>
+                <Link to="/">
+                  <button
+                    onClick={onLogout}
+                    className="text-red-500 px-4 py-2 border-2 border-red-500 rounded-md flex items-center space-x-2 hover:transition-all hover:shadow-red-200 hover:shadow-md hover:text-red-400"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span>Log Out</span>
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

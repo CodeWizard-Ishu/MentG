@@ -1,4 +1,5 @@
 import React, { useState, ReactNode } from "react";
+import { Link } from "react-router-dom";
 import {
   Calendar,
   MessageCircle,
@@ -29,7 +30,10 @@ interface NavItem {
   tab: string;
 }
 
-const MentorDashboard: React.FC = () => {
+interface MentorDashboardProps {
+  onLogout: () => void;
+}
+const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
 
   const navItems: NavItem[] = [
@@ -47,15 +51,6 @@ const MentorDashboard: React.FC = () => {
   const handleEditPage = () => {
     // Placeholder for edit page functionality
     alert("Edit Page functionality to be implemented");
-  };
-
-  const handleLogOut = () => {
-    // Placeholder for logout functionality
-    alert("Logout functionality to be implemented");
-    // Typically, this would involve:
-    // 1. Clearing authentication tokens
-    // 2. Redirecting to login page
-    // 3. Resetting application state
   };
 
   const renderTabContent = () => {
@@ -129,13 +124,15 @@ const MentorDashboard: React.FC = () => {
                 <h2 className="text-3xl font-bold p-2">Mentor</h2>
               </div>
               <div className="absolute top-4 right-4">
-                <button
-                  onClick={handleLogOut}
-                  className="text-red-500 px-4 py-2 border-2 border-red-500 rounded-md flex items-center space-x-2 hover:transition-all hover:shadow-red-200 hover:shadow-md hover:text-red-400"
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span>Log Out</span>
-                </button>
+                <Link to="/">
+                  <button
+                    onClick={onLogout}
+                    className="text-red-500 px-4 py-2 border-2 border-red-500 rounded-md flex items-center space-x-2 hover:transition-all hover:shadow-red-200 hover:shadow-md hover:text-red-400"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span>Log Out</span>
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

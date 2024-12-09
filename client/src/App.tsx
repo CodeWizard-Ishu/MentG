@@ -40,8 +40,8 @@ function App() {
         <Route path="/" element={<Landing loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout}/>}/>
         <Route path="/login" element={<LoginPage onLogin={handleLogin}/>}/>
         <Route path="/signup" element={<SignupPage/>}/>
-        <Route path="/dashboard" element={<MentorDashboard/>}/>
-        <Route path="/dashboard/mentee" element={<MenteeDashboard/>}/>
+        <Route path="/dashboard" element={<MentorDashboard onLogout={handleLogout}/>}/>
+        <Route path="/dashboard/mentee" element={<MenteeDashboard onLogout={handleLogout}/>}/>
         <Route path="/profile" element={<ProfilePage/>}/>
       </Routes>
     </Router>
