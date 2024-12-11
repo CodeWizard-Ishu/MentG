@@ -9,8 +9,7 @@ interface LoginPageProps {
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({
-  onLogin = () => {},
-  onSignupClick = () => {},
+  onLogin = () => {}
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,11 +29,9 @@ const LoginPage: React.FC<LoginPageProps> = ({
       const data = await response.json();
       console.log(data);
       onLogin(data.user.email, data.token, data.user.isMentor);
-      if(data.user.isMentor)
-        navigate('/dashboard');
-      else
-        navigate('/dashboard/mentee');
-    } catch(error) {
+      if (data.user.isMentor) navigate("/dashboard");
+      else navigate("/dashboard/mentee");
+    } catch (error) {
       console.error(error);
     }
   };
@@ -44,16 +41,16 @@ const LoginPage: React.FC<LoginPageProps> = ({
       {/* Header */}
       <header className="shadow-md p-6">
         <div className="container mx-auto flex justify-between items-center">
-        <div>
-          <a href="/" className="flex items-center">
-            <img
-              src="https://i.ibb.co/tPzj54M/logo.png"
-              alt="Logo"
-              className="h-12 w-12"
-            />
-            <span className="font-bold text-2xl">MentG</span>
-          </a>
-        </div>
+          <div>
+            <a href="/" className="flex items-center">
+              <img
+                src="https://i.ibb.co/tPzj54M/logo.png"
+                alt="Logo"
+                className="h-12 w-12"
+              />
+              <span className="font-bold text-2xl">MentG</span>
+            </a>
+          </div>
           <nav>
             <Link to="/signup">
               <button className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-700">
@@ -122,10 +119,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
             <p className="text-sm text-gray-600">
               Don't have an account?
               <Link to="/signup">
-                <button
-                  onClick={onSignupClick}
-                  className="text-black hover:underline ml-1 font-semibold"
-                >
+                <button className="text-black hover:underline ml-1 font-semibold">
                   Sign up
                 </button>
               </Link>

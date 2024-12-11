@@ -66,7 +66,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
     <div className="min-h-screen bg-sky-100">
       {/* Header */}
       <header className="shadow-md p-6">
-        <div className="container mx-auto flex justify-between items-center">
+        <div className="flex justify-between items-center">
           <div>
             <a href="/" className="flex items-center">
               <img
