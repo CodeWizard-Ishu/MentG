@@ -1,4 +1,3 @@
-// Profile.tsx
 import React, { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -53,7 +52,7 @@ const ProfileDetails: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white mr-96">
       <div className="mx-auto">
         <h1 className="text-3xl font-bold mb-8">Profile</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
@@ -72,7 +71,7 @@ const ProfileDetails: React.FC = () => {
               <img
                 src={profilePhotoPreview}
                 alt="Profile photo preview"
-                className="mt-4 max-w-[200px] rounded-full"
+                className="mt-4 h-12 w-12 rounded-full"
               />
             )}
           </div>
@@ -86,7 +85,7 @@ const ProfileDetails: React.FC = () => {
               <Input
                 id="firstName"
                 {...register("firstName")}
-                error={errors.firstName?.message}
+                onError={errors.firstName?.message}
               />
             </div>
             <div>
@@ -96,7 +95,7 @@ const ProfileDetails: React.FC = () => {
               <Input
                 id="lastName"
                 {...register("lastName")}
-                error={errors.lastName?.message}
+                onError={errors.lastName?.message}
               />
             </div>
             <div className="col-span-2">
@@ -106,7 +105,7 @@ const ProfileDetails: React.FC = () => {
               <Input
                 id="displayName"
                 {...register("displayName")}
-                error={errors.displayName?.message}
+                onError={errors.displayName?.message}
               />
             </div>
           </div>
@@ -119,7 +118,7 @@ const ProfileDetails: React.FC = () => {
             <Input
               id="mentgPage"
               {...register("topmatePage")}
-              error={errors.topmatePage?.message}
+              onError={errors.topmatePage?.message}
             />
           </div>
 
@@ -131,7 +130,7 @@ const ProfileDetails: React.FC = () => {
             <Textarea
               id="aboutYourself"
               {...register("aboutYourself")}
-              error={errors.aboutYourself?.message}
+              onError={errors.aboutYourself?.message}
             />
           </div>
 

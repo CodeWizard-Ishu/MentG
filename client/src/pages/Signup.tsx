@@ -27,7 +27,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
 
       const data = await response.json();
       console.log(data);
-      navigate("/dashboard/mentee");
+      navigate("/login");
     } catch (error) {
       console.error(error);
     }
@@ -46,7 +46,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
 
       const data = await response.json();
       console.log(data);
-      navigate("/dashboard");
+      navigate("/login");
     } catch (error) {
       console.error(error);
     }

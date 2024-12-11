@@ -54,7 +54,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="p-8">
+    <div className="">
       {/* Stats Cards */}
       <div className="grid grid-cols-3 gap-6 mb-8">
         {stats.map((stat, index) => (
@@ -73,7 +73,7 @@ const Home = () => {
 
       {/* Recent Meetings */}
       <div className="bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-xl font-bold mb-4">Recent Meetings</h2>
+        <h1 className="text-xl font-bold mb-4">Recent Meetings</h1>
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
@@ -111,6 +111,9 @@ const Home = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="bg-white shadow-md rounded-lg p-6 mt-8">
+          <h1 className="text-xl font-bold mb-4">Notifications</h1>
       </div>
     </div>
   );
