@@ -27,12 +27,13 @@ const LandingPage: React.FC<LandingPageProps> = ({
   const expertCategories = [
     "Technology",
     "Business",
-    "Design",
+    "Career",
     "Marketing",
     "Finance",
-    "Coaching",
-    "Writing",
+    "Health",
     "Engineering",
+    "Medical",
+    "Mental Fitness"
   ];
 
   const features = [

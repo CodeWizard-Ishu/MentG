@@ -1,22 +1,43 @@
 import React, { useState } from "react";
-import { Progress } from "../../components/ui/progress";
 
 const OnboardingPage: React.FC = () => {
-  const [mentgLink, setMentgLink] = useState("mentg.in/{{firstName+lastName}}");
+  const [socialLink, setSocialLink] = useState("");
+  const [mentgLink, setMentgLink] = useState("{{firstName+lastName}}");
   const [service, setService] = useState<string[]>([]);
+  const [domain, setDomain] = useState<string>();
 
-  const expertiseOptions = [
+  const serviceOptions = [
     "1:1 Sessions",
     "Quick Chat",
     "Priority DMs",
     "Webinars",
   ];
 
-  const handleServiceToggle = (item: string) => {
+  const domainOptions = [
+    "Technology",
+    "Business",
+    "Career",
+    "Marketing",
+    "Finance",
+    "Health",
+    "Engineering",
+    "Medical",
+    "Mental Fitness",
+  ];
+
+  const handleService = (item: string) => {
     setService((prev) =>
       prev.includes(item) ? prev.filter((e) => e !== item) : [...prev, item]
     );
   };
+
+  const handleDomain = (item: string) => {
+    setDomain(item);
+  };
+
+  const onCheck = () =>{
+    alert("Feature to be implemented")
+  }
 
   return (
     <div className="min-h-screen bg-sky-100">
@@ -33,15 +54,12 @@ const OnboardingPage: React.FC = () => {
               <span className="font-bold text-2xl">MentG</span>
             </a>
           </div>
-          <div className="container ml-72 mr-72">
-            <Progress value={25} />
-          </div>
         </div>
       </header>
 
       <div className="container mx-auto mt-10 flex justify-center items-center">
-        <div className="flex flex-col">
-          <h1 className="text-5xl font-bold mb-4 text-center">
+        <div className="flex flex-col mb-12">
+          <h1 className="text-5xl font-bold mb-6 text-center">
             Welcome to MentG!
           </h1>
           <p className="text-gray-500 mb-8">
@@ -49,38 +67,49 @@ const OnboardingPage: React.FC = () => {
             with us
           </p>
 
-          <div className="mb-4">
+          <div className="mb-6">
             <label
-              htmlFor="social-accounts"
+              htmlFor="social-links"
               className="block text-gray-700 font-medium mb-2"
             >
               Connect your social account
             </label>
-            <input
-              type="text"
-              id="social-accounts"
-              className="border border-gray-300 rounded-md p-2 w-full"
-              placeholder="LinkedIn, Twitter, Instagram"
-            />
+            <div className="flex">
+              <span className="px-4 inline-flex items-center min-w-fit rounded-s-md border bg-gray-50 text-sm text-gray-500">
+                https://
+              </span>
+              <input
+                name="social-links"
+                type="url"
+                id="social-links"
+                className="border rounded-e-md px-4 py-2 w-full"
+                value={socialLink}
+                placeholder="LinkedIn, Twitter, Instagram"
+                onChange={(e) => setSocialLink(e.target.value)}
+              />
+            </div>
           </div>
 
-          <div className="mb-4">
+          <div className="mb-6">
             <label
               htmlFor="mentg-page"
               className="block text-gray-700 font-medium mb-2"
             >
               Your MentG page link
             </label>
-            <div className="flex items-center">
+            <div className="flex">
+              <span className="px-4 inline-flex items-center min-w-fit rounded-s-md border bg-gray-50 text-sm text-gray-500">
+                mentg.in/
+              </span>
               <input
                 type="text"
                 id="mentg-page"
-                className="border border-gray-300 rounded-md p-2 flex-1"
+                className="border border-gray-300 rounded-e-md p-2 flex-1"
                 value={mentgLink}
                 placeholder="mentg.in/"
                 onChange={(e) => setMentgLink(e.target.value)}
               />
-              <button className="bg-green-500 text-white rounded-md px-4 py-2 ml-2">
+              <button onClick={onCheck} className="bg-green-500 text-white rounded-md px-4 py-2 ml-2">
                 Check Availability
               </button>
             </div>
@@ -88,10 +117,32 @@ const OnboardingPage: React.FC = () => {
 
           <div className="mb-6">
             <label className="block text-gray-700 font-medium mb-2">
-              What do you want to give services on MentG?
+              Choose your Domain
             </label>
             <div className="grid grid-cols-3 gap-2">
-              {expertiseOptions.map((option) => (
+              {domainOptions.map((option) => (
+                <button
+                  type="button"
+                  key={option}
+                  className={`py-2 px-4 rounded border ${
+                    domain === option
+                      ? "border-black bg-gray-400 font-medium text-black transition-all"
+                      : "bg-white text-black"
+                  }`}
+                  onClick={() => handleDomain(option)}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-gray-700 font-medium mb-2">
+              Which service you want to give?
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {serviceOptions.map((option) => (
                 <button
                   type="button"
                   key={option}
@@ -100,13 +151,14 @@ const OnboardingPage: React.FC = () => {
                       ? "border-black bg-gray-400 font-medium text-black transition-all"
                       : "bg-white text-black"
                   }`}
-                  onClick={() => handleServiceToggle(option)}
+                  onClick={() => handleService(option)}
                 >
                   {option}
                 </button>
               ))}
             </div>
           </div>
+
           <div>
             <a href="/onboarding/expertise">
               <button className="bg-black text-white rounded-md px-4 py-2 w-28">
