@@ -29,7 +29,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
       const data = await response.json();
       console.log(data);
       onLogin(data.user.email, data.token, data.user.isMentor);
-      if (data.user.isMentor) navigate("/dashboard");
+      if (data.user.isMentor) navigate("/onboarding");
       else navigate("/dashboard/mentee");
     } catch (error) {
       console.error(error);

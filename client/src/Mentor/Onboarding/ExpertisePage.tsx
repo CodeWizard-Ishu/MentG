@@ -82,7 +82,7 @@ const ExpertisePage: React.FC<ExpertiseSelectionPageProps> = () => {
 
       {/* PAGE BODY from here.. */}
       <div className="flex items-center justify-center p-4">
-        <div className="p-8 w-full max-w-2xl">
+        <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl">
           <h1 className="text-5xl font-bold text-center mb-6 text-gray-800">
             Select Your Expertise
           </h1>
@@ -172,7 +172,7 @@ const ExpertisePage: React.FC<ExpertiseSelectionPageProps> = () => {
             <button
               onClick={handleNext}
               disabled={selectedTags.length === 0}
-              className="bg-black text-white px-6 py-3 w-32 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-lg shadow-md"
+              className="bg-black text-white px-4 py-2 w-32 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-lg shadow-md"
             >
               Next
             </button>
