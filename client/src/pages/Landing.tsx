@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import BACKEND_URL from "../endpoint";
 import {
   Building2,
   Users,
@@ -24,11 +26,35 @@ const LandingPage: React.FC<LandingPageProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("Technology");
+  const [mentorsData, setMentorsData] = useState([]);
 
   useEffect(() => {}, [loggedIn, mentor]);
 
+  useEffect(() => {
+    fetchTopMentors([category]); // Call with an array containing the selected category
+  }, [category]);
+
   const handleCategory = (e: React.MouseEvent<HTMLDivElement>) => {
     setCategory(e.currentTarget.innerText);
+  };
+
+  const fetchTopMentors = async (selectedDomainNames: any) => {
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/mentor/topMentors?domainNames=${selectedDomainNames.join(
+          ","
+        )}`
+      );
+      if (!response.ok) throw new Error("Network response was not ok");
+      const data = await response.json();
+      if (Array.isArray(data) && data.length > 0 && data[0].mentors) {
+        setMentorsData(data[0].mentors); // Set mentors if available
+      } else {
+        setMentorsData([]);
+      }
+    } catch (error) {
+      console.error("Error fetching top mentors:", error);
+    }
   };
 
   const expertCategories = [
@@ -190,13 +216,25 @@ const LandingPage: React.FC<LandingPageProps> = ({
               </a>
             </div>
             <div className="grid md:grid-cols-5 gap-8">
-              {Array.from({ length: 5 }, () => (
+              {mentorsData.length > 0 &&
+                mentorsData.map((mentor: any) => (
+                  <ProfileCard
+                    key={mentor.id}
+                    name={`${mentor.user.firstName} ${mentor.user.lastName}`}
+                    imageUrl={
+                      mentor.profilePicture || "https://via.placeholder.com/150"
+                    } // Fallback image
+                    desc={mentor.bio || "No bio available."}
+                  />
+                ))}
+
+              {/* {Array.from({ length: 5 }, () => (
                 <ProfileCard
                   name="Utkarsh Jaiswal"
                   imageUrl="https://i.ibb.co/tPzj54M/logo.png"
                   desc="Founder of tech and Target | Helping Students in Placements"
                 />
-              ))}
+              ))} */}
             </div>
           </div>
         </section>
