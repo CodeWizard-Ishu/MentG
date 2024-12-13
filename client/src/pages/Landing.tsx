@@ -27,7 +27,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
 
   useEffect(() => {}, [loggedIn, mentor]);
 
-  const handleCategory = (e:React.MouseEvent<HTMLDivElement>) => {
+  const handleCategory = (e: React.MouseEvent<HTMLDivElement>) => {
     setCategory(e.currentTarget.innerText);
   };
 
@@ -178,7 +178,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </main>
 
-        <section className="container mx-auto px-16 py-16">
+        <section className="container mx-auto px-16 py-8">
           <div className="mb-12">
             <div className="flex items-center mb-4">
               <span className="text-2xl font-semibold">{category}</span>
@@ -190,14 +190,13 @@ const LandingPage: React.FC<LandingPageProps> = ({
               </a>
             </div>
             <div className="grid md:grid-cols-5 gap-8">
-            {
-              Array.from({ length: 5 }, () => (
-              <ProfileCard
-              name="Utkarsh Jaiswal"
-              imageUrl="https://i.ibb.co/tPzj54M/logo.png"
-              desc="Founder of tech and Target | Helping Students in Placements"
-              />))
-            }
+              {Array.from({ length: 5 }, () => (
+                <ProfileCard
+                  name="Utkarsh Jaiswal"
+                  imageUrl="https://i.ibb.co/tPzj54M/logo.png"
+                  desc="Founder of tech and Target | Helping Students in Placements"
+                />
+              ))}
             </div>
           </div>
         </section>
