@@ -66,7 +66,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           desc="Founder of tech and Target | Helping Students in Placements"
         />
       ),
-      link: "/technology"
+      link: "/technology",
     },
     {
       domainName: "Business",
@@ -77,7 +77,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           desc="Founder of tech and Target | Helping Students in Placements"
         />
       ),
-      link: "/business"
+      link: "/business",
     },
     {
       domainName: "Career",
@@ -88,7 +88,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           desc="Founder of tech and Target | Helping Students in Placements"
         />
       ),
-      link: "/career"
+      link: "/career",
     },
     {
       domainName: "Marketing",
@@ -99,7 +99,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           desc="Founder of tech and Target | Helping Students in Placements"
         />
       ),
-      link: "/marketing"
+      link: "/marketing",
     },
     {
       domainName: "Finance",
@@ -110,7 +110,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           desc="Founder of tech and Target | Helping Students in Placements"
         />
       ),
-      link: "/finance"
+      link: "/finance",
     },
     {
       domainName: "Health",
@@ -121,7 +121,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           desc="Founder of tech and Target | Helping Students in Placements"
         />
       ),
-      link: "/health"
+      link: "/health",
     },
     {
       domainName: "Engineering",
@@ -132,7 +132,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           desc="Founder of tech and Target | Helping Students in Placements"
         />
       ),
-      link: "/engineering"
+      link: "/engineering",
     },
     {
       domainName: "Medical",
@@ -143,7 +143,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           desc="Founder of tech and Target | Helping Students in Placements"
         />
       ),
-      link: "/medical"
+      link: "/medical",
     },
   ];
 

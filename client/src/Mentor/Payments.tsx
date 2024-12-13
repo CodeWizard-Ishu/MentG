@@ -1,7 +1,7 @@
 const Payments = () => {
     return (
       <>
-        <h1>Payments Tab</h1>
+        <h1>Payments Feature is Coming Soon!!</h1>
       </>
     );
   };

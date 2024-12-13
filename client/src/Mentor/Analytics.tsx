@@ -1,7 +1,7 @@
 const Analytics = () => {
     return (
       <>
-        <h1>Analytics Tab</h1>
+        <h1>Analytics Feature is coming soon!!</h1>
       </>
     );
   };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface ProfileCardProps {
   name: string;
@@ -6,11 +6,7 @@ interface ProfileCardProps {
   desc: string;
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({
-  name,
-  imageUrl,
-  desc,
-}) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ name, imageUrl, desc }) => {
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden w-64">
       <img src={imageUrl} alt={name} className="w-full h-48 object-cover" />
