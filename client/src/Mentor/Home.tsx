@@ -1,9 +1,7 @@
+import { useEffect, useState } from "react";
 import { ReactNode } from "react";
-import {
-  Calendar,
-  User,
-  DollarSign,
-} from "lucide-react";
+import { Calendar, User, DollarSign } from "lucide-react";
+import BACKEND_URL from "../endpoint"; // Adjust this import based on your project structure
 
 // Define interfaces for type safety
 interface Stat {
@@ -13,48 +11,76 @@ interface Stat {
 }
 
 interface Meeting {
-  client: string;
-  date: string;
-  duration: string;
-  status: "Completed" | "Upcoming";
+  menteeName: string; // Changed to match your backend response
+  dateTime: string;    // Changed to match your backend response
+  duration: number;    // Changed to match your backend response
+  status : string;
 }
 
 const Home = () => {
-  const stats: Stat[] = [
-    {
-      icon: <DollarSign className="text-green-500" />,
-      title: "Total Earnings",
-      value: "$4,520",
-    },
-    {
-      icon: <Calendar className="text-blue-500" />,
-      title: "Upcoming Meetings",
-      value: "12",
-    },
-    {
-      icon: <User className="text-purple-500" />,
-      title: "Total Clients",
-      value: "42",
-    },
-  ];
+  const [stats, setStats] = useState<Stat[]>([]);
+  const [recentMeetings, setRecentMeetings] = useState<Meeting[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const recentMeetings: Meeting[] = [
-    {
-      client: "Sarah Johnson",
-      date: "Dec 3, 2024",
-      duration: "45 mins",
-      status: "Completed",
-    },
-    {
-      client: "Mike Anderson",
-      date: "Dec 5, 2024",
-      duration: "30 mins",
-      status: "Upcoming",
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      const mentorId = localStorage.getItem("userId");
+
+      if (!mentorId) {
+        setError("Mentor ID not found in local storage.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/mentor/${mentorId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch mentor data");
+        }
+
+        const data = await response.json();
+        setStats([
+          {
+            icon: <DollarSign className="text-green-500" />,
+            title: "Total Earnings",
+            value: `$${data.totalEarnings.toFixed(3)}`, // Format to 3 decimal places
+          },
+          {
+            icon: <Calendar className="text-blue-500" />,
+            title: "Upcoming Meetings",
+            value: `${data.totalBookings}`, // Assuming totalBookings is a number
+          },
+          {
+            icon: <User className="text-purple-500" />,
+            title: "Total Clients",
+            value: `${data.uniqueMentees}`, // Assuming uniqueMentees is a number
+          },
+        ]);
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setRecentMeetings(data.recentMeetings.map((meeting:any) => ({
+          menteeName: meeting.menteeName,
+          dateTime: new Date(meeting.dateTime).toLocaleString(), // Format date as needed
+          duration: `${meeting.duration} mins`, // Format duration as needed
+          status : meeting.status
+        })));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (err:any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="">
+    <div>
       {/* Stats Cards */}
       <div className="grid grid-cols-3 gap-6 mb-8">
         {stats.map((stat, index) => (
@@ -77,7 +103,7 @@ const Home = () => {
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              {["Client", "Date", "Duration", "Status"].map((header) => (
+              {["Client", "Date", "Duration","Status"].map((header) => (
                 <th
                   key={header}
                   className="text-left p-3 text-gray-500 font-medium"
@@ -90,15 +116,15 @@ const Home = () => {
           <tbody>
             {recentMeetings.map((meeting, index) => (
               <tr key={index} className="border-b hover:bg-gray-50">
-                <td className="p-3">{meeting.client}</td>
-                <td className="p-3">{meeting.date}</td>
+                <td className="p-3">{meeting.menteeName}</td>
+                <td className="p-3">{meeting.dateTime}</td>
                 <td className="p-3">{meeting.duration}</td>
                 <td className="p-3">
                   <span
                     className={`
                       px-3 py-1 rounded-full text-xs 
                       ${
-                        meeting.status === "Completed"
+                        meeting.status === "COMPLETED"
                           ? "bg-green-100 text-green-800"
                           : "bg-blue-100 text-blue-800"
                       }
@@ -112,8 +138,11 @@ const Home = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Notifications Section */}
       <div className="bg-white shadow-md rounded-lg p-6 mt-8">
-          <h1 className="text-xl font-bold mb-4">Notifications</h1>
+        <h1 className="text-xl font-bold mb-4">Notifications</h1>
+        {/* Add notification content here */}
       </div>
     </div>
   );
