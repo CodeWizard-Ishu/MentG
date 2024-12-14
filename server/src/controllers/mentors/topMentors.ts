@@ -1,4 +1,4 @@
-import { getPrismaClient } from "../prisma";
+import { getPrismaClient } from "../../prisma";
 
 const prisma = getPrismaClient();
 
@@ -26,12 +26,12 @@ const getTopMentors = async (domainNames: any) => {
       },
       take: 10, // Limit to top 10
       include: {
-        user: {
-          select: {
-            firstName: true,
-            lastName: true,
-          },
-        },
+        user: true//{
+          // select: {
+          //   firstName: true,
+          //   lastName: true,
+          // },
+        //},
       },
     });
     return { domainId, mentors };

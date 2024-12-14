@@ -41,6 +41,9 @@ model MentorProfile {
   ratings         Rating[]         // Added relationship to ratings
 
   user            User             @relation("UserMentorProfile", fields: [userId], references: [id])
+  
+  // New relationship for availability
+  availability    Availability[]    // Relationship to availability
 }
 
 model MenteeProfile {
@@ -104,6 +107,29 @@ model Rating {
   // Relationships
   mentor          MentorProfile    @relation(fields: [mentorId], references: [id])
   mentee          MenteeProfile    @relation(fields: [menteeId], references: [id])
+}
+
+// New Availability model to store mentor availability details
+model Availability {
+    id              Int             @id @default(autoincrement())
+    mentorId        Int             // Foreign key to MentorProfile
+    
+    dayOfWeek       DayOfWeek       // Enum for days of the week (e.g., MONDAY, TUESDAY, etc.)
+    startTime       DateTime        // Start time of availability (e.g., "2024-12-14T09:00:00Z")
+    endTime         DateTime        // End time of availability (e.g., "2024-12-14T17:00:00Z")
+
+    mentor          MentorProfile    @relation(fields: [mentorId], references: [id])
+}
+
+// Enum for days of the week
+enum DayOfWeek {
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+    SATURDAY
+    SUNDAY
 }
 
 enum BookingStatus {

@@ -4,7 +4,7 @@ import { Mail, Lock } from "lucide-react";
 import BACKEND_URL from "../endpoint";
 
 interface LoginPageProps {
-  onLogin?: (email: string, token: string, isMentor: boolean) => void;
+  onLogin?: (email: string, token: string, isMentor: boolean, userId : string) => void;
   onSignupClick?: () => void;
 }
 
@@ -28,7 +28,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
       const data = await response.json();
       console.log(data);
-      onLogin(data.user.email, data.token, data.user.isMentor);
+      onLogin(data.user.email, data.token, data.user.isMentor,data.user.id);
       if (data.user.isMentor) navigate("/onboarding");
       else navigate("/dashboard/mentee");
     } catch (error) {

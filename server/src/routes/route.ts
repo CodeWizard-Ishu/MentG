@@ -1,6 +1,6 @@
 import express from 'express';
 import { login, signupMentee, signupMentor } from '../controllers/auth';
-import { topMentorOfDomain } from '../controllers/mentor';
+import { topMentorOfDomain } from '../controllers/mentors/topMentors';
 
 const router = express.Router();
 

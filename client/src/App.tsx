@@ -19,10 +19,11 @@ function App() {
     return localStorage.getItem("mentor") === "true";
   });
 
-  const handleLogin = (email : string, token : string, isMentor : boolean) => {
+  const handleLogin = (email : string, token : string, isMentor : boolean, userId : string) => {
     localStorage.setItem('userToken', `Bearer ${token}`);
     localStorage.setItem("loggedIn", "true");
     localStorage.setItem("mentor", isMentor ? "true" : "false");
+    localStorage.setItem("userId",userId);
     setLoggedIn(true);
     setMentor(isMentor);
     console.log(`Logged in as: ${email}`);
@@ -33,6 +34,7 @@ function App() {
     localStorage.removeItem("userToken");
     localStorage.removeItem("loggedIn");
     localStorage.removeItem("mentor");
+    localStorage.removeItem("userId");
     setLoggedIn(false);
     setMentor(false);
   };

@@ -84,17 +84,18 @@ export const login = async (req : any, res : any) => {
             return res.status(401).json({ msg: "Invalid credentials" });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ msg: "Invalid credentials" });
-        }
+        // const isMatch = await bcrypt.compare(password, user.password);
+        // if (!isMatch) {
+        //     return res.status(401).json({ msg: "Invalid credentials" });
+        // }
 
-        const secret : any = process.env.JWT_SECRET;
-        const token = jwt.sign({ id: user.id }, secret, {
-            expiresIn: '1h', // Token expiration time
-        });
+        // const secret : any = process.env.JWT_SECRET;
+        // const token = jwt.sign({ id: user.id }, secret, {
+        //     expiresIn: '1h', // Token expiration time
+        // });
 
-        res.status(200).json({ msg: "Login Success", token, user });
+        // res.status(200).json({ msg: "Login Success", token, user });
+        res.status(200).json({user});
     } catch (e) {
         console.error(e);
         res.status(500).json({ msg: "Login Failed" });
