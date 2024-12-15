@@ -53,27 +53,27 @@ const ProfileDetails: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white mr-96">
-      <div className="mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Profile</h1>
+      <div className="p-4">
+        <h1 className="text-3xl font-bold mb-8">Profile Details</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Profile photo */}
           <div>
             <label htmlFor="profilePhoto" className="block font-medium mb-2">
               Profile photo
             </label>
+            {profilePhotoPreview && (
+              <img
+                src={profilePhotoPreview}
+                alt="Profile photo preview"
+                className="mt-4 mb-4 h-32 w-32 rounded-full"
+              />
+            )}
             <input
               type="file"
               id="profilePhoto"
               className="block w-full text-sm text-slate-500"
               onChange={handleProfilePhotoChange}
             />
-            {profilePhotoPreview && (
-              <img
-                src={profilePhotoPreview}
-                alt="Profile photo preview"
-                className="mt-4 h-12 w-12 rounded-full"
-              />
-            )}
           </div>
 
           {/* Personal information */}
@@ -135,7 +135,7 @@ const ProfileDetails: React.FC = () => {
           </div>
 
           {/* Form actions */}
-          <div className="flex justify-end">
+          <div className="flex justify-start">
             <Button type="submit">Save changes</Button>
           </div>
         </form>

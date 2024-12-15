@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 const OnboardingPage: React.FC = () => {
   const [socialLink, setSocialLink] = useState("");
-  const [mentgLink, setMentgLink] = useState("{{firstName+lastName}}");
   const [service, setService] = useState<string[]>([]);
   const [domain, setDomain] = useState<string>();
   const navigate = useNavigate();
@@ -37,14 +36,10 @@ const OnboardingPage: React.FC = () => {
     setDomain(item);
   };
 
-  const onCheck = () => {
-    alert("Feature to be implemented");
-  };
-
   const handleSubmit = () => {
     try {
       //logic after submitting details
-      navigate("/onboarding/expertise");
+      navigate("/dashboard");
     } catch (error) {
       console.log(error);
     }
@@ -54,7 +49,7 @@ const OnboardingPage: React.FC = () => {
     <div className="min-h-screen bg-sky-100">
       {/* Header */}
       <header className="sticky top-0 z-50  backdrop-blur-md flex justify-between items-center p-6 shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
+        <div className="flex justify-between items-center">
           <div>
             <a href="/" className="flex items-center">
               <img
@@ -96,34 +91,6 @@ const OnboardingPage: React.FC = () => {
                 placeholder="LinkedIn, Twitter, Instagram"
                 onChange={(e) => setSocialLink(e.target.value)}
               />
-            </div>
-
-            <div className="mb-6">
-              <label
-                htmlFor="mentg-page"
-                className="block text-gray-700 font-medium mb-2"
-              >
-                Your MentG page link
-              </label>
-              <div className="flex">
-                <span className="px-4 inline-flex items-center min-w-fit rounded-s-md border bg-gray-50 text-sm text-gray-500">
-                  mentg.in/
-                </span>
-                <input
-                  type="text"
-                  id="mentg-page"
-                  className="border border-gray-300 rounded-e-md p-2 flex-1"
-                  value={mentgLink}
-                  placeholder="mentg.in/"
-                  onChange={(e) => setMentgLink(e.target.value)}
-                />
-                <button
-                  onClick={onCheck}
-                  className="bg-green-500 text-white rounded-md px-4 py-2 ml-2"
-                >
-                  Check Availability
-                </button>
-              </div>
             </div>
 
             <div className="mb-6">
@@ -173,7 +140,7 @@ const OnboardingPage: React.FC = () => {
             <div className="text-center">
               <button
                 type="submit"
-                onSubmit={handleSubmit}
+                onClick={handleSubmit}
                 disabled={
                   (domain ? false : true)}
                 className="bg-black text-white px-6 py-3 w-32 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-lg shadow-md"
