@@ -26,7 +26,7 @@ export const getMentorData = async (req:any, res:any) => {
         const recentMeetings = await prisma.booking.findMany({
             where: { mentorId: mentorData.id },
             orderBy: { dateTime: 'desc' },
-            take: 5,
+            take: 3,
             include: {
                 mentee: {
                     select: {
