@@ -3,7 +3,9 @@ import TestimonialCard from "../components/ui/TestimonialCard";
 
 const Testimonials: React.FC = () => {
   return (
-    <div>
+    <div className="min-h-screen p-4">
+      <h1 className="text-3xl font-medium">Your Testimonials</h1>
+      <h2 className="text-xs mb-4">(Testimonials and ratings from your audience show up here.)</h2>
       <TestimonialCard
         name="John Doe"
         position="CEO"

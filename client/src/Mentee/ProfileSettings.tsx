@@ -3,7 +3,6 @@ import { User } from "lucide-react";
 
 const ProfileDetails: React.FC = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [mentgLink, setMentgLink] = useState("{{firstName+lastName}}");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [about, setAbout] = useState("");
@@ -12,7 +11,6 @@ const ProfileDetails: React.FC = () => {
     instagram: "",
     twitter: "",
   });
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,10 +26,6 @@ const ProfileDetails: React.FC = () => {
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const onCheck = () => {
-    alert("Feature to be implemented");
   };
 
   const handleSaveChanges = () => {
@@ -51,11 +45,6 @@ const ProfileDetails: React.FC = () => {
       return;
     }
 
-    if (!/^[0-9]{10}$/.test(phoneNumber)) {
-      alert("Phone number must be 10 digits.");
-      return;
-    }
-
     // Submit form data (mocked)
     console.log({
       profileImage,
@@ -63,7 +52,6 @@ const ProfileDetails: React.FC = () => {
       lastName,
       about,
       socialLinks,
-      phoneNumber,
       email,
       password,
     });
@@ -105,31 +93,6 @@ const ProfileDetails: React.FC = () => {
                 accept="image/*"
                 className="hidden"
               />
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <label htmlFor="mentg-page" className="block font-medium mb-2">
-              Your MentG page link
-            </label>
-            <div className="flex">
-              <span className="px-4 inline-flex items-center min-w-fit rounded-s-md border bg-gray-50 text-sm text-gray-500">
-                mentg.in/
-              </span>
-              <input
-                type="text"
-                id="mentg-page"
-                className="border border-gray-300 rounded-e-md p-2 flex-1"
-                value={mentgLink}
-                placeholder="mentg.in/"
-                onChange={(e) => setMentgLink(e.target.value)}
-              />
-              <button
-                onClick={onCheck}
-                className="bg-green-500 text-white rounded-md px-4 py-2 ml-2"
-              >
-                Check Availability
-              </button>
             </div>
           </div>
 
@@ -199,17 +162,6 @@ const ProfileDetails: React.FC = () => {
                 placeholder="Twitter URL"
               />
             </div>
-          </div>
-
-          <div className="mb-4">
-            <label className="block font-medium mb-2">Phone Number</label>
-            <input
-              type="tel"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              className="block w-full border rounded p-2"
-              placeholder="Enter your phone number"
-            />
           </div>
 
           <div className="mb-4">

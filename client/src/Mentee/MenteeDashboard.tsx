@@ -10,7 +10,7 @@ import {
 import Home from "./Home";
 import Meetings from "./Meetings";
 import Messages from "./Messages";
-import Settings from "./Settings";
+import Settings from "./ProfileSettings";
 
 interface NavItem {
   name: string;

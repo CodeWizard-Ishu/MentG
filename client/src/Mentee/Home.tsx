@@ -2,9 +2,7 @@ import React from "react";
 import ProfileCard from "../components/ui/ProfileCard";
 import Dropdown from "../components/ui/Dropdown";
 
-interface HomeProps {}
-
-const Home: React.FC<HomeProps> = () => {
+const Home: React.FC = () => {
 
   const options = [
     {
@@ -24,7 +22,7 @@ const Home: React.FC<HomeProps> = () => {
     },
     {
       label: "Business",
-      value: "option1",
+      value: "option2",
       content: (
         <div className="grid md:grid-cols-5 gap-8">
           {Array.from({ length: 5 }, () => (
@@ -39,7 +37,7 @@ const Home: React.FC<HomeProps> = () => {
     },
     {
       label: "Career",
-      value: "option1",
+      value: "option3",
       content: (
         <div className="grid md:grid-cols-5 gap-8">
           {Array.from({ length: 5 }, () => (
@@ -54,7 +52,7 @@ const Home: React.FC<HomeProps> = () => {
     },
     {
       label: "Marketing",
-      value: "option1",
+      value: "option4",
       content: (
         <div className="grid md:grid-cols-5 gap-8">
           {Array.from({ length: 5 }, () => (
@@ -69,7 +67,7 @@ const Home: React.FC<HomeProps> = () => {
     },
     {
       label: "Finance",
-      value: "option1",
+      value: "option5",
       content: (
         <div className="grid md:grid-cols-5 gap-8">
           {Array.from({ length: 5 }, () => (
