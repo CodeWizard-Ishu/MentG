@@ -1,144 +1,260 @@
-import React, { useState } from "react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
-
-// Define the schema using Zod
-const profileSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  displayName: z.string().min(1, "Display name is required"),
-  topmatePage: z.string().url("Invalid Topmate page URL"),
-  aboutYourself: z
-    .string()
-    .max(500, "About yourself must be 500 characters or less"),
-});
-
-type ProfileFormData = z.infer<typeof profileSchema>;
+import React, { useState, useRef } from "react";
+import { User } from "lucide-react";
 
 const ProfileDetails: React.FC = () => {
-  const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
-  const [profilePhotoPreview, setProfilePhotoPreview] = useState<string | null>(
-    null
-  );
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [mentgLink, setMentgLink] = useState("{{firstName+lastName}}");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [about, setAbout] = useState("");
+  const [socialLinks, setSocialLinks] = useState({
+    linkedin: "",
+    instagram: "",
+    twitter: "",
+  });
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleProfilePhotoChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setProfilePhoto(file);
-      setProfilePhotoPreview(URL.createObjectURL(file));
-    } else {
-      setProfilePhoto(null);
-      setProfilePhotoPreview(null);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ProfileFormData>({
-    resolver: zodResolver(profileSchema),
-  });
+  const onCheck = () => {
+    alert("Feature to be implemented");
+  };
 
-  const onSubmit = (data: ProfileFormData) => {
-    // Handle form submission, e.g., save data to the server
-    console.log(data);
+  const handleSaveChanges = () => {
+    // Validation
+    if (!firstName || !lastName) {
+      alert("First name and last name are required.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      alert("Invalid email format.");
+      return;
+    }
+
+    if (!/^[0-9]{10}$/.test(phoneNumber)) {
+      alert("Phone number must be 10 digits.");
+      return;
+    }
+
+    // Submit form data (mocked)
+    console.log({
+      profileImage,
+      firstName,
+      lastName,
+      about,
+      socialLinks,
+      phoneNumber,
+      email,
+      password,
+    });
+    alert("Changes saved successfully!");
   };
 
   return (
-    <div className="min-h-screen bg-white mr-96">
-      <div className="p-4">
-        <h1 className="text-3xl font-bold mb-8">Profile Details</h1>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-          {/* Profile photo */}
-          <div>
-            <label htmlFor="profilePhoto" className="block font-medium mb-2">
-              Profile photo
-            </label>
-            {profilePhotoPreview && (
-              <img
-                src={profilePhotoPreview}
-                alt="Profile photo preview"
-                className="mt-4 mb-4 h-32 w-32 rounded-full"
+    <div className="min-h-screen p-4">
+      <div>
+        <div className="w-full md:w-2/4">
+          <h2 className="text-2xl font-bold mb-4">Profile Details</h2>
+
+          <div className="flex items-center justify-between space-x-6 mb-6">
+            <div className="relative font-medium">
+              <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                {profileImage ? (
+                  <img
+                    src={profileImage}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <User className="w-12 h-12 text-gray-400" />
+                )}
+              </div>
+              Profile Picture
+            </div>
+            <div>
+              <button
+                onClick={() => fileInputRef.current?.click()} className="underline font-medium">
+                Upload a photo
+              </button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+                accept="image/*"
+                className="hidden"
               />
-            )}
+            </div>
+          </div>
+
+          <div className="mb-6">
+              <label
+                htmlFor="mentg-page"
+                className="block font-medium mb-2"
+              >
+                Your MentG page link
+              </label>
+              <div className="flex">
+                <span className="px-4 inline-flex items-center min-w-fit rounded-s-md border bg-gray-50 text-sm text-gray-500">
+                  mentg.in/
+                </span>
+                <input
+                  type="text"
+                  id="mentg-page"
+                  className="border border-gray-300 rounded-e-md p-2 flex-1"
+                  value={mentgLink}
+                  placeholder="mentg.in/"
+                  onChange={(e) => setMentgLink(e.target.value)}
+                />
+                <button
+                  onClick={onCheck}
+                  className="bg-green-500 text-white rounded-md px-4 py-2 ml-2"
+                >
+                  Check Availability
+                </button>
+              </div>
+            </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block font-medium mb-2">First Name</label>
+              <input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="block w-full border rounded p-2"
+                placeholder="Enter your first name"
+                required
+              />
+            </div>
+            <div>
+              <label className="block font-medium mb-2">Last Name</label>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="block w-full border rounded p-2"
+                placeholder="Enter your last name"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label className="block font-medium mb-2">About Yourself</label>
+            <textarea
+              value={about}
+              onChange={(e) => setAbout(e.target.value)}
+              className="block w-full border rounded p-2"
+              placeholder="Tell us about yourself"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block font-medium mb-2">Social Accounts</label>
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={socialLinks.linkedin}
+                onChange={(e) =>
+                  setSocialLinks({ ...socialLinks, linkedin: e.target.value })
+                }
+                className="block w-full border rounded p-2"
+                placeholder="LinkedIn URL"
+              />
+              <input
+                type="text"
+                value={socialLinks.instagram}
+                onChange={(e) =>
+                  setSocialLinks({ ...socialLinks, instagram: e.target.value })
+                }
+                className="block w-full border rounded p-2"
+                placeholder="Instagram URL"
+              />
+              <input
+                type="text"
+                value={socialLinks.twitter}
+                onChange={(e) =>
+                  setSocialLinks({ ...socialLinks, twitter: e.target.value })
+                }
+                className="block w-full border rounded p-2"
+                placeholder="Twitter URL"
+              />
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label className="block font-medium mb-2">Phone Number</label>
             <input
-              type="file"
-              id="profilePhoto"
-              className="block w-full text-sm text-slate-500"
-              onChange={handleProfilePhotoChange}
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className="block w-full border rounded p-2"
+              placeholder="Enter your phone number"
             />
           </div>
 
-          {/* Personal information */}
-          <div className="grid grid-cols-2 gap-6">
+          <div className="mb-4">
+            <label className="block font-medium mb-2">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="block w-full border rounded p-2"
+              placeholder="Enter your email"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label htmlFor="firstName" className="block font-medium mb-2">
-                First Name
-              </label>
-              <Input
-                id="firstName"
-                {...register("firstName")}
-                onError={errors.firstName?.message}
+              <label className="block font-medium mb-2">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="block w-full border rounded p-2"
+                placeholder="Enter a new password"
               />
             </div>
             <div>
-              <label htmlFor="lastName" className="block font-medium mb-2">
-                Last Name
-              </label>
-              <Input
-                id="lastName"
-                {...register("lastName")}
-                onError={errors.lastName?.message}
-              />
-            </div>
-            <div className="col-span-2">
-              <label htmlFor="displayName" className="block font-medium mb-2">
-                Display Name
-              </label>
-              <Input
-                id="displayName"
-                {...register("displayName")}
-                onError={errors.displayName?.message}
+              <label className="block font-medium mb-2">Confirm Password</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="block w-full border rounded p-2"
+                placeholder="Confirm your password"
               />
             </div>
           </div>
-
-          {/* Topmate page link */}
-          <div>
-            <label htmlFor="topmatePage" className="block font-medium mb-2">
-              Your MentG page link
-            </label>
-            <Input
-              id="mentgPage"
-              {...register("topmatePage")}
-              onError={errors.topmatePage?.message}
-            />
-          </div>
-
-          {/* About yourself */}
-          <div>
-            <label htmlFor="aboutYourself" className="block font-medium mb-2">
-              About yourself
-            </label>
-            <Textarea
-              id="aboutYourself"
-              {...register("aboutYourself")}
-              onError={errors.aboutYourself?.message}
-            />
-          </div>
-
-          {/* Form actions */}
-          <div className="flex justify-start">
-            <Button type="submit">Save changes</Button>
-          </div>
-        </form>
+        </div>
+      </div>
+      <div className="flex justify-start mt-14">
+        <button
+          onClick={handleSaveChanges}
+          className="bg-black text-white px-4 py-2 w-40 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
+        >
+          Save Changes
+        </button>
       </div>
     </div>
   );

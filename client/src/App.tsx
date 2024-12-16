@@ -7,9 +7,6 @@ import SignupPage from "./pages/Signup";
 import ProfilePage from "./pages/ProfilePage";
 import MentorDashboard from "./Mentor/MentorDashboard";
 import MenteeDashboard from "./Mentee/MenteeDashboard";
-import OnboardingPage from "./Mentor/Onboarding/OnboardingPage";
-import ExpertisePage from "./Mentor/Onboarding/ExpertisePage";
-import AvailabilityPage from "./Mentor/Onboarding/AvailabilityPage";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(() => {
@@ -48,9 +45,6 @@ function App() {
         <Route path="/dashboard" element={<MentorDashboard onLogout={handleLogout}/>}/>
         <Route path="/dashboard/mentee" element={<MenteeDashboard onLogout={handleLogout}/>}/>
         <Route path="/profile" element={<ProfilePage/>}/>
-        <Route path="/onboarding" element={<OnboardingPage/>}/>
-        <Route path="/onboarding/expertise" element={<ExpertisePage/>}/>
-        <Route path="/onboarding/availability" element={<AvailabilityPage/>}/>
       </Routes>
     </Router>
   );

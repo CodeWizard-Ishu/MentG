@@ -1,6 +1,18 @@
 import React, { useState } from "react";
 import { Check, Plus, X } from "lucide-react";
 
+const domainOptions = [
+  "Technology",
+  "Business",
+  "Career",
+  "Marketing",
+  "Finance",
+  "Health",
+  "Engineering",
+  "Medical",
+  "Mental Fitness",
+];
+
 // Predefined expertise tags
 const PREDEFINED_TAGS: string[] = [
   "Software Development",
@@ -15,11 +27,24 @@ const PREDEFINED_TAGS: string[] = [
   "Artificial Intelligence",
 ];
 
+const serviceOptions = [
+  "1:1 Sessions",
+  "Quick Chat",
+  "Priority DMs",
+  "Webinars",
+];
+
 const Services: React.FC = () => {
+  const [domain, setDomain] = useState<string>();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [availableTags, setAvailableTags] = useState<string[]>(PREDEFINED_TAGS);
   const [customTagInput, setCustomTagInput] = useState<string>("");
   const [isAddingCustomTag, setIsAddingCustomTag] = useState<boolean>(false);
+  const [service, setService] = useState<string[]>([]);
+
+  const handleDomain = (item: string) => {
+    setDomain(item);
+  };
 
   const handleTagSelect = (tag: string): void => {
     // Prevent duplicate tags
@@ -49,13 +74,38 @@ const Services: React.FC = () => {
     }
   };
 
+  const handleService = (item: string) => {
+    setService((prev) =>
+      prev.includes(item) ? prev.filter((e) => e !== item) : [...prev, item]
+    );
+  };
+
   return (
     <div className="min-h-screen">
       {/* PAGE BODY from here.. */}
-      <div className="p-4">
-        <h1 className="text-2xl font-semibold mb-6 text-black">
-          Select Your Expertise
-        </h1>
+
+      <div className="mb-9">
+        <h1 className="text-2xl font-semibold mb-6">Choose your Domain</h1>
+        <div className="grid grid-cols-3 gap-2 w-full md:w-2/4">
+          {domainOptions.map((option) => (
+            <button
+              type="button"
+              key={option}
+              className={`py-2 px-4 rounded border ${
+                domain === option
+                  ? "border-black bg-gray-400 rounded-full font-medium text-black transition-all"
+                  : "bg-white rounded-full text-black"
+              }`}
+              onClick={() => handleDomain(option)}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-9">
+        <h1 className="text-2xl font-semibold mb-6">Select Your Expertise</h1>
         <div className="bg-gray-300 rounded-lg p-4">
           {/* Selected Tags Section */}
           <div className="mb-6">
@@ -136,17 +186,36 @@ const Services: React.FC = () => {
               </div>
             </div>
           )}
-
-          {/* Save Button */}
-          <div className="flex justify-start mt-14">
-            <button
-              disabled={selectedTags.length === 0}
-              className="bg-black text-white px-4 py-2 w-32 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-lg shadow-md"
-            >
-              Save
-            </button>
-          </div>
         </div>
+      </div>
+
+      <div className="mb-9">
+        <label className="block text-gray-700 font-medium mb-2">
+          Which service you want to give?
+        </label>
+        <div className="grid grid-cols-3 gap-2 w-full md:w-2/4">
+          {serviceOptions.map((option) => (
+            <button
+              type="button"
+              key={option}
+              className={`py-2 px-4 rounded border ${
+                service.includes(option)
+                  ? "border-black bg-gray-400 rounded-full font-medium text-black transition-all"
+                  : "bg-white rounded-full text-black"
+              }`}
+              onClick={() => handleService(option)}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Save Button */}
+      <div className="flex justify-start mt-14">
+        <button className="bg-black text-white px-4 py-2 w-32 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md">
+          Save
+        </button>
       </div>
     </div>
   );
