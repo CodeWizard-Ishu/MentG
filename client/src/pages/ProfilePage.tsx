@@ -1,9 +1,7 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   MessageCircle,
-  Share2,
-  Heart,
-  CheckCircle,
   Award,
   Zap,
   Users,
@@ -12,11 +10,16 @@ import {
   Video,
   Monitor,
   BookOpen,
-  Briefcase,
 } from "lucide-react";
+
+interface IParams {
+  id: number;
+}
 
 const ProfilePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("sessions");
+  const [serviceTab, setServiceTab] = useState<string>("");
+  const { id } = useParams<IParams | any>();
 
   const profileData = {
     name: "Rahul Sharma",
@@ -24,28 +27,9 @@ const ProfilePage: React.FC = () => {
     headline: "Tech Entrepreneur | Product Strategy Consultant",
     description:
       "Ex-Google PM with a decade of experience in transforming innovative ideas into successful digital products. Passionate about helping startups navigate complex technological landscapes and achieve sustainable growth.",
-    followers: 2450,
+    NumberOfMentees: 2450,
     rating: 4.8,
-    profileViews: 15670,
-    background: {
-      experience: [
-        {
-          company: "Google",
-          role: "Senior Product Manager",
-          duration: "2015-2022",
-        },
-        {
-          company: "Microsoft",
-          role: "Product Strategy Lead",
-          duration: "2012-2015",
-        },
-      ],
-      achievements: [
-        "Scaled 3 startups to Series A",
-        "Created product roadmaps for 10+ successful tech companies",
-        "Speaker at multiple international tech conferences",
-      ],
-    },
+    NumberOfSession: 15670,
 
     expertise: [
       "Product Strategy",
@@ -57,19 +41,19 @@ const ProfilePage: React.FC = () => {
     services: [
       {
         icon: Monitor,
-        title: "Startup Consulting",
+        title: "1:1 Mentorship",
         duration: "45 min",
         price: "₹1,499",
       },
       {
         icon: Video,
-        title: "1:1 Mentorship",
+        title: "Priority DM",
         duration: "60 min",
         price: "₹2,499",
       },
       {
         icon: Calendar,
-        title: "Career Guidance",
+        title: "Webinar",
         duration: "30 min",
         price: "₹999",
       },
@@ -94,14 +78,16 @@ const ProfilePage: React.FC = () => {
         <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl grid grid-cols-3 overflow-hidden">
           {/* Sidebar Profile Section */}
           <div className="col-span-1 bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-8 relative">
-            <div className="absolute top-6 right-6 flex space-x-3">
+            
+            {/*Share button and heart like button */}
+            {/* <div className="absolute top-6 right-6 flex space-x-3">
               <button className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition-colors">
                 <Share2 className="w-6 h-6 text-white" />
               </button>
               <button className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition-colors">
                 <Heart className="w-6 h-6 text-white" />
               </button>
-            </div>
+            </div> */}
 
             <div className="flex flex-col items-center">
               <img
@@ -122,14 +108,14 @@ const ProfilePage: React.FC = () => {
                 {[
                   {
                     icon: Users,
-                    value: profileData.followers,
-                    label: "Followers",
+                    value: profileData.NumberOfMentees,
+                    label: "Mentees Guided",
                   },
                   { icon: Star, value: profileData.rating, label: "Rating" },
                   {
                     icon: Zap,
-                    value: profileData.profileViews,
-                    label: "Views",
+                    value: profileData.NumberOfSession,
+                    label: "Sessions Taken",
                   },
                 ].map((stat) => (
                   <div key={stat.label} className="bg-white/20 rounded-lg p-3">
@@ -165,7 +151,7 @@ const ProfilePage: React.FC = () => {
             {/* Tabs */}
             <div className="border-b">
               <div className="flex">
-                {["sessions", "about", "experience", "reviews"].map((tab) => (
+                {["sessions", "about", "reviews"].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
@@ -188,34 +174,42 @@ const ProfilePage: React.FC = () => {
                   <h2 className="text-xl font-bold text-gray-800 mb-6">
                     Available Services
                   </h2>
-                  <div className="space-y-4 mb-8">
-                    {profileData.services.map((service) => (
-                      <div
+                  {profileData.services.map((service) => (
+                    <div className="mb-8 space-y-4">
+                      <button
                         key={service.title}
-                        className="flex items-center justify-between bg-gray-50 p-4 rounded-xl hover:bg-indigo-50 transition-colors group"
+                        onClick={() => setServiceTab(service.title)}
+                        className={`flex items-center justify-between bg-sky-100 w-full p-4 rounded-xl  transition-colors ${
+                          serviceTab === service.title
+                            ? "bg-indigo-500 text-black"
+                            : "bg-sky-100"
+                        }`}
                       >
                         <div className="flex items-center space-x-4">
                           <div className="bg-indigo-100 p-3 rounded-full">
-                            <service.icon className="w-6 h-6 text-indigo-600" />
+                            <service.icon className="w-6 h-6 text-black" />
                           </div>
                           <div>
-                            <h3 className="text-sm font-semibold text-gray-800">
+                            <h3 className="text-sm font-semibold text-black">
                               {service.title}
                             </h3>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-black">
                               {service.duration}
                             </p>
                           </div>
                         </div>
-                        <span className="font-semibold text-indigo-600">
+                        <span className="font-semibold text-black">
                           {service.price}
                         </span>
-                      </div>
-                    ))}
-                  </div>
+                      </button>
+                    </div>
+                  ))}
 
-                  <div className="p-8 pt-0">
-                    <button className="w-full bg-black text-white py-4 rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all flex items-center justify-center space-x-3">
+                  <div className="p-8">
+                    <button
+                      disabled={serviceTab ? false : true}
+                      className="w-full bg-black text-white py-4 rounded-xl flex items-center justify-center space-x-3 hover:bg-gray-700 disabled:opacity-50"
+                    >
                       <MessageCircle className="w-6 h-6" />
                       <span className="font-semibold text-lg">
                         Book a Session
@@ -247,41 +241,6 @@ const ProfilePage: React.FC = () => {
                         <span>Worked with multiple successful startups</span>
                       </li>
                     </ul>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === "experience" && (
-                <div>
-                  <h3 className="text-xl font-semibold mb-4">
-                    Professional Journey
-                  </h3>
-                  <div className="space-y-4">
-                    {profileData.background.experience.map((exp) => (
-                      <div
-                        key={exp.company}
-                        className="bg-gray-50 p-4 rounded-xl"
-                      >
-                        <div className="flex items-center mb-2">
-                          <Briefcase className="mr-3 text-indigo-600" />
-                          <h4 className="font-semibold">{exp.role}</h4>
-                        </div>
-                        <p className="text-sm text-gray-600">{exp.company}</p>
-                        <p className="text-xs text-gray-500">{exp.duration}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  <h3 className="text-xl font-semibold mt-6 mb-4">
-                    Key Achievements
-                  </h3>
-                  <div className="space-y-2">
-                    {profileData.background.achievements.map((achievement) => (
-                      <div key={achievement} className="flex items-center">
-                        <CheckCircle className="mr-3 text-green-500" />
-                        <p className="text-gray-600">{achievement}</p>
-                      </div>
-                    ))}
                   </div>
                 </div>
               )}

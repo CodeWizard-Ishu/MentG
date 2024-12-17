@@ -44,7 +44,7 @@ function App() {
         <Route path="/signup" element={<SignupPage/>}/>
         <Route path="/dashboard" element={<MentorDashboard onLogout={handleLogout}/>}/>
         <Route path="/dashboard/mentee" element={<MenteeDashboard onLogout={handleLogout}/>}/>
-        <Route path="/profile" element={<ProfilePage/>}/>
+        <Route path="/profile/:id" element={<ProfilePage/>}/>
       </Routes>
     </Router>
   );
