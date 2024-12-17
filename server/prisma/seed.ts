@@ -1,76 +1,76 @@
-// // import { PrismaClient } from '@prisma/client';
-// // const prisma = new PrismaClient();
+// import { PrismaClient } from '@prisma/client';
+// const prisma = new PrismaClient();
 
-// // async function seedDatabase() {
-// //     try {
-// //         // Seed domains
-// //         await prisma.domain.createMany({
-// //             data: [
-// //                 { name: "Software Development" },
-// //                 { name: "Finance" },
-// //                 { name: "Tech" },
-// //             ],
-// //             skipDuplicates: true,
-// //         });
+// async function seedDatabase() {
+//     try {
+//         // Seed domains
+//         await prisma.domain.createMany({
+//             data: [
+//                 { name: "Software Development" },
+//                 { name: "Finance" },
+//                 { name: "Tech" },
+//             ],
+//             skipDuplicates: true,
+//         });
 
-// //         // Seed mentors
-// //         const mentorUsers = await Promise.all(
-// //             [1, 2, 3, 4, 5].map((i) =>
-// //                 prisma.user.create({
-// //                     data: {
-// //                         firstName: `Mentor${i}`,
-// //                         lastName: `Lastname${i}`,
-// //                         email: `mentor${i}@example.com`,
-// //                         password: `password${i}`,
-// //                         isMentor: true,
-// //                         isActive: true,
-// //                         mentorProfile: {
-// //                             create: {
-// //                                 bio: `Experienced in field ${i}`,
-// //                                 experience: `${i} years of experience`,
-// //                                 domains: {
-// //                                     connect: [{ id: 1 }, { id: 2 }],
-// //                                 },
-// //                             },
-// //                         },
-// //                     },
-// //                 })
-// //             )
-// //         );
+//         // Seed mentors
+//         const mentorUsers = await Promise.all(
+//             [1, 2, 3, 4, 5].map((i) =>
+//                 prisma.user.create({
+//                     data: {
+//                         firstName: `Mentor${i}`,
+//                         lastName: `Lastname${i}`,
+//                         email: `mentor${i}@example.com`,
+//                         password: `password${i}`,
+//                         isMentor: true,
+//                         isActive: true,
+//                         mentorProfile: {
+//                             create: {
+//                                 bio: `Experienced in field ${i}`,
+//                                 experience: `${i} years of experience`,
+//                                 domains: {
+//                                     connect: [{ id: 1 }, { id: 2 }],
+//                                 },
+//                             },
+//                         },
+//                     },
+//                 })
+//             )
+//         );
 
-// //         // Seed mentees
-// //         const menteeUsers = await Promise.all(
-// //             [1, 2, 3, 4, 5].map((i) =>
-// //                 prisma.user.create({
-// //                     data: {
-// //                         firstName: `Mentee${i}`,
-// //                         lastName: `Lastname${i}`,
-// //                         email: `mentee${i}@example.com`,
-// //                         password: `password${i}`,
-// //                         isMentor: false,
-// //                         isActive: true,
-// //                         menteeProfile: {
-// //                             create: {
-// //                                 goals: `Goal ${i}`,
-// //                                 domains: {
-// //                                     connect: [{ id: 2 }, { id: 3 }],
-// //                                 },
-// //                             },
-// //                         },
-// //                     },
-// //                 })
-// //             )
-// //         );
+//         // Seed mentees
+//         const menteeUsers = await Promise.all(
+//             [1, 2, 3, 4, 5].map((i) =>
+//                 prisma.user.create({
+//                     data: {
+//                         firstName: `Mentee${i}`,
+//                         lastName: `Lastname${i}`,
+//                         email: `mentee${i}@example.com`,
+//                         password: `password${i}`,
+//                         isMentor: false,
+//                         isActive: true,
+//                         menteeProfile: {
+//                             create: {
+//                                 goals: `Goal ${i}`,
+//                                 domains: {
+//                                     connect: [{ id: 2 }, { id: 3 }],
+//                                 },
+//                             },
+//                         },
+//                     },
+//                 })
+//             )
+//         );
 
-// //         console.log("Database seeded successfully!");
-// //     } catch (error) {
-// //         console.error("Error seeding database:", error);
-// //     } finally {
-// //         await prisma.$disconnect();
-// //     }
-// // }
+//         console.log("Database seeded successfully!");
+//     } catch (error) {
+//         console.error("Error seeding database:", error);
+//     } finally {
+//         await prisma.$disconnect();
+//     }
+// }
 
-// // seedDatabase();
+// seedDatabase();
 // import { PrismaClient } from '@prisma/client';
 // const prisma = new PrismaClient();
 

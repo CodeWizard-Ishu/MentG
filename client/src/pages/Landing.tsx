@@ -218,23 +218,21 @@ const LandingPage: React.FC<LandingPageProps> = ({
             <div className="grid md:grid-cols-5 gap-8">
               {mentorsData.length > 0 &&
                 mentorsData.map((mentor: any) => (
-                  <ProfileCard
-                    key={mentor.id}
-                    name={`${mentor.user.firstName} ${mentor.user.lastName}`}
-                    imageUrl={
-                      mentor.profilePicture || "https://via.placeholder.com/150"
-                    } // Fallback image
-                    desc={mentor.bio || "No bio available."}
-                  />
+                  <Link
+                    to={`/profile/${mentor.userId}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <ProfileCard
+                      key={mentor.id}
+                      name={`${mentor.user.firstName} ${mentor.user.lastName}`}
+                      imageUrl={
+                        mentor.profilePicture ||
+                        "https://via.placeholder.com/150"
+                      }
+                      desc={mentor.bio || "No bio available."}
+                    />
+                  </Link>
                 ))}
-
-              {/* {Array.from({ length: 5 }, () => (
-                <ProfileCard
-                  name="Utkarsh Jaiswal"
-                  imageUrl="https://i.ibb.co/tPzj54M/logo.png"
-                  desc="Founder of tech and Target | Helping Students in Placements"
-                />
-              ))} */}
             </div>
           </div>
         </section>
