@@ -1,188 +1,227 @@
 import React, { useState } from "react";
+import { Clock } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Alert, AlertDescription } from "../components/ui/alert";
 
-interface AvailabilityOption {
-  day: string;
-  available: boolean;
+interface TimeSlot {
   startTime: string;
   endTime: string;
 }
 
-const Calender: React.FC = () => {
-  const [availabilityOptions, setAvailabilityOptions] = useState<
-    AvailabilityOption[]
-  >([
-    {
-      day: "Saturday",
-      available: true,
-      startTime: "09:00 AM",
-      endTime: "08:00 PM",
-    },
-    {
-      day: "Sunday",
-      available: true,
-      startTime: "09:00 AM",
-      endTime: "08:00 PM",
-    },
-    {
-      day: "Monday",
-      available: false,
-      startTime: "09:00 AM",
-      endTime: "08:00 PM",
-    },
-    {
-      day: "Tuesday",
-      available: false,
-      startTime: "09:00 AM",
-      endTime: "08:00 PM",
-    },
-    {
-      day: "Wednesday",
-      available: false,
-      startTime: "09:00 AM",
-      endTime: "08:00 PM",
-    },
-    {
-      day: "Thursday",
-      available: false,
-      startTime: "09:00 AM",
-      endTime: "08:00 PM",
-    },
-    {
-      day: "Friday",
-      available: false,
-      startTime: "09:00 AM",
-      endTime: "08:00 PM",
-    },
-  ]);
+interface DaySchedule {
+  enabled: boolean;
+  timeSlot: TimeSlot;
+}
 
-  const handleToggleAvailability = (index: number) => {
-    setAvailabilityOptions((prevOptions) => {
-      const updatedOptions = [...prevOptions];
-      updatedOptions[index].available = !updatedOptions[index].available;
-      return updatedOptions;
-    });
+interface WeeklySchedule {
+  [key: string]: DaySchedule;
+}
+
+const DEFAULT_START_TIME = "09:00";
+const DEFAULT_END_TIME = "20:00";
+const EMPTY_TIME = "--:--";
+
+const TimeSelect: React.FC<{
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+}> = ({ value, onChange, disabled }) => {
+  const times = [];
+  for (let hour = 0; hour < 24; hour++) {
+    for (let minute = 0; minute < 60; minute += 30) {
+      const timeString = `${hour.toString().padStart(2, "0")}:${minute
+        .toString()
+        .padStart(2, "0")}`;
+      times.push(timeString);
+    }
+  }
+
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      disabled={disabled}
+      className="p-2 rounded border bg-white dark:bg-gray-800 dark:border-gray-700 disabled:opacity-50"
+    >
+      <option value={EMPTY_TIME}>--:--</option>
+      {times.map((time) => (
+        <option key={time} value={time}>
+          {time}
+        </option>
+      ))}
+    </select>
+  );
+};
+
+const Calender = () => {
+  const [schedule, setSchedule] = useState<WeeklySchedule>({
+    Sunday: {
+      enabled: true,
+      timeSlot: { startTime: DEFAULT_START_TIME, endTime: DEFAULT_END_TIME },
+    },
+    Monday: {
+      enabled: false,
+      timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+    },
+    Tuesday: {
+      enabled: false,
+      timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+    },
+    Wednesday: {
+      enabled: false,
+      timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+    },
+    Thursday: {
+      enabled: false,
+      timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+    },
+    Friday: {
+      enabled: false,
+      timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+    },
+    Saturday: {
+      enabled: true,
+      timeSlot: { startTime: DEFAULT_START_TIME, endTime: DEFAULT_END_TIME },
+    },
+  });
+
+  const [saved, setSaved] = useState(false);
+
+  const toggleDay = (day: string) => {
+    setSchedule((prev) => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        enabled: !prev[day].enabled,
+        timeSlot: !prev[day].enabled
+          ? { startTime: DEFAULT_START_TIME, endTime: DEFAULT_END_TIME }
+          : { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+      },
+    }));
+    setSaved(false);
   };
 
-  const handleTimeChange = (
-    index: number,
-    field: "startTime" | "endTime",
+  const updateTime = (
+    day: string,
+    type: "startTime" | "endTime",
     value: string
   ) => {
-    setAvailabilityOptions((prevOptions) => {
-      const updatedOptions = [...prevOptions];
-      updatedOptions[index][field] = value;
-      return updatedOptions;
-    });
+    setSchedule((prev) => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        timeSlot: {
+          ...prev[day].timeSlot,
+          [type]: value,
+        },
+      },
+    }));
+    setSaved(false);
   };
 
-  const handleApplyToAll = (
-    available: boolean,
-    startTime: string,
-    endTime: string
-  ) => {
-    setAvailabilityOptions((prevOptions) =>
-      prevOptions.map((option) => ({
-        ...option,
-        available,
-        startTime,
-        endTime,
-      }))
-    );
+  const applyToAll = () => {
+    // Get all enabled days' schedules
+    const enabledSchedules = Object.entries(schedule)
+      .filter(([_, daySchedule]) => daySchedule.enabled)
+      .map(([_, daySchedule]) => daySchedule.timeSlot);
+
+    if (enabledSchedules.length === 0) return;
+
+    // Apply to all unchecked days
+    setSchedule((prev) => {
+      const newSchedule = { ...prev };
+      Object.keys(newSchedule).forEach((day) => {
+        if (!newSchedule[day].enabled) {
+          newSchedule[day] = {
+            ...newSchedule[day],
+            timeSlot: { ...enabledSchedules[0] }, // Apply the first enabled schedule
+          };
+        }
+      });
+      return newSchedule;
+    });
+    setSaved(false);
+  };
+
+  const handleSave = () => {
+    // Here you would typically make an API call to save the schedule
+    console.log("Saving schedule:", schedule);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
   };
 
   return (
-    <div className="min-h-screen bg-white p-4">
-      <div className="w-full max-w-2xl">
-        <h1 className="text-2xl font-semibold mb-6 text-black">
+    <Card className="w-full max-w-2xl">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-2xl font-bold">
+          <Clock className="w-6 h-6" />
           Set Your Availability
-        </h1>
-
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
         <div className="space-y-4">
-          {availabilityOptions.map((option, index) => (
-            <div key={option.day} className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
+          {Object.entries(schedule).map(([day, { enabled, timeSlot }]) => (
+            <div
+              key={day}
+              className="flex items-center space-x-4 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800"
+            >
+              <label className="flex items-center space-x-2 min-w-[120px]">
                 <input
                   type="checkbox"
-                  checked={option.available}
-                  onChange={() => handleToggleAvailability(index)}
-                  className="w-5 h-5 rounded"
+                  checked={enabled}
+                  onChange={() => toggleDay(day)}
+                  className="w-4 h-4 rounded border-gray-300"
                 />
-                <span className="text-gray-700 font-medium">{option.day}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <select
-                  value={option.startTime}
-                  onChange={(e) =>
-                    handleTimeChange(index, "startTime", e.target.value)
-                  }
-                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {[...Array(12).keys()].map((hour) => (
-                    <option
-                      key={hour}
-                      value={`${(hour + 1).toString().padStart(2, "0")}:00 AM`}
-                    >
-                      {hour + 1}:00 AM
-                    </option>
-                  ))}
-                  {[...Array(12).keys()].map((hour) => (
-                    <option
-                      key={hour + 12}
-                      value={`${(hour + 1).toString().padStart(2, "0")}:00 PM`}
-                    >
-                      {hour + 1}:00 PM
-                    </option>
-                  ))}
-                </select>
-                <span>-</span>
-                <select
-                  value={option.endTime}
-                  onChange={(e) =>
-                    handleTimeChange(index, "endTime", e.target.value)
-                  }
-                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {[...Array(12).keys()].map((hour) => (
-                    <option
-                      key={hour}
-                      value={`${(hour + 1).toString().padStart(2, "0")}:00 AM`}
-                    >
-                      {hour + 1}:00 AM
-                    </option>
-                  ))}
-                  {[...Array(12).keys()].map((hour) => (
-                    <option
-                      key={hour + 12}
-                      value={`${(hour + 1).toString().padStart(2, "0")}:00 PM`}
-                    >
-                      {hour + 1}:00 PM
-                    </option>
-                  ))}
-                </select>
+                <span className="font-medium">{day}</span>
+              </label>
+              <div className="flex items-center space-x-2 flex-1">
+                <TimeSelect
+                  value={timeSlot.startTime}
+                  onChange={(value) => updateTime(day, "startTime", value)}
+                  disabled={!enabled}
+                />
+                <span className="text-gray-500">-</span>
+                <TimeSelect
+                  value={timeSlot.endTime}
+                  onChange={(value) => updateTime(day, "endTime", value)}
+                  disabled={!enabled}
+                />
               </div>
             </div>
           ))}
         </div>
-
-        <div className="flex justify-between items-center mt-8">
-          <button className="bg-black text-white px-4 py-2 w-32 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-lg shadow-md">
-            Save
-          </button>
-          <button
-            onClick={() =>
-              handleApplyToAll(
-                availabilityOptions[0].available,
-                availabilityOptions[0].startTime,
-                availabilityOptions[0].endTime
-              )
-            }
-            className=" text-green-500 underline hover:text-greem-200 transition-colors font-semibold"
-          >
-            Apply To All
-          </button>
-        </div>
-      </div>
-    </div>
+      </CardContent>
+      <CardFooter className="flex justify-between items-center">
+        <Button
+          variant="default"
+          className="bg-black text-white hover:bg-gray-800"
+          onClick={handleSave}
+        >
+          Save Changes
+        </Button>
+        <Button
+          variant="ghost"
+          className="text-green-500 hover:text-green-600 hover:bg-green-50"
+          onClick={applyToAll}
+        >
+          Apply To All
+        </Button>
+      </CardFooter>
+      {saved && (
+        <Alert className="mt-4 bg-green-50 text-green-800 border-green-200">
+          <AlertDescription>
+            Your changes has been saved successfully!
+          </AlertDescription>
+        </Alert>
+      )}
+    </Card>
   );
 };
 

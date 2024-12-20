@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import {
   Calendar,
   MessageCircle,
-  Edit,
   LogOut,
   HomeIcon,
   Building2,
@@ -47,11 +46,6 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
     { name: "Payments", icon: <Wallet />, tab: "payments" },
     { name: "Profile", icon: <UserPen />, tab: "settings" },
   ];
-
-  const handleEditPage = () => {
-    // Placeholder for edit page functionality
-    alert("Edit Page functionality to be implemented");
-  };
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -139,17 +133,6 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
           <div className="p-8">{renderTabContent()}</div>
         </div>
       </div>
-      <button
-        onClick={handleEditPage}
-        className="fixed bottom-6 left-6 bg-black text-white 
-                   px-4 py-2 rounded-full shadow-lg 
-                   flex items-center space-x-2 
-                   hover:bg-gray-700 transition-colors 
-                   focus:outline-none focus:ring-2 focus:ring-gray-500"
-      >
-        <Edit className="w-5 h-5" />
-        <span>Edit Page</span>
-      </button>
     </div>
   );
 };
