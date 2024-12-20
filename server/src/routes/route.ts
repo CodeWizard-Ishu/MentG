@@ -3,7 +3,7 @@ import { login, signupMentee, signupMentor } from '../controllers/auth';
 import { topMentorOfDomain } from '../controllers/mentors/topMentors';
 import { getMentorData } from '../controllers/mentors/mentorDashboardData';
 import { getAllMeetings } from '../controllers/mentors/meetingsData';
-import { updateService } from '../controllers/mentors/mentorService';
+import { getServices, updateService } from '../controllers/mentors/mentorService';
 
 const router = express.Router();
 
@@ -16,5 +16,7 @@ router.get('/api/mentor/:id',getMentorData);
 router.get('/api/mentor/:id/meetings',getAllMeetings);
 
 router.put('/api/mentor/update/:mentorId',updateService);
+router.get('/api/mentor/services/:mentorId',getServices);
+
 
 export default router;

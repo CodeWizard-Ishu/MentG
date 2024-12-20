@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BACKEND_URL from "../endpoint";
 
 const domainOptions = [
@@ -23,10 +23,28 @@ const serviceOptions = [
 const Services: React.FC = () => {
   const [domain, setDomain] = useState<string>();
   const [service, setService] = useState<string[]>([]);
-  const userId = localStorage.getItem('userId');
-  
-  const handleSave = async () => {
+  const userId = localStorage.getItem("userId");
 
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch(
+          `${BACKEND_URL}/api/mentor/services/${userId}`
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setDomain(data.domain[0]); // Assuming only one domain is returned
+        setService(data.services);
+      } catch (error) {
+        console.error("Error fetching services:", error);
+      }
+    };
+    fetchServices();
+  }, [userId]);
+
+  const handleSave = async () => {
     if (!domain || service.length === 0) {
       alert("Please select a domain and at least one service.");
       return;
@@ -38,24 +56,28 @@ const Services: React.FC = () => {
     };
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/mentor/update/${userId}`, { // Replace with your actual URL
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `${BACKEND_URL}/api/mentor/update/${userId}`,
+        {
+          // Replace with your actual URL
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
       const data = await response.json();
-      console.log('Success:', data);
-      alert('Profile updated successfully!');
+      console.log("Success:", data);
+      alert("Profile updated successfully!");
     } catch (error) {
-      console.error('Error:', error);
-      alert('Failed to update profile.');
+      console.error("Error:", error);
+      alert("Failed to update profile.");
     }
   };
 
@@ -117,7 +139,10 @@ const Services: React.FC = () => {
 
       {/* Save Button */}
       <div className="flex justify-start mt-14">
-        <button onClick={handleSave} className="bg-black text-white px-4 py-2 w-32 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md">
+        <button
+          onClick={handleSave}
+          className="bg-black text-white px-4 py-2 w-32 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
+        >
           Save
         </button>
       </div>
