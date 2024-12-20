@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   MessageCircle,
   Award,
   Zap,
   Users,
   Star,
-  Calendar,
   Video,
   Monitor,
   BookOpen,
+  MessageCircleMore,
 } from "lucide-react";
 
 interface IParams {
@@ -20,6 +20,7 @@ const ProfilePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("sessions");
   const [serviceTab, setServiceTab] = useState<string>("");
   const { id } = useParams<IParams | any>();
+  const navigate = useNavigate();
 
   const profileData = {
     name: "Rahul Sharma",
@@ -40,24 +41,28 @@ const ProfilePage: React.FC = () => {
     ],
     services: [
       {
-        icon: Monitor,
-        title: "1:1 Mentorship",
+        icon: Video,
+        title: "1:1 Session",
         duration: "45 min",
-        price: "₹1,499",
+        price: "Free",
       },
       {
-        icon: Video,
+        icon: MessageCircleMore,
         title: "Priority DM",
         duration: "60 min",
-        price: "₹2,499",
+        price: "Free",
       },
       {
-        icon: Calendar,
+        icon: Monitor,
         title: "Webinar",
         duration: "30 min",
-        price: "₹999",
+        price: "Free",
       },
     ],
+  };
+
+  const handleBook = () => {
+    navigate("/booking");
   };
 
   return (
@@ -78,7 +83,6 @@ const ProfilePage: React.FC = () => {
         <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl grid grid-cols-3 overflow-hidden">
           {/* Sidebar Profile Section */}
           <div className="col-span-1 bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-8 relative">
-            
             {/*Share button and heart like button */}
             {/* <div className="absolute top-6 right-6 flex space-x-3">
               <button className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition-colors">
@@ -179,7 +183,7 @@ const ProfilePage: React.FC = () => {
                       <button
                         key={service.title}
                         onClick={() => setServiceTab(service.title)}
-                        className={`flex items-center justify-between bg-sky-100 w-full p-4 rounded-xl  transition-colors ${
+                        className={`flex items-center justify-between w-full p-4 rounded-xl  transition-colors ${
                           serviceTab === service.title
                             ? "bg-indigo-500 text-black"
                             : "bg-sky-100"
@@ -209,6 +213,7 @@ const ProfilePage: React.FC = () => {
                     <button
                       disabled={serviceTab ? false : true}
                       className="w-full bg-black text-white py-4 rounded-xl flex items-center justify-center space-x-3 hover:bg-gray-700 disabled:opacity-50"
+                      onClick={handleBook}
                     >
                       <MessageCircle className="w-6 h-6" />
                       <span className="font-semibold text-lg">
