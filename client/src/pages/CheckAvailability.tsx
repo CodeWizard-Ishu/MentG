@@ -26,7 +26,7 @@ type AvailabilityProps = {
 
 const CheckAvailability: React.FC<AvailabilityProps> = ({
   onSubmit = (date, timeSlot) => console.log("Booking:", { date, timeSlot }),
-  maxBookingDays = 90, // Extended to 90 days by default
+  maxBookingDays = 30, // Extended to 30 days by default
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | null>(
