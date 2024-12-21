@@ -62,7 +62,7 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleBook = () => {
-    navigate("/booking");
+    navigate("/availability");
   };
 
   return (
