@@ -5,29 +5,29 @@ import { ChevronDown } from "lucide-react";
 interface DropdownOption {
   label: string;
   value: string;
-  content: React.ReactNode;
 }
 
 interface DynamicDropdownProps {
   options: DropdownOption[];
   placeholder?: string;
   className?: string;
+  onChange: (value: string) => void; // Add onChange prop type
 }
 
 const Dropdown: React.FC<DynamicDropdownProps> = ({
   options,
   placeholder = "Select an option",
   className = "",
+  onChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<DropdownOption | null>(
-    null
-  );
+  const [selectedOption, setSelectedOption] = useState<DropdownOption | null>(null);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleOptionSelect = (option: DropdownOption) => {
     setSelectedOption(option);
+    onChange(option.value); // Call onChange with the selected value
     setIsOpen(false);
   };
 
@@ -54,7 +54,7 @@ const Dropdown: React.FC<DynamicDropdownProps> = ({
         {isOpen && (
           <div
             className="absolute z-10 mt-1 w-full bg-white 
-          border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+            border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
           >
             {options.map((option) => (
               <div
@@ -68,10 +68,6 @@ const Dropdown: React.FC<DynamicDropdownProps> = ({
             ))}
           </div>
         )}
-      </div>
-      <div>
-        {/* Selected Option Content */}
-        {selectedOption && <div className="mt-12">{selectedOption.content}</div>}
       </div>
     </div>
   );

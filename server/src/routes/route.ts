@@ -5,6 +5,7 @@ import { getMentorData } from '../controllers/mentors/mentorDashboardData';
 import { getAllMeetings } from '../controllers/mentors/meetingsData';
 import { getServices, updateService } from '../controllers/mentors/mentorService';
 import { getAvailability, updateAvailability } from '../controllers/mentors/mentorAvailablity';
+import { getMentors } from '../controllers/mentee/menteeDashboard';
 
 const router = express.Router();
 
@@ -21,5 +22,7 @@ router.get('/api/mentor/services/:mentorId',getServices);
 
 router.post('/api/mentor/updateAvailability',updateAvailability);
 router.get('/api/mentor/getAvailability/:mentorId',getAvailability);
+
+router.get('/api/mentee/getMentors',getMentors);
 
 export default router;
