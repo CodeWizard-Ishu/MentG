@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
 import {
   Card,
@@ -9,6 +9,7 @@ import {
 } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Alert, AlertDescription } from "../components/ui/alert";
+import BACKEND_URL from "../endpoint";
 
 interface TimeSlot {
   startTime: string;
@@ -62,10 +63,6 @@ const TimeSelect: React.FC<{
 
 const Calender = () => {
   const [schedule, setSchedule] = useState<WeeklySchedule>({
-    Sunday: {
-      enabled: true,
-      timeSlot: { startTime: DEFAULT_START_TIME, endTime: DEFAULT_END_TIME },
-    },
     Monday: {
       enabled: false,
       timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
@@ -87,12 +84,87 @@ const Calender = () => {
       timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
     },
     Saturday: {
-      enabled: true,
-      timeSlot: { startTime: DEFAULT_START_TIME, endTime: DEFAULT_END_TIME },
+      enabled: false,
+      timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+    },
+    Sunday: {
+      enabled: false,
+      timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
     },
   });
 
   const [saved, setSaved] = useState(false);
+  const userId = localStorage.getItem("userId");
+
+  const fetchAvailability = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/mentor/getAvailability/${userId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch availability");
+      }
+  
+      const responseData = await response.json();
+      console.log("Raw response data:", responseData);
+  
+      const data = responseData.data; // Adjust based on the actual structure of responseData
+      console.log("Processed data array:", data);
+  
+      if (!Array.isArray(data)) {
+        throw new Error("Expected an array in the 'data' field of the response.");
+      }
+  
+      const newSchedule: WeeklySchedule = {
+        Monday: {
+          enabled: false,
+          timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+        },
+        Tuesday: {
+          enabled: false,
+          timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+        },
+        Wednesday: {
+          enabled: false,
+          timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+        },
+        Thursday: {
+          enabled: false,
+          timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+        },
+        Friday: {
+          enabled: false,
+          timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+        },
+        Saturday: {
+          enabled: false,
+          timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+        },
+        Sunday: {
+          enabled: false,
+          timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+        },
+      };
+  
+      data.forEach(({ dayOfWeek, startTime, endTime }) => {
+        const day = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1).toLowerCase();
+        newSchedule[day] = {
+          enabled: true,
+          timeSlot: {
+            startTime: startTime.split("T")[1].slice(0, 5),
+            endTime: endTime.split("T")[1].slice(0, 5),
+          },
+        };
+      });
+  
+      setSchedule(newSchedule);
+    } catch (err) {
+      console.error("Error fetching availability:", err);
+    }
+  };
+  
+  useEffect(() => {
+    fetchAvailability();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleDay = (day: string) => {
     setSchedule((prev) => ({
@@ -113,23 +185,40 @@ const Calender = () => {
     type: "startTime" | "endTime",
     value: string
   ) => {
-    setSchedule((prev) => ({
-      ...prev,
-      [day]: {
-        ...prev[day],
-        timeSlot: {
-          ...prev[day].timeSlot,
-          [type]: value,
+    setSchedule((prev) => {
+      const currentDaySchedule = prev[day];
+
+      // Validate end time is after start time
+      if (
+        type === "endTime" &&
+        value !== EMPTY_TIME &&
+        currentDaySchedule.timeSlot.startTime !== EMPTY_TIME &&
+        value <= currentDaySchedule.timeSlot.startTime
+      ) {
+        alert("End time must be after start time.");
+        return prev; // Return previous state if validation fails
+      }
+
+      return {
+        ...prev,
+        [day]: {
+          ...currentDaySchedule,
+          timeSlot: {
+            ...currentDaySchedule.timeSlot,
+            [type]: value,
+          },
         },
-      },
-    }));
+      };
+    });
     setSaved(false);
   };
 
   const applyToAll = () => {
     // Get all enabled days' schedules
     const enabledSchedules = Object.entries(schedule)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .filter(([_, daySchedule]) => daySchedule.enabled)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .map(([_, daySchedule]) => daySchedule.timeSlot);
 
     if (enabledSchedules.length === 0) return;
@@ -150,11 +239,42 @@ const Calender = () => {
     setSaved(false);
   };
 
-  const handleSave = () => {
-    // Here you would typically make an API call to save the schedule
-    console.log("Saving schedule:", schedule);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+  const handleSave = async () => {
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/mentor/updateAvailability`,
+        {
+          // Adjust the URL as needed
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mentorId: userId, // Replace with actual mentor ID
+            availability: Object.entries(schedule).map(
+              ([day, { enabled, timeSlot }]) => ({
+                dayOfWeek: day.toUpperCase(), // Convert day to uppercase to match enum
+                enabled,
+                timeSlot,
+              })
+            ),
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+      console.log("Schedule saved successfully:", result);
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000); // Reset saved state after a short delay
+    } catch (error) {
+      console.error("Error saving schedule:", error);
+      alert("Failed to save schedule. Please try again.");
+    }
   };
 
   return (
@@ -217,7 +337,7 @@ const Calender = () => {
       {saved && (
         <Alert className="mt-4 bg-green-50 text-green-800 border-green-200">
           <AlertDescription>
-            Your changes has been saved successfully!
+            Your changes have been saved successfully!
           </AlertDescription>
         </Alert>
       )}
