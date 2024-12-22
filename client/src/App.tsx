@@ -9,6 +9,7 @@ import MentorDashboard from "./Mentor/MentorDashboard";
 import MenteeDashboard from "./Mentee/MenteeDashboard";
 import BookingPage from "./pages/BookingPage";
 import CheckAvailability from "./pages/CheckAvailability";
+import AboutUs from "./pages/AboutUs";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(() => {
@@ -49,6 +50,7 @@ function App() {
         <Route path="/profile/:userId" element={<ProfilePage/>}/>
         <Route path="/availability" element={<CheckAvailability/>}/>
         <Route path="/booking" element={<BookingPage/>}/>
+        <Route path="/about" element={<AboutUs/>}/>
       </Routes>
     </Router>
   );

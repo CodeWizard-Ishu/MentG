@@ -12,6 +12,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import ProfileCard from "../components/ui/ProfileCard";
+import ScrollToTop from "../components/ScrollToTop";
 
 interface LandingPageProps {
   loggedIn: boolean;
@@ -294,9 +295,11 @@ const LandingPage: React.FC<LandingPageProps> = ({
               Discover opportunities, gain insights, and accelerate your growth
             </p>
             <div className="flex justify-center space-x-4">
-              <button className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition flex items-center">
-                Get Started <ChevronRight className="ml-2" />
-              </button>
+              <a href="#">
+                <button className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition flex items-center">
+                  Get Started <ChevronRight className="ml-2" />
+                </button>
+              </a>
             </div>
           </div>
         </section>
@@ -347,6 +350,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </div>
       </footer>
+      <ScrollToTop />
     </div>
   );
 };
