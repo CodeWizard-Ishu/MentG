@@ -10,6 +10,7 @@ const getMentorsOfDomain = async (domain:any, page:any, limit:any) => {
         });
 
         if (!domainRecord) {
+            console.error(`Domain not found: ${domain}`);
             throw new Error('Domain not found');
         }
 
@@ -23,7 +24,7 @@ const getMentorsOfDomain = async (domain:any, page:any, limit:any) => {
                 },
             },
             include: {
-                user: true, // Include user details if needed
+                user: true,
             },
             skip: (page - 1) * limit,
             take: Number(limit),
@@ -45,18 +46,19 @@ const getMentorsOfDomain = async (domain:any, page:any, limit:any) => {
             currentPage: Number(page),
         };
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching mentors:', error);
         throw new Error('Server Error');
     }
 };
 
 // API Endpoint to fetch mentors by domain with pagination
-export const getMentors =  async (req:any, res:any) => {
+export const getMentors = async (req:any, res:any) => {
     const { domain, page = 1, limit = 20 } = req.query;
     try {
         const result = await getMentorsOfDomain(domain, page, limit);
         res.json(result);
     } catch (error:any) {
+        console.error('API Error:', error);
         res.status(500).json({ message: error.message });
     }
 };
