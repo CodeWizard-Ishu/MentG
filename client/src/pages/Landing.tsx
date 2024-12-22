@@ -171,7 +171,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
                 placeholder="Find experts by name, category, or skill"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
               />
               <button
                 type="submit"
