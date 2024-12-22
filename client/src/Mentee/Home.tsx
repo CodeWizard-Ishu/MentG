@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import ProfileCard from "../components/ui/ProfileCard";
 import Dropdown from "../components/ui/Dropdown";
 import BACKEND_URL from "../endpoint";
@@ -9,7 +10,6 @@ const Home: React.FC = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedDomain, setSelectedDomain] = useState("");
 
-  // Define dropdown options without content property
   const options = [
     { label: "Technology", value: "Technology" },
     { label: "Business", value: "Business" },
@@ -45,6 +45,19 @@ const Home: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDomain, currentPage]);
 
+  // Pagination controls
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <h1 className="text-2xl font-semibold mb-12">Choose your Domain</h1>
@@ -56,30 +69,58 @@ const Home: React.FC = () => {
           setCurrentPage(1); // Reset to first page on new selection
         }}
       />
-      <br/>
-      <div className="grid md:grid-cols-5 gap-8">
+      <br />
+
+      <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-8">
         {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           mentors.map((mentor: any) => (
-            <ProfileCard
-              key={mentor.id} // Use mentor ID as key
-              name={`${mentor.user.firstName} ${mentor.user.lastName}`}
-              imageUrl={
-                mentor.profilePicture || "https://i.ibb.co/tPzj54M/logo.png"
-              }
-              desc={mentor.bio || "No description available."}
-            />
+            <Link
+              to={`/profile/${mentor.userId}`}
+              style={{ textDecoration: "none" }}
+            >
+              <ProfileCard
+                key={mentor.id}
+                name={`${mentor.user.firstName} ${mentor.user.lastName}`}
+                imageUrl={
+                  mentor.profilePicture || "https://i.ibb.co/tPzj54M/logo.png"
+                }
+                desc={mentor.bio || "No description available."}
+              />
+            </Link>
           ))
         }
       </div>
-      <br/>
-      <div className="pagination mt-3">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button key={index + 1} onClick={() => setCurrentPage(index + 1)}>
-            {index + 1}
+
+      <br />
+
+      {/* Conditional Rendering of Pagination Controls */}
+      {selectedDomain && totalPages > 0 && (
+        <div className="flex justify-between items-center mt-4">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200"
+          >
+            {"< Previous"}
           </button>
-        ))}
-      </div>
+
+          <span>
+            Page{" "}
+            <strong>
+              {currentPage} of {totalPages}
+            </strong>
+          </span>
+
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage >= totalPages}
+            className="px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200"
+          >
+            {"Next >"}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
