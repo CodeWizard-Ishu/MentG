@@ -10,6 +10,11 @@ import {
   CheckCircle,
   Search,
   ArrowRight,
+  MapPin,
+  Linkedin,
+  Facebook,
+  Twitter,
+  Instagram,
 } from "lucide-react";
 import ProfileCard from "../components/ui/ProfileCard";
 import ScrollToTop from "../components/ScrollToTop";
@@ -183,12 +188,16 @@ const LandingPage: React.FC<LandingPageProps> = ({
           </form>
 
           <div className="flex justify-center space-x-4">
-            <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition">
-              Start Exploring
-            </button>
-            <button className="border border-gray-400 text-black px-6 py-3 rounded-lg hover:border-black transition">
-              Learn More
-            </button>
+            <a href="/all-mentors">
+              <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition">
+                Start Exploring
+              </button>
+            </a>
+            <a href="#benefits">
+              <button className="border border-gray-400 text-black px-6 py-3 rounded-lg hover:border-black transition">
+                Learn More
+              </button>
+            </a>
           </div>
 
           {/* Quick Category Links */}
@@ -239,7 +248,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
         </section>
 
         {/* Benefits Section */}
-        <section className="bg-sky-200 py-16 rounded-2xl">
+        <section id="benefits" className="bg-sky-200 py-16 rounded-2xl">
           <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
             <div className="md:w-1/2">
               <h2 className="text-3xl font-bold mb-6">
@@ -306,50 +315,106 @@ const LandingPage: React.FC<LandingPageProps> = ({
       </div>
 
       {/* Footer */}
+
       <footer className="bg-black text-white py-12">
-        <div className="container mx-auto px-4 grid md:grid-cols-4 gap-8">
-          <div>
-            <h4 className="font-bold mb-4">Platform</h4>
-            <ul className="space-y-2">
-              {["How it Works", "Features", "Pricing"].map((link, index) => (
-                <li key={index}>
-                  <a href="#">{link}</a>
-                </li>
-              ))}
-            </ul>
+        <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
+          <div className="md:flex md:justify-between">
+            <div className="mb-6 md:mb-0">
+              <a href="/" className="flex items-center">
+                <img
+                  src="https://i.ibb.co/B4LTdRP/logo-light.png"
+                  className="h-12 me-3"
+                  alt="MentG Logo"
+                />
+                <span className="self-center text-3xl font-semibold whitespace-nowrap">
+                  MentG
+                </span>
+              </a>
+              <address className="text-gray-500 not-italic mt-9">
+                <MapPin size={28} className="mb-2" /> Navi Mumbai, Maharashtra
+                <br />
+                India
+              </address>
+            </div>
+            <div className="grid grid-cols-2 gap-8 sm:gap-20 sm:grid-cols-2">
+              <div>
+                <h2 className="mb-6 text-sm font-semibold uppercase">
+                  Company
+                </h2>
+                <ul className="text-gray-500 font-medium">
+                  <li className="mb-4">
+                    <a href="/about" className="hover:underline">
+                      About
+                    </a>
+                  </li>
+                  <li className="mb-4">
+                    <a href="#" className="hover:underline">
+                      Contact Us
+                    </a>
+                  </li>
+                  <li className="mb-4">
+                    <a href="#" className="hover:underline">
+                      Privacy Policy
+                    </a>
+                  </li>
+                  <li className="mb-4">
+                    <a href="#" className="hover:underline">
+                      Terms & Conditions
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h2 className="mb-6 text-sm font-semibold uppercase">
+                  Platform
+                </h2>
+                <ul className="text-gray-500 font-medium">
+                  <li className="mb-4">
+                    <a href="#" className="hover:underline ">
+                      Pricing
+                    </a>
+                  </li>
+                  <li className="mb-4">
+                    <a href="#" className="hover:underline">
+                      Blog
+                    </a>
+                  </li>
+                  <li className="mb-4">
+                    <a href="#" className="hover:underline">
+                      Community
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <div>
-            <h4 className="font-bold mb-4">Company</h4>
-            <ul className="space-y-2">
-              {["About Us", "Careers"].map((link, index) => (
-                <li key={index}>
-                  <a href="#">{link}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold mb-4">Resources</h4>
-            <ul className="space-y-2">
-              {["Blog", "Help Center", "Community"].map((link, index) => (
-                <li key={index}>
-                  <a href="#">{link}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold mb-4">Connect</h4>
-            <ul className="space-y-2">
-              {["Contact", "Support"].map((link, index) => (
-                <li key={index}>
-                  <a href="#">{link}</a>
-                </li>
-              ))}
-            </ul>
+          <hr className="my-6 border-gray-200 sm:mx-auto lg:my-8" />
+          <div className="sm:flex sm:items-center sm:justify-between">
+            <span className="text-sm text-gray-500 sm:text-center">
+              © 2024{" "}
+              <a href="/" className="hover:underline">
+                MentG™
+              </a>
+              . All Rights Reserved.
+            </span>
+            <div className="flex mt-4 sm:justify-center sm:mt-0 space-x-6">
+              <a href="https://www.linkedin.com/company/mentg/">
+                <Linkedin />
+              </a>
+              <a href="#">
+                <Instagram />
+              </a>
+              <a href="#">
+                <Facebook />
+              </a>
+              <a href="#">
+                <Twitter />
+              </a>
+            </div>
           </div>
         </div>
       </footer>
+
       <ScrollToTop />
     </div>
   );

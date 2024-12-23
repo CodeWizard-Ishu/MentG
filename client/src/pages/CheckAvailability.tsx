@@ -120,7 +120,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
 
   return (
     <div className="min-h-screen bg-sky-100">
-      <header className="top-0 z-50 bg-sky-100 backdrop-blur-md flex justify-between items-center p-6 shadow-md">
+      <header className="sticky top-0 z-50  backdrop-blur-md flex justify-between items-center p-6 shadow-md">
         <div>
           <a href="/" className="flex items-center">
             <img
