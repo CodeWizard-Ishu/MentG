@@ -1,69 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  MessageCircle,
-  Award,
-  Zap,
-  Users,
-  Star,
-  Video,
-  Monitor,
-  BookOpen,
-  MessageCircleMore,
-} from "lucide-react";
+import { MessageCircle, Zap, Users, Star, Video } from "lucide-react";
+import BACKEND_URL from "../endpoint";
 
-interface IParams {
+interface Services {
+  name: string;
   id: number;
+  description: string;
 }
 
 const ProfilePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("sessions");
   const [serviceTab, setServiceTab] = useState<string>("");
-  const { id } = useParams<IParams | any>();
+  const { userId } = useParams();
   const navigate = useNavigate();
+  const [services, setServices] = useState<Services[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [profileData, setProfileData] = useState<any>(null);
 
-  const profileData = {
-    name: "Rahul Sharma",
-    username: "@rahulsharma",
-    headline: "Tech Entrepreneur | Product Strategy Consultant",
-    description:
-      "Ex-Google PM with a decade of experience in transforming innovative ideas into successful digital products. Passionate about helping startups navigate complex technological landscapes and achieve sustainable growth.",
-    NumberOfMentees: 2450,
-    rating: 4.8,
-    NumberOfSession: 15670,
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await fetch(
+          `${BACKEND_URL}/api/data/mentor/${userId}`
+        );
+        if (!response.ok) throw new Error("Network response was not ok");
+        const data = await response.json();
 
-    expertise: [
-      "Product Strategy",
-      "Tech Innovation",
-      "Startup Consulting",
-      "Digital Transformation",
-      "Agile Methodologies",
-    ],
-    services: [
-      {
-        icon: Video,
-        title: "1:1 Session",
-        duration: "45 min",
-        price: "Free",
-      },
-      {
-        icon: MessageCircleMore,
-        title: "Priority DM",
-        duration: "60 min",
-        price: "Free",
-      },
-      {
-        icon: Monitor,
-        title: "Webinar",
-        duration: "30 min",
-        price: "Free",
-      },
-    ],
-  };
+        // Set profile data and services
+        setProfileData(data);
+        setServices(data.services);
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    };
+
+    fetchProfileData();
+  }, [userId]);
 
   const handleBook = () => {
     navigate("/availability");
   };
+
+  if (!profileData) {
+    return <div>Loading...</div>; // Handle loading state
+  }
 
   return (
     <div className="min-h-screen bg-sky-100">
@@ -79,46 +60,38 @@ const ProfilePage: React.FC = () => {
           </a>
         </div>
       </header>
+
       <div className="min-h-screen flex justify-center items-center">
         <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl grid grid-cols-3 overflow-hidden">
           {/* Sidebar Profile Section */}
           <div className="col-span-1 bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-8 relative">
-            {/*Share button and heart like button */}
-            {/* <div className="absolute top-6 right-6 flex space-x-3">
-              <button className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition-colors">
-                <Share2 className="w-6 h-6 text-white" />
-              </button>
-              <button className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition-colors">
-                <Heart className="w-6 h-6 text-white" />
-              </button>
-            </div> */}
-
             <div className="flex flex-col items-center">
               <img
                 src="https://img.freepik.com/free-photo/portrait-handsome-hipster-man-glasses-3d-rendering_1142-51612.jpg?t=st=1733590809~exp=1733594409~hmac=9e08d769b04a2fdaf8018054b9eabb4bd1bb0fc810193338363431e4b0f3707c&w=740"
-                //   src="/api/placeholder/200/200"
                 alt="Profile"
                 className="w-36 h-36 rounded-full border-4 border-white/30 mb-6 shadow-lg"
               />
-              <h1 className="text-2xl font-bold mb-2">{profileData.name}</h1>
-              <p className="text-sm text-purple-200 mb-4">
-                {profileData.username}
-              </p>
-              <p className="text-center text-sm text-purple-100 mb-6">
-                {profileData.headline}
-              </p>
+
+              <h1 className="text-2xl font-bold mb-2">
+                {profileData.fullName}
+              </h1>
+              <p className="text-sm text-purple-200 mb-4">{profileData.bio}</p>
 
               <div className="grid grid-cols-3 gap-4 w-full text-center mb-6">
                 {[
                   {
                     icon: Users,
-                    value: profileData.NumberOfMentees,
+                    value: profileData.uniqueMentees,
                     label: "Mentees Guided",
                   },
-                  { icon: Star, value: profileData.rating, label: "Rating" },
+                  {
+                    icon: Star,
+                    value: profileData.averageRating,
+                    label: "Rating",
+                  },
                   {
                     icon: Zap,
-                    value: profileData.NumberOfSession,
+                    value: profileData.completedSessions,
                     label: "Sessions Taken",
                   },
                 ].map((stat) => (
@@ -133,20 +106,22 @@ const ProfilePage: React.FC = () => {
                   </div>
                 ))}
               </div>
-
-              <div className="border-t pt-4">
-                <h3 className="text-lg font-semibold mb-3">Expertise</h3>
-                <div className="flex flex-wrap gap-2">
-                  {profileData.expertise.map((skill) => (
-                    <span
-                      key={skill}
-                      className="bg-indigo-50 text-indigo-700 text-xs px-3 py-1 rounded-full"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            </div>
+            <div className="border-t pt-4">
+              {" "}
+              <h3 className="text-lg font-semibold mb-3">Expertise</h3>{" "}
+              <div className="flex flex-wrap gap-2">
+                {" "}
+                {services.map((service) => (
+                  <span
+                    key={service.id}
+                    className="bg-indigo-50 text-indigo-700 text-xs px-3 py-1 rounded-full"
+                  >
+                    {" "}
+                    {service.name}{" "}
+                  </span>
+                ))}{" "}
+              </div>{" "}
             </div>
           </div>
 
@@ -178,40 +153,42 @@ const ProfilePage: React.FC = () => {
                   <h2 className="text-xl font-bold text-gray-800 mb-6">
                     Available Services
                   </h2>
-                  {profileData.services.map((service) => (
-                    <div className="mb-8 space-y-4">
-                      <button
-                        key={service.title}
-                        onClick={() => setServiceTab(service.title)}
-                        className={`flex items-center justify-between w-full p-4 rounded-xl  transition-colors ${
-                          serviceTab === service.title
-                            ? "bg-indigo-500 text-black"
-                            : "bg-sky-100"
-                        }`}
-                      >
-                        <div className="flex items-center space-x-4">
-                          <div className="bg-indigo-100 p-3 rounded-full">
-                            <service.icon className="w-6 h-6 text-black" />
-                          </div>
-                          <div>
-                            <h3 className="text-sm font-semibold text-black">
-                              {service.title}
-                            </h3>
-                            <p className="text-xs text-black">
-                              {service.duration}
-                            </p>
-                          </div>
-                        </div>
-                        <span className="font-semibold text-black">
-                          {service.price}
-                        </span>
-                      </button>
-                    </div>
-                  ))}
 
+                  {services &&
+                    services.map((service) => (
+                      <div key={service.id} className="mb-8 space-y-4">
+                        <button
+                          onClick={() => setServiceTab(service.name)}
+                          className={`flex items-center justify-between w-full p-4 rounded-xl transition-colors ${
+                            serviceTab === service.name
+                              ? "bg-indigo-500 text-black"
+                              : "bg-sky-100"
+                          }`}
+                        >
+                          <div className="flex items-center space-x-4">
+                            <div className="bg-indigo-100 p-3 rounded-full">
+                              <Video className="w-6 h-6 text-black" />
+                            </div>
+                            <div className="text-left">
+                              {" "}
+                              {/* Added text-left for left alignment */}
+                              <h3 className="text-sm font-semibold text-black">
+                                {service.name}
+                              </h3>
+                              <p className="text-xs text-black">
+                                {service.description}
+                              </p>
+                            </div>
+                          </div>
+                          <span className="font-semibold text-black">Free</span>
+                        </button>
+                      </div>
+                    ))}
+
+                  {/* Book Session Button */}
                   <div className="p-8">
                     <button
-                      disabled={serviceTab ? false : true}
+                      disabled={!serviceTab}
                       className="w-full bg-black text-white py-4 rounded-xl flex items-center justify-center space-x-3 hover:bg-gray-700 disabled:opacity-50"
                       onClick={handleBook}
                     >
@@ -227,26 +204,9 @@ const ProfilePage: React.FC = () => {
               {activeTab === "about" && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-800 mb-4">
-                    Professional Journey
+                    Bio
                   </h2>
-                  <p className="text-gray-600 mb-6">
-                    {profileData.description}
-                  </p>
-                  <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                      Key Highlights
-                    </h3>
-                    <ul className="space-y-2 text-gray-600">
-                      <li className="flex items-center space-x-2">
-                        <Award className="w-5 h-5 text-indigo-600" />
-                        <span>10+ years of product management experience</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <BookOpen className="w-5 h-5 text-indigo-600" />
-                        <span>Worked with multiple successful startups</span>
-                      </li>
-                    </ul>
-                  </div>
+                  {profileData.bio}
                 </div>
               )}
 
@@ -256,8 +216,6 @@ const ProfilePage: React.FC = () => {
                 </div>
               )}
             </div>
-
-            {/* Book Session Button */}
           </div>
         </div>
       </div>

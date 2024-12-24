@@ -7,7 +7,10 @@ import { getServices, updateService } from '../controllers/mentors/mentorService
 import { getAvailability, updateAvailability } from '../controllers/mentors/mentorAvailablity';
 import { getMentors } from '../controllers/mentee/menteeDashboard';
 import { getAllMenteeMeetings } from '../controllers/mentee/meetingsData';
+import { getPrismaClient } from "../prisma";
+import { getProfileData } from '../controllers/mentors/mentorProfile';
 
+const prisma = getPrismaClient();
 const router = express.Router();
 
 router.post('/auth/signup/mentor',signupMentor);
@@ -26,5 +29,7 @@ router.get('/api/mentor/getAvailability/:mentorId',getAvailability);
 
 router.get('/api/mentee/getMentors',getMentors);
 router.get('/api/mentee/:id/meetings',getAllMenteeMeetings);
+
+router.get('/api/data/mentor/:id',getProfileData);
 
 export default router;
