@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
-  Star,
-  Zap,
   Linkedin,
   Instagram,
   Facebook,
   Twitter,
   MapPin,
   Earth,
+  Sparkles,
+  Users,
 } from "lucide-react";
 
 interface AboutUsProps {
@@ -76,11 +76,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen pt-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#4ECDC4]/5 to-transparent" />
-        <div className="absolute top-9 right-10 w-64 h-64 rounded-full bg-[#FFD93D]/20" />
-        <div className="absolute bottom-1/4 left-10 w-96 h-96 rounded-full bg-[#FF6B6B]/20" />
-
+      <section className="relative min-h-screen pt-12">
         <div className="relative max-w-7xl mx-auto px-6 ">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -88,13 +84,13 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                 Navigating Success
                 <span className="block text-yellow-700">Together</span>
               </h1>
-              <p className="text-xl text-gray-600 mb-12 leading-relaxed">
+              <p className="text-lg text-gray-600 mb-12 leading-relaxed">
                 We connects individuals with experts for personalized guidance,
                 fostering growth and success through mentorship.
               </p>
               <div className="flex gap-6">
                 <a href="/">
-                  <button className="px-8 py-4 bg-[#000000] text-white rounded-xl font-medium hover:scale-105 transition-transform shadow-lg shadow-[#FF6B6B]/20">
+                  <button className="px-8 py-4 bg-[#000000] text-white rounded-xl font-medium hover:scale-105 transition-transform shadow-lg shadow-[#000000]/20">
                     Get Started
                   </button>
                 </a>
@@ -135,13 +131,13 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
             {[
               {
                 title: "Collaboration",
-                icon: <Zap className="w-6 h-6" />,
+                icon: <Users className="w-6 h-6" />,
                 color: "#FF6B6B",
                 desc: "Empowering professionals to seamlessly connect and collaborate with mentees",
               },
               {
                 title: "Ease Of Use",
-                icon: <Star className="w-6 h-6" />,
+                icon: <Sparkles className="w-6 h-6" />,
                 color: "#4ECDC4",
                 desc: "Built for simplicity and efficiency to ensure an intuitive experience for mentors and mentees",
               },
@@ -186,7 +182,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
             </h2>
           </div>
           <div className="grid md:grid-cols-4 gap-8">
-            <div className="bg-white rounded-2xl p-8 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
+            <div className="bg-white rounded-2xl p-6 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
               <div className="relative mb-8">
                 <div className="aspect-square rounded-2xl overflow-hidden mb-6">
                   <img
@@ -201,7 +197,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
               </h3>
               <p className="text-blue-900">CEO & Founder</p>
             </div>
-            <div className="bg-white rounded-2xl p-8 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
+            <div className="bg-white rounded-2xl p-6 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
               <div className="relative mb-8">
                 <div className="aspect-square rounded-2xl overflow-hidden mb-6">
                   <img
@@ -216,7 +212,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
               </h3>
               <p className="text-blue-900">Co-Founder</p>
             </div>
-            <div className="bg-white rounded-2xl p-8 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
+            <div className="bg-white rounded-2xl p-6 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
               <div className="relative mb-8">
                 <div className="aspect-square rounded-2xl overflow-hidden mb-6">
                   <img
@@ -231,7 +227,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
               </h3>
               <p className="text-blue-900">Tech</p>
             </div>
-            <div className="bg-white rounded-2xl p-8 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
+            <div className="bg-white rounded-2xl p-6 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
               <div className="relative mb-8">
                 <div className="aspect-square rounded-2xl overflow-hidden mb-6">
                   <img

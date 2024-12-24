@@ -17,7 +17,7 @@ import {
   Instagram,
 } from "lucide-react";
 import ProfileCard from "../components/ui/ProfileCard";
-import ScrollToTop from "../components/ScrollToTop";
+import ScrollToTop from "../components/ui/ScrollToTop";
 
 interface LandingPageProps {
   loggedIn: boolean;
@@ -157,7 +157,8 @@ const LandingPage: React.FC<LandingPageProps> = ({
       <div className="container mx-auto px-4">
         <main className="container mx-auto px-4 pt-16 text-center">
           <h1 className="text-6xl font-bold text-gray-900 mb-6">
-            Connect with Top Professionals Instantly
+            Connect with Top
+            <span className="text-yellow-700"> Professionals</span> Instantly
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
             Book personalized consultation sessions with experts from tech,
