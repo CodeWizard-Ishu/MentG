@@ -107,6 +107,23 @@ const ProfilePage: React.FC = () => {
                 ))}
               </div>
             </div>
+            <div className="border-t pt-4 pb-4">
+              <span className="text-lg font-semibold mb-3">Domain : </span>
+              <span className="text-xs">
+                {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  profileData.domains.map((domain: any, idx: any) => (
+                    <span
+                      key={idx}
+                      className="bg-indigo-50 text-indigo-700 text-xs mx-2 px-3 py-1 rounded-full"
+                    >
+                      {domain}
+                    </span>
+                  ))
+                }
+              </span>
+            </div>
+
             <div className="border-t pt-4">
               {" "}
               <h3 className="text-lg font-semibold mb-3">Expertise</h3>{" "}
@@ -203,9 +220,7 @@ const ProfilePage: React.FC = () => {
 
               {activeTab === "about" && (
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">
-                    Bio
-                  </h2>
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">Bio</h2>
                   {profileData.bio}
                 </div>
               )}
