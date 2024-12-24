@@ -50,7 +50,7 @@ function App() {
         <Route path="/profile/:userId" element={<ProfilePage/>}/>
         <Route path="/availability" element={<CheckAvailability/>}/>
         <Route path="/booking" element={<BookingPage/>}/>
-        <Route path="/about" element={<AboutUs/>}/>
+        <Route path="/about" element={<AboutUs loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout}/>}/>
       </Routes>
     </Router>
   );
