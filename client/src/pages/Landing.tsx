@@ -220,7 +220,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
             <div className="flex items-center mb-4">
               <span className="text-2xl font-semibold">{category}</span>
               <a
-                href={`/${category}`}
+                href={`/see-all/${category}`}
                 className="flex items-center text-xl px-4 underline"
               >
                 See all {<ArrowRight />}
