@@ -11,6 +11,7 @@ import BookingPage from "./pages/BookingPage";
 import CheckAvailability from "./pages/CheckAvailability";
 import AboutUs from "./pages/AboutUs";
 import SeeAll from "./pages/SeeAll";
+import ContactUs from "./pages/ContactUs";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(() => {
@@ -53,6 +54,7 @@ function App() {
         <Route path="/availability" element={<CheckAvailability/>}/>
         <Route path="/booking" element={<BookingPage/>}/>
         <Route path="/about" element={<AboutUs loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout}/>}/>
+        <Route path="/contact" element={<ContactUs loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout}/>}/>
       </Routes>
     </Router>
   );

@@ -248,7 +248,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
 
       {/* Footer */}
       <footer className="bg-black text-white py-12">
-        <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
+        <div className="mx-auto w-full max-w-screen-2xl p-4 py-6 lg:py-8">
           <div className="md:flex md:justify-between">
             <div className="mb-6 md:mb-0">
               <a href="/" className="flex items-center">
@@ -261,8 +261,9 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                   MentG
                 </span>
               </a>
-              <address className="text-gray-500 not-italic mt-9">
-                <MapPin size={28} className="mb-2" /> Navi Mumbai, Maharashtra
+              <address className="flex justify-between text-gray-500 not-italic mt-9">
+                <MapPin size={28} className="mt-2 mr-4 text-white" /> Navi
+                Mumbai, Maharashtra
                 <br />
                 India
               </address>
@@ -279,7 +280,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                     </a>
                   </li>
                   <li className="mb-4">
-                    <a href="#" className="hover:underline">
+                    <a href="/contact" className="hover:underline">
                       Contact Us
                     </a>
                   </li>

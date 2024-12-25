@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import ProfileCard from "../components/ui/ProfileCard";
+import { Facebook, Instagram, Linkedin, MapPin, Twitter } from "lucide-react";
 
 interface AboutUsProps {
   loggedIn: boolean;
@@ -74,7 +75,7 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
               <Link to={`/profile/1`} style={{ textDecoration: "none" }}>
                 <ProfileCard
                   className="hover:scale-105 transition-all duration-300"
-                  name="Utkarsh Jaiswal"
+                  name="Mentor4 Lastname4"
                   imageUrl="https://via.placeholder.com/150"
                   desc="Experience in field 1"
                 />
@@ -99,6 +100,107 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-black text-white py-12">
+        <div className="mx-auto w-full max-w-screen-2xl p-4 py-6 lg:py-8">
+          <div className="md:flex md:justify-between">
+            <div className="mb-6 md:mb-0">
+              <a href="/" className="flex items-center">
+                <img
+                  src="https://i.ibb.co/B4LTdRP/logo-light.png"
+                  className="h-12 me-3"
+                  alt="MentG Logo"
+                />
+                <span className="self-center text-3xl font-semibold whitespace-nowrap">
+                  MentG
+                </span>
+              </a>
+              <address className="flex justify-between text-gray-500 not-italic mt-9">
+                <MapPin size={28} className="mt-2 mr-4 text-white" /> Navi
+                Mumbai, Maharashtra
+                <br />
+                India
+              </address>
+            </div>
+            <div className="grid grid-cols-2 gap-8 sm:gap-20 sm:grid-cols-2">
+              <div>
+                <h2 className="mb-6 text-sm font-semibold uppercase">
+                  Company
+                </h2>
+                <ul className="text-gray-500 font-medium">
+                  <li className="mb-4">
+                    <a href="/about" className="hover:underline">
+                      About
+                    </a>
+                  </li>
+                  <li className="mb-4">
+                    <a href="/contact" className="hover:underline">
+                      Contact Us
+                    </a>
+                  </li>
+                  <li className="mb-4">
+                    <a href="#" className="hover:underline">
+                      Privacy Policy
+                    </a>
+                  </li>
+                  <li className="mb-4">
+                    <a href="#" className="hover:underline">
+                      Terms & Conditions
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h2 className="mb-6 text-sm font-semibold uppercase">
+                  Platform
+                </h2>
+                <ul className="text-gray-500 font-medium">
+                  <li className="mb-4">
+                    <a href="#" className="hover:underline ">
+                      Pricing
+                    </a>
+                  </li>
+                  <li className="mb-4">
+                    <a href="#" className="hover:underline">
+                      Blog
+                    </a>
+                  </li>
+                  <li className="mb-4">
+                    <a href="#" className="hover:underline">
+                      Community
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <hr className="my-6 border-gray-200 sm:mx-auto lg:my-8" />
+          <div className="sm:flex sm:items-center sm:justify-between">
+            <span className="text-sm text-gray-500 sm:text-center">
+              © 2024{" "}
+              <a href="/" className="hover:underline">
+                MentG™
+              </a>
+              . All Rights Reserved.
+            </span>
+            <div className="flex mt-4 sm:justify-center sm:mt-0 space-x-6">
+              <a href="https://www.linkedin.com/company/mentg/">
+                <Linkedin />
+              </a>
+              <a href="#">
+                <Instagram />
+              </a>
+              <a href="#">
+                <Facebook />
+              </a>
+              <a href="#">
+                <Twitter />
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
