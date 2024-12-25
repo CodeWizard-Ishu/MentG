@@ -44,7 +44,7 @@ const Home = () => {
           {
             icon: <DollarSign className="text-green-500" />,
             title: "Total Earnings",
-            value: `$${data.totalEarnings.toFixed(3)}`, // Format to 3 decimal places
+            value: `Rs.${data.totalEarnings.toFixed(2)}`, // Format to 2 decimal places
           },
           {
             icon: <Calendar className="text-blue-500" />,
