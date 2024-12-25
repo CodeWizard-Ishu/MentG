@@ -82,7 +82,7 @@ const ContactUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
 
             <form className="mx-auto">
               <div className="mb-6">
-                <h1 className="text-5xl font-semibold text-black capitalize">
+                <h1 className="text-6xl font-bold text-black capitalize">
                   Contact us
                 </h1>
 
