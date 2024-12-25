@@ -16,14 +16,17 @@ export const getAllMeetings = async (req:any, res:any) => {
     }
 
     try {
+        const mProfile = await prisma.mentorProfile.findUnique({
+            where: { userId: Number(id) }});
+        const parsedId = mProfile?.id;
         // Fetch total count of bookings for pagination
         const totalBookingsCount = await prisma.booking.count({
-            where: { mentorId: Number(id) }
+            where: { mentorId: Number(parsedId) }
         });
 
         // Fetch bookings with pagination and include mentee details
         const bookings = await prisma.booking.findMany({
-            where: { mentorId: Number(id) },
+            where: { mentorId: Number(parsedId) },
             orderBy: { dateTime: 'desc' },
             skip: (pageNumber - 1) * pageSize,
             take: pageSize,

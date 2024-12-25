@@ -8,9 +8,12 @@ export const updateAvailability = async (req: any, res: any) => {
   try {
     const parsedMentorId = parseInt(mentorId);
 
+    const mProfile = await prisma.mentorProfile.findUnique({
+      where: { userId: parsedMentorId }});
+    const id = mProfile?.id;
     // Delete existing availability for the mentor
     await prisma.availability.deleteMany({
-      where: { mentorId: parsedMentorId },
+      where: { mentorId: id },
     });
 
     // Create new availability entries
@@ -18,7 +21,7 @@ export const updateAvailability = async (req: any, res: any) => {
       data: availability
         .filter((option: any) => option.enabled) // Only include enabled days
         .map((option: any) => ({
-          mentorId: parsedMentorId,
+          mentorId: id,
           dayOfWeek: option.dayOfWeek,
           startTime: new Date(`1970-01-01T${option.timeSlot.startTime}:00Z`),
           endTime: new Date(`1970-01-01T${option.timeSlot.endTime}:00Z`),
@@ -39,8 +42,12 @@ export const getAvailability = async (req: any, res: any) => {
 
   try {
     const parsedMentorId = parseInt(mentorId);
+    const mProfile = await prisma.mentorProfile.findUnique({
+      where: { userId: parsedMentorId }});
+    const id = mProfile?.id;
+
     const availability = await prisma.availability.findMany({
-      where: { mentorId: parsedMentorId },
+      where: { mentorId: id },
     });
 
     res.status(200).json({ data: availability });

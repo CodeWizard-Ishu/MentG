@@ -2,14 +2,17 @@ import { getPrismaClient } from "../../prisma";
 
 const prisma = getPrismaClient();
 
-export const updateService = async (req: any, res: any) => {
+export const updateService = async (req:any, res:any) => {
   const { mentorId } = req.params;
   const { domain, services } = req.body;
 
   try {
     // Parse mentorId and check if it's a valid number
     const parsedMentorId = parseInt(mentorId);
-    if (isNaN(parsedMentorId)) {
+    const mProfile = await prisma.mentorProfile.findUnique({
+      where: { userId: parsedMentorId }});
+    const id = mProfile?.id;
+    if (!mProfile) {
       return res.status(400).json({ error: "Invalid mentor ID" });
     }
 
@@ -34,26 +37,40 @@ export const updateService = async (req: any, res: any) => {
 
     // Check if all requested services were found
     const missingServices = services.filter(
-      (service: any) => !serviceIdsMap.has(service)
+      (service:any) => !serviceIdsMap.has(service)
     );
 
     if (missingServices.length > 0) {
-      return res
-        .status(404)
-        .json({ error: `Services not found: ${missingServices.join(", ")}` });
+      return res.status(404).json({ error: `Services not found: ${missingServices.join(", ")}` });
     }
+
+    // Fetch current mentor profile to check existing domains and services
+    const currentMentorProfile = await prisma.mentorProfile.findUnique({
+      where: { id: id },
+      include: {
+        domains: true,
+        services: true,
+      },
+    });
+
+    if (!currentMentorProfile) {
+      return res.status(404).json({ error: "Mentor profile not found" });
+    }
+
+    // Prepare data for update
+    const updateData = {
+      domains: {
+        set: [{ id: domainRecord.id }], // Use the found domain ID
+      },
+      services: {
+        set: Array.from(serviceIdsMap.values()).map((id) => ({ id })), // Use the found service IDs
+      },
+    };
 
     // Update Mentor Profile
     const updatedMentor = await prisma.mentorProfile.update({
-      where: { id: parsedMentorId }, // Use the parsed mentor ID
-      data: {
-        domains: {
-          set: [{ id: domainRecord.id }], // Use the found domain ID
-        },
-        services: {
-          set: Array.from(serviceIdsMap.values()).map((id) => ({ id })), // Use the found service IDs
-        },
-      },
+      where: { id: id }, // Use the parsed mentor ID
+      data: updateData,
       include: {
         domains: true,
         services: true,
@@ -61,11 +78,15 @@ export const updateService = async (req: any, res: any) => {
     });
 
     res.json(updatedMentor);
-  } catch (error) {
+  } catch (error:any) {
     console.error(error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while updating the mentor profile." });
+    
+    // Handle specific Prisma errors for better debugging
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: "Mentor profile not found or already disconnected." });
+    }
+    
+    res.status(500).json({ error: "An error occurred while updating the mentor profile." });
   }
 };
 
@@ -75,13 +96,17 @@ export const getServices = async (req: any, res: any) => {
   try {
     // Parse mentorId and check if it's a valid number
     const parsedMentorId = parseInt(mentorId);
-    if (isNaN(parsedMentorId)) {
+    const mProfile = await prisma.mentorProfile.findUnique({
+      where: { userId: parsedMentorId }});
+    const id = mProfile?.id;
+
+    if (!mProfile) {
       return res.status(400).json({ error: "Invalid mentor ID" });
     }
 
     // Fetch Mentor Profile including domains and services
     const mentorProfile = await prisma.mentorProfile.findUnique({
-      where: { id: parsedMentorId },
+      where: { id: id },
       include: {
         domains: true,
         services: true,

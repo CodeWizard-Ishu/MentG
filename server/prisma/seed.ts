@@ -339,3 +339,14 @@
 //     .finally(async () => {
 //         await prisma.$disconnect();
 //     });
+
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+const getAllMentorProfiles = async() => {
+    const result = await prisma.availability.findMany();
+    console.log(result);
+};
+
+getAllMentorProfiles();

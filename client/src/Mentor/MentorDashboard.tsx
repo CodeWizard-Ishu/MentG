@@ -72,7 +72,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
         return <div>404 Not Found...</div>;
     }
   };
-
+  const userId = localStorage.getItem('userId');
   return (
     <div>
       <div className="min-h-screen flex">
@@ -119,7 +119,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
                 <h2 className="text-3xl font-bold p-2">Mentor</h2>
               </div>
               <div className="absolute flex justify-between space-x-4 top-4 right-4">
-                <a href={`/profile/1`}>
+                <a href={`/profile/${userId}`}>
                   <button className="text-black px-4 py-2 border-2 border-black rounded-lg flex items-center space-x-2 hover:transition-all hover:shadow-gray-700 hover:shadow-md hover:text-gray-700">
                     <ExternalLink className="w-5 h-5" />
                     <span>Go to Profile</span>
