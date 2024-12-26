@@ -46,7 +46,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
         return <div>404 Not Found...</div>;
     }
   };
-
+  const fullName = localStorage.getItem('fullName') || "Mentee";
   return (
     <div>
       <div className="min-h-screen flex">
@@ -90,7 +90,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
                 className="w-20 h-20 rounded-full"
               />
               <div>
-                <h1 className="text-3xl font-bold p-2">Mentee</h1>
+                <h1 className="text-3xl font-bold p-2">{fullName}</h1>
               </div>
               <div className="absolute top-6 right-6">
                 <Link to="/">

@@ -23,11 +23,24 @@ function App() {
     return localStorage.getItem("mentor") === "true";
   });
 
-  const handleLogin = (email : string, token : string, isMentor : boolean, userId : string) => {
-    localStorage.setItem('userToken', `Bearer ${token}`);
+  const handleLogin = (
+    email: string,
+    token: string,
+    isMentor: boolean,
+    userId: string,
+    firstName: string,
+    lastName: string
+  ) => {
+    localStorage.setItem("userToken", `Bearer ${token}`);
     localStorage.setItem("loggedIn", "true");
     localStorage.setItem("mentor", isMentor ? "true" : "false");
-    localStorage.setItem("userId",userId);
+    localStorage.setItem("userId", userId);
+    const capitalize = (string: string) => {
+      if (!string) return "";
+      return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    };
+    const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
+    localStorage.setItem("fullName", formattedName);
     setLoggedIn(true);
     setMentor(isMentor);
     console.log(`Logged in as: ${email}`);
@@ -39,6 +52,7 @@ function App() {
     localStorage.removeItem("loggedIn");
     localStorage.removeItem("mentor");
     localStorage.removeItem("userId");
+    localStorage.removeItem("fullName");
     setLoggedIn(false);
     setMentor(false);
   };
@@ -46,19 +60,79 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Landing loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout}/>}/>
-        <Route path="/login" element={<LoginPage onLogin={handleLogin}/>}/>
-        <Route path="/signup" element={<SignupPage/>}/>
-        <Route path="/dashboard" element={<MentorDashboard onLogout={handleLogout}/>}/>
-        <Route path="/dashboard/mentee" element={<MenteeDashboard onLogout={handleLogout}/>}/>
-        <Route path="/profile/:userId" element={<ProfilePage/>}/>
-        <Route path="/see-all/:domain" element={<SeeAll loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout}/>}/>
-        <Route path="/availability" element={<CheckAvailability/>}/>
-        <Route path="/booking" element={<BookingPage/>}/>
-        <Route path="/about" element={<AboutUs loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout}/>}/>
-        <Route path="/contact" element={<ContactUs loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout}/>}/>
-        <Route path="/privacy" element={<PrivacyPolicy loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout}/>}/>
-        <Route path="/terms" element={<TermsOfService loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout}/>}/>
+        <Route
+          path="/"
+          element={
+            <Landing
+              loggedIn={loggedIn}
+              mentor={mentor}
+              onLogout={handleLogout}
+            />
+          }
+        />
+        <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route
+          path="/dashboard"
+          element={<MentorDashboard onLogout={handleLogout} />}
+        />
+        <Route
+          path="/dashboard/mentee"
+          element={<MenteeDashboard onLogout={handleLogout} />}
+        />
+        <Route path="/profile/:userId" element={<ProfilePage />} />
+        <Route
+          path="/see-all/:domain"
+          element={
+            <SeeAll
+              loggedIn={loggedIn}
+              mentor={mentor}
+              onLogout={handleLogout}
+            />
+          }
+        />
+        <Route path="/availability" element={<CheckAvailability />} />
+        <Route path="/booking" element={<BookingPage />} />
+        <Route
+          path="/about"
+          element={
+            <AboutUs
+              loggedIn={loggedIn}
+              mentor={mentor}
+              onLogout={handleLogout}
+            />
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <ContactUs
+              loggedIn={loggedIn}
+              mentor={mentor}
+              onLogout={handleLogout}
+            />
+          }
+        />
+        <Route
+          path="/privacy"
+          element={
+            <PrivacyPolicy
+              loggedIn={loggedIn}
+              mentor={mentor}
+              onLogout={handleLogout}
+            />
+          }
+        />
+        <Route
+          path="/terms"
+          element={
+            <TermsOfService
+              loggedIn={loggedIn}
+              mentor={mentor}
+              onLogout={handleLogout}
+            />
+          }
+        />
       </Routes>
     </Router>
   );

@@ -74,6 +74,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
     }
   };
   const userId = localStorage.getItem('userId');
+  const fullName = localStorage.getItem('fullName') || "Mentor";
   return (
     <div>
       <div className="min-h-screen flex">
@@ -117,7 +118,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
                 className="w-20 h-20 rounded-full"
               />
               <div>
-                <h2 className="text-3xl font-bold p-2">Mentor</h2>
+                <h2 className="text-3xl font-bold p-2">{fullName}</h2>
               </div>
               <div className="absolute flex justify-between space-x-4 top-4 right-4">
                 <a href={`/profile/${userId}`}>

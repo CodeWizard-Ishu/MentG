@@ -5,7 +5,7 @@ import BACKEND_URL from "../endpoint";
 import Logo from '../assets/logo.png';
 
 interface LoginPageProps {
-  onLogin?: (email: string, token: string, isMentor: boolean, userId : string) => void;
+  onLogin?: (email: string, token: string, isMentor: boolean, userId : string, firstName : string,lastName : string) => void;
   onSignupClick?: () => void;
 }
 
@@ -29,7 +29,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
       const data = await response.json();
       console.log(data);
-      onLogin(data.user.email, data.token, data.user.isMentor,data.user.id);
+      onLogin(data.user.email, data.token, data.user.isMentor,data.user.id,data.user.firstName,data.user.lastName);
       if (data.user.isMentor) navigate("/dashboard");
       else navigate("/dashboard/mentee");
     } catch (error) {
