@@ -75,13 +75,14 @@ const Home: React.FC = () => {
       <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-8">
         {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          mentors.map((mentor: any) => (
+          mentors.map((mentor: any,idx:any) => (
             <Link
+              key={idx}
               to={`/profile/${mentor.userId}`}
               style={{ textDecoration: "none" }}
             >
               <ProfileCard
-                key={mentor.id}
+                key={idx}
                 name={`${mentor.user.firstName} ${mentor.user.lastName}`}
                 imageUrl={
                   mentor.profilePicture || Logo

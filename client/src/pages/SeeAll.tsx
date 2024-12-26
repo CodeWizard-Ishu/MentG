@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import ProfileCard from "../components/ui/ProfileCard";
 import { Facebook, Instagram, Linkedin, MapPin, Twitter } from "lucide-react";
-import Logo from '../assets/logo.png';
+import Logo from "../assets/logo.png";
+import BACKEND_URL from "../endpoint";
 
 interface AboutUsProps {
   loggedIn: boolean;
@@ -10,20 +11,54 @@ interface AboutUsProps {
   onLogout: () => void;
 }
 
+
 const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
-  useEffect(() => {}, [loggedIn, mentor]);
+  const { domain } = useParams();
+  const domainName: string = domain || 'Technology'; 
+  const [mentors, setMentors] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+
+  useEffect(() => {
+    fetchMentors(domainName);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [domain]);
+
+  const fetchMentors = async (domain: string) => {
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/mentee/getMentors?domain=${domain}&page=${currentPage}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setMentors(data.mentors);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      console.error("Error fetching mentors:", error);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-sky-100">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-50  backdrop-blur-md flex justify-between items-center p-6 shadow-md">
+      <header className="sticky top-0 z-50 backdrop-blur-md flex justify-between items-center p-6 shadow-md">
         <div>
           <a href="/" className="flex items-center">
-            <img
-              src={Logo}
-              alt="Logo"
-              className="h-12 w-12"
-            />
+            <img src={Logo} alt="Logo" className="h-12 w-12" />
             <span className="font-bold text-2xl">MentG</span>
           </a>
         </div>
@@ -70,34 +105,53 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
 
       <section>
         <div className="container mx-auto px-16 py-16 min-h-screen bg-sky-100">
-          <h1 className="text-5xl font-bold underline">Technology:</h1>
+          <h1 className="text-5xl font-bold underline">{domain} :</h1>
           <div className="mt-24 mb-24">
-            <div className="grid md:grid-cols-6 gap-8">
-              <Link to={`/profile/1`} style={{ textDecoration: "none" }}>
-                <ProfileCard
-                  className="hover:scale-105 transition-all duration-300"
-                  name="Mentor4 Lastname4"
-                  imageUrl="https://via.placeholder.com/150"
-                  desc="Experience in field 1"
-                />
-              </Link>
-              <Link to={`/profile/1`} style={{ textDecoration: "none" }}>
-                <ProfileCard
-                  className="hover:scale-105 transition-all duration-300"
-                  name="Utkarsh Jaiswal"
-                  imageUrl="https://via.placeholder.com/150"
-                  desc="Experience in field 1"
-                />
-              </Link>
-              <Link to={`/profile/1`} style={{ textDecoration: "none" }}>
-                <ProfileCard
-                  className="hover:scale-105 transition-all duration-300"
-                  name="Utkarsh Jaiswal"
-                  imageUrl="https://via.placeholder.com/150"
-                  desc="Experience in field 1"
-                />
-              </Link>
+            <div className="grid md:grid-cols-5 gap-8">
+              {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                mentors.map((mentor: any, idx: any) => (
+                  <Link
+                    key={idx}
+                    to={`/profile/${mentor.userId}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <ProfileCard
+                      key={idx}
+                      name={`${mentor.user.firstName} ${mentor.user.lastName}`}
+                      imageUrl={mentor.profilePicture || Logo}
+                      desc={mentor.bio || "No description available."}
+                    />
+                  </Link>
+                ))
+              }
             </div>
+            {domain && totalPages > 0 && (
+              <div className="flex justify-between items-center mt-4">
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200"
+                >
+                  {"< Previous"}
+                </button>
+
+                <span>
+                  Page{" "}
+                  <strong>
+                    {currentPage} of {totalPages}
+                  </strong>
+                </span>
+
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage >= totalPages}
+                  className="px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200"
+                >
+                  {"Next >"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </section>
