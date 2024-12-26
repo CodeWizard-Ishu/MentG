@@ -353,12 +353,12 @@ const LandingPage: React.FC<LandingPageProps> = ({
                     </a>
                   </li>
                   <li className="mb-4">
-                    <a href="#" className="hover:underline">
+                    <a href="/privacy" className="hover:underline">
                       Privacy Policy
                     </a>
                   </li>
                   <li className="mb-4">
-                    <a href="#" className="hover:underline">
+                    <a href="/terms" className="hover:underline">
                       Terms & Conditions
                     </a>
                   </li>
