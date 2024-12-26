@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import ProfileCard from "../components/ui/ProfileCard";
 import Dropdown from "../components/ui/Dropdown";
 import BACKEND_URL from "../endpoint";
+import Logo from '../assets/logo.png';
 
 const Home: React.FC = () => {
   const [mentors, setMentors] = useState([]);
@@ -83,7 +84,7 @@ const Home: React.FC = () => {
                 key={mentor.id}
                 name={`${mentor.user.firstName} ${mentor.user.lastName}`}
                 imageUrl={
-                  mentor.profilePicture || "https://i.ibb.co/tPzj54M/logo.png"
+                  mentor.profilePicture || Logo
                 }
                 desc={mentor.bio || "No description available."}
               />

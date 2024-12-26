@@ -16,6 +16,11 @@ interface AboutUsProps {
   mentor: boolean;
   onLogout: () => void;
 }
+import Logo from '../assets/logo.png';
+import Dheeraj from '../assets/Dheeraj.jpg';
+import Vaishali from '../assets/Vaishali.jpg';
+import Utkarsh from '../assets/Utkarsh.jpg';
+import Kushagra from '../assets/Kushagra.jpg';
 
 const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
   useEffect(() => {}, [loggedIn, mentor]);
@@ -27,7 +32,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
         <div>
           <a href="/" className="flex items-center">
             <img
-              src="https://i.ibb.co/tPzj54M/logo.png"
+              src={Logo}
               alt="Logo"
               className="h-12 w-12"
             />
@@ -186,7 +191,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
               <div className="relative mb-8">
                 <div className="aspect-square rounded-2xl overflow-hidden mb-6">
                   <img
-                    src="https://i.ibb.co/r5ypWGw/Whats-App-Image-2024-12-24-at-05-03-53-e6f0e3d0.jpg"
+                    src={Dheeraj}
                     alt="Dheeraj Jaiswal"
                     className="w-full h-full object-cover"
                   />
@@ -201,7 +206,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
               <div className="relative mb-8">
                 <div className="aspect-square rounded-2xl overflow-hidden mb-6">
                   <img
-                    src="https://i.ibb.co/nRzKCPY/Whats-App-Image-2024-12-24-at-05-06-40-bc6a15da.jpg"
+                    src={Vaishali}
                     alt="Vaishali Jaiswal"
                     className="w-full h-full object-cover"
                   />
@@ -216,7 +221,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
               <div className="relative mb-8">
                 <div className="aspect-square rounded-2xl overflow-hidden mb-6">
                   <img
-                    src="https://i.ibb.co/34WZtv2/Utkarsh.jpg"
+                    src={Utkarsh}
                     alt="Utkarsh Jaiswal"
                     className="w-full h-full object-cover"
                   />
@@ -231,7 +236,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
               <div className="relative mb-8">
                 <div className="aspect-square rounded-2xl overflow-hidden mb-6">
                   <img
-                    src="https://i.ibb.co/zVQ0xBH/Whats-App-Image-2024-12-24-at-05-00-13-b22ba564.jpg"
+                    src={Kushagra}
                     alt="Kushgra Shukla"
                     className="w-full h-full object-cover"
                   />

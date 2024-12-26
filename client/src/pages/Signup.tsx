@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { User, Mail, Lock } from "lucide-react";
 import BACKEND_URL from "../endpoint";
+import Logo from '../assets/logo.png';
 
 interface SignupPageProps {
   onLoginClick?: () => void;
@@ -70,7 +71,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
           <div>
             <a href="/" className="flex items-center">
               <img
-                src="https://i.ibb.co/tPzj54M/logo.png"
+                src={Logo}
                 alt="Logo"
                 className="h-12 w-12"
               />

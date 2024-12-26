@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { MessageCircle, Zap, Users, Star, Video } from "lucide-react";
 import BACKEND_URL from "../endpoint";
+import Logo from '../assets/logo.png';
 
 interface Services {
   name: string;
@@ -52,7 +53,7 @@ const ProfilePage: React.FC = () => {
         <div>
           <a href="/" className="flex items-center">
             <img
-              src="https://i.ibb.co/tPzj54M/logo.png"
+              src={Logo}
               alt="Logo"
               className="h-10 w-10"
             />

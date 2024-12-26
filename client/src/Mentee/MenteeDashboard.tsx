@@ -11,6 +11,7 @@ import Home from "./Home";
 import Meetings from "./Meetings";
 import Messages from "./Messages";
 import Settings from "./ProfileSettings";
+import Logo from '../assets/logo.png';
 
 interface NavItem {
   name: string;
@@ -54,7 +55,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
           <div className="space-x-2 top-0 z-50 bg-sky-100 backdrop-blur-md flex items-center p-6 shadow-md">
             <a href="/" className="flex items-center space-x-2">
               <img
-                src="https://i.ibb.co/tPzj54M/logo.png"
+                src={Logo}
                 alt="Logo"
                 className="h-10 w-10"
               />

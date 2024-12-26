@@ -13,6 +13,7 @@ import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { Separator } from "../components/ui/separator";
+import Header from "../components/Header";
 
 interface PaymentInfo {
   sessionFees: number;
@@ -81,6 +82,7 @@ const BookingPage: React.FC = () => {
 
   const handleSubmit = (
     values: FormValues,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     { setSubmitting, resetForm }: any
   ) => {
     console.log("Form values:", values);
@@ -102,18 +104,8 @@ const BookingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-sky-100">
-      <header className="sticky top-0 z-50  backdrop-blur-md flex justify-between items-center p-6 shadow-md">
-        <div>
-          <a href="/" className="flex items-center">
-            <img
-              src="https://i.ibb.co/tPzj54M/logo.png"
-              alt="Logo"
-              className="h-10 w-10"
-            />
-            <span className="font-bold text-2xl">MentG</span>
-          </a>
-        </div>
-      </header>
+      <Header/>
+
       <Card className="mt-16 w-full max-w-md mx-auto">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center">

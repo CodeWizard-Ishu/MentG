@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import BACKEND_URL from "../endpoint";
+import Logo from '../assets/logo.png';
 
 interface LoginPageProps {
   onLogin?: (email: string, token: string, isMentor: boolean, userId : string) => void;
@@ -44,7 +45,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
           <div>
             <a href="/" className="flex items-center">
               <img
-                src="https://i.ibb.co/tPzj54M/logo.png"
+                src={Logo}
                 alt="Logo"
                 className="h-12 w-12"
               />

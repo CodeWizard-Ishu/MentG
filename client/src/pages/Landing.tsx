@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BACKEND_URL from "../endpoint";
+import Logo from '../assets/logo.png';
 import {
   Building2,
   Users,
@@ -44,6 +44,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
     setCategory(e.currentTarget.innerText);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fetchTopMentors = async (selectedDomainNames: any) => {
     try {
       const response = await fetch(
@@ -106,7 +107,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
         <div>
           <a href="/" className="flex items-center">
             <img
-              src="https://i.ibb.co/tPzj54M/logo.png"
+              src={Logo}
               alt="Logo"
               className="h-12 w-12"
             />
@@ -228,6 +229,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
             </div>
             <div className="grid md:grid-cols-5 gap-8">
               {mentorsData.length > 0 &&
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 mentorsData.map((mentor: any) => (
                   <Link
                     to={`/profile/${mentor.userId}`}

@@ -10,6 +10,7 @@ import { Button } from "../components/ui/button";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 
 // Types
 type TimeSlot = {
@@ -120,18 +121,8 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
 
   return (
     <div className="min-h-screen bg-sky-100">
-      <header className="sticky top-0 z-50  backdrop-blur-md flex justify-between items-center p-6 shadow-md">
-        <div>
-          <a href="/" className="flex items-center">
-            <img
-              src="https://i.ibb.co/tPzj54M/logo.png"
-              alt="Logo"
-              className="h-10 w-10"
-            />
-            <span className="font-bold text-2xl">MentG</span>
-          </a>
-        </div>
-      </header>
+      <Header/>
+      
       <Card className="mt-16 max-w-3xl mx-auto">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center">

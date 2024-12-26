@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import ProfileCard from "../components/ui/ProfileCard";
+import Logo from '../assets/logo.png';
 
 interface AboutUsProps {
   loggedIn: boolean;
@@ -18,7 +19,7 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
         <div>
           <a href="/" className="flex items-center">
             <img
-              src="https://i.ibb.co/tPzj54M/logo.png"
+              src={Logo}
               alt="Logo"
               className="h-12 w-12"
             />

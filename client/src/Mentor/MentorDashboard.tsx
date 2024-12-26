@@ -22,6 +22,7 @@ import Analytics from "./Analytics";
 import Calender from "./Calender";
 import Payments from "./Payments";
 import Services from "./Services";
+import Logo from '../assets/logo.png';
 
 // Define interfaces for type safety
 interface NavItem {
@@ -81,7 +82,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
           <div className="space-x-2 top-0 z-50 bg-sky-100 backdrop-blur-md flex items-center p-6 shadow-sm">
             <a href="/" className="flex items-center">
               <img
-                src="https://i.ibb.co/tPzj54M/logo.png"
+                src={Logo}
                 alt="Logo"
                 className="h-10 w-10"
               />
