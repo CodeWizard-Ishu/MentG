@@ -1,14 +1,15 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { User } from "lucide-react";
 import { Formik, Form, Field, FormikHelpers } from "formik";
-import * as Yup from "yup";
+import BACKEND_URL from "../endpoint";
+import { Link } from "react-router-dom";
 
 interface FormValues {
   profileImage: string | null;
-  mentgLink: string;
+  mentgLink: string | null;
   firstName: string;
-  lastName: string;
-  about: string;
+  lastName: string | null;
+  about: string | null;
   socialLinks: {
     linkedin: string;
     instagram: string;
@@ -20,50 +21,55 @@ interface FormValues {
   confirmPassword: string;
 }
 
-const validationSchema = Yup.object().shape({
-  firstName: Yup.string().required("First name is required"),
-  lastName: Yup.string().required("Last name is required"),
-  mentgLink: Yup.string().required("MentG link is required"),
-  about: Yup.string(),
-  socialLinks: Yup.object().shape({
-    linkedin: Yup.string().url("Invalid LinkedIn URL"),
-    instagram: Yup.string().url("Invalid Instagram URL"),
-    twitter: Yup.string().url("Invalid Twitter URL"),
-  }),
-  phoneNumber: Yup.string()
-    .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
-    .required("Phone number is required"),
-  email: Yup.string()
-    .email("Invalid email format")
-    .required("Email is required"),
-  password: Yup.string()
-  .min(8, "Password must be at least 8 characters")
-  .matches(/[0-9]/, "Password must contain at least one number")
-  .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-  .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-  .matches(/[^\w]/, "Password must contain at least one symbol"),
-    // .required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref('password')], "Passwords must match")
-    // .required("Confirm password is required"),
-});
+interface User {
+  id: number;
+  userId: number;
+  bio: string | null;
+  profilePicture: string | null;
+  experience: string | null;
+  rating: number;
+  totalEarnings: number;
+  totalBookings: number;
+  uniqueMentees: number;
+  user: {
+    firstName: string;
+    lastName: string | null;
+    email: string;
+  };
+}
 
 const ProfileDetails: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [user, setUser] = useState<User>();
+  const userId = localStorage.getItem("userId");
+
+  const getMentorDetails = async () => {
+    const response = await fetch(`${BACKEND_URL}/api/mentorDetails/${userId}`);
+    setUser(await response.json());
+  };
+
+  useEffect(() => {
+    getMentorDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!user) {
+    return <div>Loading...</div>; // Optionally show a loading indicator
+  }
 
   const initialValues: FormValues = {
     profileImage: null,
-    mentgLink: "{{firstName+lastName}}",
-    firstName: "",
-    lastName: "",
-    about: "",
+    mentgLink: userId,
+    firstName: user.user.firstName,
+    lastName: user.user.lastName,
+    about: user.bio,
     socialLinks: {
       linkedin: "",
       instagram: "",
       twitter: "",
     },
     phoneNumber: "",
-    email: "",
+    email: user.user.email,
     password: "",
     confirmPassword: "",
   };
@@ -75,10 +81,6 @@ const ProfileDetails: React.FC = () => {
     console.log(values);
     alert("Changes saved successfully!");
     setSubmitting(false);
-  };
-
-  const onCheck = () => {
-    alert("Feature to be implemented");
   };
 
   const handleImageUpload = (
@@ -97,11 +99,7 @@ const ProfileDetails: React.FC = () => {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-    >
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       {({ values, errors, touched, setFieldValue, isSubmitting }) => (
         <Form className="min-h-screen p-4">
           <div>
@@ -155,18 +153,17 @@ const ProfileDetails: React.FC = () => {
                     name="mentgLink"
                     className="border border-gray-300 rounded-e-md p-2 flex-1"
                     placeholder="mentg.in/"
+                    disabled
                   />
-                  <button
-                    type="button"
-                    onClick={onCheck}
-                    className="bg-green-500 text-white rounded-md px-4 py-2 ml-2"
-                  >
-                    Check Availability
-                  </button>
+                  <Link to={`/profile/${userId}`}>
+                    <button
+                      type="button"
+                      className="bg-green-500 text-white rounded-md px-4 py-2 ml-2"
+                    >
+                      Go
+                    </button>
+                  </Link>
                 </div>
-                {errors.mentgLink && touched.mentgLink && (
-                  <div className="text-red-500 text-sm mt-1">{errors.mentgLink}</div>
-                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -182,7 +179,9 @@ const ProfileDetails: React.FC = () => {
                     placeholder="Enter your first name"
                   />
                   {errors.firstName && touched.firstName && (
-                    <div className="text-red-500 text-sm mt-1">{errors.firstName}</div>
+                    <div className="text-red-500 text-sm mt-1">
+                      {errors.firstName}
+                    </div>
                   )}
                 </div>
                 <div>
@@ -197,7 +196,9 @@ const ProfileDetails: React.FC = () => {
                     placeholder="Enter your last name"
                   />
                   {errors.lastName && touched.lastName && (
-                    <div className="text-red-500 text-sm mt-1">{errors.lastName}</div>
+                    <div className="text-red-500 text-sm mt-1">
+                      {errors.lastName}
+                    </div>
                   )}
                 </div>
               </div>
@@ -214,12 +215,16 @@ const ProfileDetails: React.FC = () => {
                   placeholder="Tell us about yourself"
                 />
                 {errors.about && touched.about && (
-                  <div className="text-red-500 text-sm mt-1">{errors.about}</div>
+                  <div className="text-red-500 text-sm mt-1">
+                    {errors.about}
+                  </div>
                 )}
               </div>
 
               <div className="mb-4">
-                <label className="block font-medium mb-2">Social Accounts</label>
+                <label className="block font-medium mb-2">
+                  Social Accounts
+                </label>
                 <div className="space-y-2">
                   <Field
                     type="text"
@@ -227,33 +232,36 @@ const ProfileDetails: React.FC = () => {
                     className="block w-full border rounded p-2"
                     placeholder="LinkedIn URL"
                   />
-                  {errors.socialLinks?.linkedin && touched.socialLinks?.linkedin && (
-                    <div className="text-red-500 text-sm mt-1">
-                      {errors.socialLinks.linkedin}
-                    </div>
-                  )}
+                  {errors.socialLinks?.linkedin &&
+                    touched.socialLinks?.linkedin && (
+                      <div className="text-red-500 text-sm mt-1">
+                        {errors.socialLinks.linkedin}
+                      </div>
+                    )}
                   <Field
                     type="text"
                     name="socialLinks.instagram"
                     className="block w-full border rounded p-2"
                     placeholder="Instagram URL"
                   />
-                  {errors.socialLinks?.instagram && touched.socialLinks?.instagram && (
-                    <div className="text-red-500 text-sm mt-1">
-                      {errors.socialLinks.instagram}
-                    </div>
-                  )}
+                  {errors.socialLinks?.instagram &&
+                    touched.socialLinks?.instagram && (
+                      <div className="text-red-500 text-sm mt-1">
+                        {errors.socialLinks.instagram}
+                      </div>
+                    )}
                   <Field
                     type="text"
                     name="socialLinks.twitter"
                     className="block w-full border rounded p-2"
                     placeholder="Twitter URL"
                   />
-                  {errors.socialLinks?.twitter && touched.socialLinks?.twitter && (
-                    <div className="text-red-500 text-sm mt-1">
-                      {errors.socialLinks.twitter}
-                    </div>
-                  )}
+                  {errors.socialLinks?.twitter &&
+                    touched.socialLinks?.twitter && (
+                      <div className="text-red-500 text-sm mt-1">
+                        {errors.socialLinks.twitter}
+                      </div>
+                    )}
                 </div>
               </div>
 
@@ -269,7 +277,9 @@ const ProfileDetails: React.FC = () => {
                   placeholder="Enter your phone number"
                 />
                 {errors.phoneNumber && touched.phoneNumber && (
-                  <div className="text-red-500 text-sm mt-1">{errors.phoneNumber}</div>
+                  <div className="text-red-500 text-sm mt-1">
+                    {errors.phoneNumber}
+                  </div>
                 )}
               </div>
 
@@ -283,10 +293,8 @@ const ProfileDetails: React.FC = () => {
                   name="email"
                   className="block w-full border rounded p-2"
                   placeholder="Enter your email"
+                  disabled
                 />
-                {errors.email && touched.email && (
-                  <div className="text-red-500 text-sm mt-1">{errors.email}</div>
-                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -302,11 +310,16 @@ const ProfileDetails: React.FC = () => {
                     placeholder="Enter a new password"
                   />
                   {errors.password && touched.password && (
-                    <div className="text-red-500 text-sm mt-1">{errors.password}</div>
+                    <div className="text-red-500 text-sm mt-1">
+                      {errors.password}
+                    </div>
                   )}
                 </div>
                 <div>
-                  <label htmlFor="confirmPassword" className="block font-medium mb-2">
+                  <label
+                    htmlFor="confirmPassword"
+                    className="block font-medium mb-2"
+                  >
                     Confirm Password
                   </label>
                   <Field
