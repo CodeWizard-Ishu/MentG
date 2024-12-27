@@ -2,22 +2,31 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import BACKEND_URL from "../endpoint";
-import Logo from '../assets/logo.png';
+import Logo from "../assets/logo.png";
+import Spinner from "../components/ui/Spinner";
+import { Bounce, toast } from "react-toastify";
 
 interface LoginPageProps {
-  onLogin?: (email: string, token: string, isMentor: boolean, userId : string, firstName : string,lastName : string) => void;
+  onLogin?: (
+    email: string,
+    token: string,
+    isMentor: boolean,
+    userId: string,
+    firstName: string,
+    lastName: string
+  ) => void;
   onSignupClick?: () => void;
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({
-  onLogin = () => {}
-}) => {
+const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await fetch(`${BACKEND_URL}/auth/login`, {
         method: "POST",
@@ -29,11 +38,32 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
       const data = await response.json();
       console.log(data);
-      onLogin(data.user.email, data.token, data.user.isMentor,data.user.id,data.user.firstName,data.user.lastName);
+      onLogin(
+        data.user.email,
+        data.token,
+        data.user.isMentor,
+        data.user.id,
+        data.user.firstName,
+        data.user.lastName
+      );
+
+      if (response.ok) {
+        toast.success("Login Successful!", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+      }
       if (data.user.isMentor) navigate("/dashboard");
       else navigate("/dashboard/mentee");
     } catch (error) {
       console.error(error);
+      toast.error("Bad Credentials!", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+      setLoading(false);
     }
   };
 
@@ -44,11 +74,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
         <div className="flex justify-between items-center">
           <div>
             <a href="/" className="flex items-center">
-              <img
-                src={Logo}
-                alt="Logo"
-                className="h-12 w-12"
-              />
+              <img src={Logo} alt="Logo" className="h-12 w-12" />
               <span className="font-bold text-2xl">MentG</span>
             </a>
           </div>
@@ -84,7 +110,6 @@ const LoginPage: React.FC<LoginPageProps> = ({
                 required
               />
             </div>
-
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Lock className="text-gray-400" size={20} />
@@ -98,7 +123,6 @@ const LoginPage: React.FC<LoginPageProps> = ({
                 required
               />
             </div>
-
             <div className="text-right">
               <button
                 type="button"
@@ -107,12 +131,11 @@ const LoginPage: React.FC<LoginPageProps> = ({
                 Forgot password?
               </button>
             </div>
-
             <button
               type="submit"
               className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-700 transition-colors font-semibold"
             >
-              Login
+              {loading ? <Spinner /> : "Login"}
             </button>
           </form>
 

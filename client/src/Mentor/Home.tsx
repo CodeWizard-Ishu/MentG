@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { ReactNode } from "react";
 import { Calendar, User, DollarSign } from "lucide-react";
 import BACKEND_URL from "../endpoint"; // Adjust this import based on your project structure
+import Spinner from "../components/ui/Spinner";
+import { Bounce, toast } from "react-toastify";
 
 // Define interfaces for type safety
 interface Stat {
@@ -12,9 +14,9 @@ interface Stat {
 
 interface Meeting {
   menteeName: string; // Changed to match your backend response
-  dateTime: string;    // Changed to match your backend response
-  duration: number;    // Changed to match your backend response
-  status : string;
+  dateTime: string; // Changed to match your backend response
+  duration: number; // Changed to match your backend response
+  status: string;
 }
 
 const Home = () => {
@@ -28,7 +30,8 @@ const Home = () => {
       const mentorId = localStorage.getItem("userId");
 
       if (!mentorId) {
-        setError("Mentor ID not found in local storage.");
+        // setError("Mentor ID not found in local storage.");
+        setError("Something went wrong!")
         setLoading(false);
         return;
       }
@@ -36,7 +39,12 @@ const Home = () => {
       try {
         const response = await fetch(`${BACKEND_URL}/api/mentor/${mentorId}`);
         if (!response.ok) {
-          throw new Error("Failed to fetch mentor data");
+          // throw new Error("Failed to fetch mentor data");
+          toast.error("Failed to fetch mentor data",{
+            position: "bottom-right",
+            pauseOnHover: false,
+            transition: Bounce,
+          })
         }
 
         const data = await response.json();
@@ -63,10 +71,11 @@ const Home = () => {
           menteeName: meeting.menteeName,
           dateTime: new Date(meeting.dateTime).toLocaleString(), // Format date as needed
           duration: `${meeting.duration} mins`, // Format duration as needed
-          status : meeting.status
-        })));
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (err:any) {
+            status: meeting.status,
+          }))
+        );
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);
@@ -76,9 +85,9 @@ const Home = () => {
     fetchData();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
+  if (loading) return <Spinner />;
+  if (error) return <div className="text-2xl font-semibold">{error}</div>
+  
   return (
     <div>
       {/* Stats Cards */}
@@ -103,7 +112,7 @@ const Home = () => {
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              {["Client", "Date", "Duration","Status"].map((header) => (
+              {["Client", "Date", "Duration", "Status"].map((header) => (
                 <th
                   key={header}
                   className="text-left p-3 text-gray-500 font-medium"

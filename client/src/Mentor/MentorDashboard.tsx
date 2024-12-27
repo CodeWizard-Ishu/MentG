@@ -43,7 +43,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
     { name: "Bookings", icon: <PhoneCall />, tab: "meetings" },
     { name: "Services", icon: <Building2 />, tab: "services" },
     { name: "Testimonials", icon: <MessageCircleHeart />, tab: "testimonials" },
-    { name: "Calender", icon: <Calendar />, tab: "calender" },
+    { name: "Calendar", icon: <Calendar />, tab: "calendar" },
     { name: "Analytics", icon: <ChartLine />, tab: "analytics" },
     { name: "Payments", icon: <Wallet />, tab: "payments" },
     { name: "Profile", icon: <UserPen />, tab: "settings" },
@@ -61,7 +61,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
         return <Services />;
       case "testimonials":
         return <Testimonials />;
-      case "calender":
+      case "calendar":
         return <Calender />;
       case "analytics":
         return <Analytics />;

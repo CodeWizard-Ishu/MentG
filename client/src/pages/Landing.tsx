@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BACKEND_URL from "../endpoint";
 import Logo from '../assets/logo.png';
+import jobImage from '../assets/job-image.jpg'
 import {
   Building2,
   Users,
@@ -273,7 +274,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
             </div>
             <div className="md:w-1/2 mt-8 md:mt-0">
               <img
-                src="https://img.freepik.com/free-vector/internship-job-illustration_52683-50829.jpg?t=st=1733331624~exp=1733335224~hmac=e3e9781622115c757183070a44cfee180c65ac111ac0ede0c3936c10971610df&w=900"
+                src={jobImage}
                 alt="Platform Benefits"
                 className="rounded-lg shadow-xl"
               />

@@ -83,6 +83,7 @@ const ProfileDetails: React.FC = () => {
 
   const handleImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setFieldValue: (field: string, value: any) => void
   ) => {
     const file = event.target.files?.[0];

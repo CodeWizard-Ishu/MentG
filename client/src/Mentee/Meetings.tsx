@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import BACKEND_URL from "../endpoint"; // Adjust this import based on your project structure
+import Spinner from '../components/ui/Spinner';
+import { Bounce, toast } from 'react-toastify';
 
 // Define interfaces for type safety
 interface Meeting {
@@ -25,7 +27,8 @@ const MenteeMeetings = () => {
       const menteeId = localStorage.getItem("userId");
 
       if (!menteeId) {
-        setError("Mentee ID not found in local storage.");
+        // setError("Mentee ID not found in local storage.");
+        setError("Something went Wrong!");
         setLoading(false);
         return;
       }
@@ -33,7 +36,12 @@ const MenteeMeetings = () => {
       try {
         const response = await fetch(`${BACKEND_URL}/api/mentee/${menteeId}/meetings?page=${pagination.pageIndex + 1}&limit=${pagination.pageSize}`);
         if (!response.ok) {
-          throw new Error("Failed to fetch meetings");
+          // throw new Error("Failed to fetch meetings");
+          toast.error("Failed to fetch meetings",{
+            position: "bottom-right",
+            pauseOnHover: false,
+            transition: Bounce,
+          })
         }
 
         const data = await response.json();
@@ -57,8 +65,8 @@ const MenteeMeetings = () => {
     fetchMeetings();
   }, [pagination.pageIndex, pagination.pageSize]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <Spinner/>;
+  if (error) return <div className="text-2xl font-semibold">{error}</div>
 
   // Calculate total pages
   const totalPages = Math.ceil(totalCount / pagination.pageSize);

@@ -4,6 +4,7 @@ import ProfileCard from "../components/ui/ProfileCard";
 import Dropdown from "../components/ui/Dropdown";
 import BACKEND_URL from "../endpoint";
 import Logo from '../assets/logo.png';
+import { Bounce, toast } from "react-toastify";
 
 const Home: React.FC = () => {
   const [mentors, setMentors] = useState([]);
@@ -29,13 +30,23 @@ const Home: React.FC = () => {
         `${BACKEND_URL}/api/mentee/getMentors?domain=${domain}&page=${currentPage}`
       );
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        // throw new Error("Network response was not ok");
+        toast.error("Network response was not ok",{
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        })
       }
       const data = await response.json();
       setMentors(data.mentors);
       setTotalPages(data.totalPages);
     } catch (error) {
-      console.error("Error fetching mentors:", error);
+      // console.error("Error fetching mentors:", error);
+      toast.error(`${error}`,{
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      })
     }
   };
 
@@ -61,7 +72,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      <h1 className="text-2xl font-semibold mb-12">Choose your Domain</h1>
+      <h1 className="text-2xl font-semibold mb-12">Choose your Domain to get Top Mentors</h1>
 
       <Dropdown
         options={options}

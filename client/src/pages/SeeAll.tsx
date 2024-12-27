@@ -4,6 +4,7 @@ import ProfileCard from "../components/ui/ProfileCard";
 import { Facebook, Instagram, Linkedin, MapPin, Twitter } from "lucide-react";
 import Logo from "../assets/logo.png";
 import BACKEND_URL from "../endpoint";
+import { Bounce, toast } from "react-toastify";
 
 interface AboutUsProps {
   loggedIn: boolean;
@@ -30,13 +31,23 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
         `${BACKEND_URL}/api/mentee/getMentors?domain=${domain}&page=${currentPage}`
       );
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        // throw new Error("Network response was not ok");
+        toast.error("Network response was not ok", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        })
       }
       const data = await response.json();
       setMentors(data.mentors);
       setTotalPages(data.totalPages);
     } catch (error) {
-      console.error("Error fetching mentors:", error);
+      // console.error("Error fetching mentors:", error);
+      toast.error(`${error}`, {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      })
     }
   };
 

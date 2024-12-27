@@ -8,8 +8,9 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { Button } from "../components/ui/button";
-import { Alert, AlertDescription } from "../components/ui/alert";
 import BACKEND_URL from "../endpoint";
+import { Bounce, toast } from "react-toastify";
+import Spinner from "../components/ui/Spinner";
 
 interface TimeSlot {
   startTime: string;
@@ -35,6 +36,7 @@ const TimeSelect: React.FC<{
   disabled?: boolean;
 }> = ({ value, onChange, disabled }) => {
   const times = [];
+
   for (let hour = 0; hour < 24; hour++) {
     for (let minute = 0; minute < 60; minute += 30) {
       const timeString = `${hour.toString().padStart(2, "0")}:${minute
@@ -94,20 +96,26 @@ const Calender = () => {
   });
 
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
   const userId = localStorage.getItem("userId");
 
   const fetchAvailability = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/mentor/getAvailability/${userId}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch availability");
+        // throw new Error("Failed to fetch availability");
+        toast.error("Failed to fetch availability", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        })
       }
   
       const responseData = await response.json();
-      console.log("Raw response data:", responseData);
+      // console.log("Raw response data:", responseData);
   
       const data = responseData.data; // Adjust based on the actual structure of responseData
-      console.log("Processed data array:", data);
+      // console.log("Processed data array:", data);
   
       if (!Array.isArray(data)) {
         throw new Error("Expected an array in the 'data' field of the response.");
@@ -157,7 +165,15 @@ const Calender = () => {
   
       setSchedule(newSchedule);
     } catch (err) {
-      console.error("Error fetching availability:", err);
+      // console.error("Error fetching availability:", err);
+      toast.error(`${err}`, {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      })
+    }
+    finally{
+      setLoading(false);
     }
   };
   
@@ -195,7 +211,12 @@ const Calender = () => {
         currentDaySchedule.timeSlot.startTime !== EMPTY_TIME &&
         value <= currentDaySchedule.timeSlot.startTime
       ) {
-        alert("End time must be after start time.");
+        // alert("End time must be after start time.");
+        toast.warning("End time must be after start time.",{
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        })
         return prev; // Return previous state if validation fails
       }
 
@@ -266,16 +287,27 @@ const Calender = () => {
         throw new Error("Network response was not ok");
       }
 
-      const result = await response.json();
-      console.log("Schedule saved successfully:", result);
+      // const result = await response.json();
+      // console.log("Schedule saved successfully:", result);
+      toast.success("Your changes have been saved successfully!", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      })
 
       setSaved(true);
       setTimeout(() => setSaved(false), 3000); // Reset saved state after a short delay
     } catch (error) {
-      console.error("Error saving schedule:", error);
-      alert("Failed to save schedule. Please try again.");
+      // console.error("Error saving schedule:", error);
+      toast.error(`Failed to save schedule, ${error}`,{
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      })
     }
   };
+
+  if(loading) return <Spinner/>
 
   return (
     <Card className="w-full max-w-2xl">
@@ -334,13 +366,6 @@ const Calender = () => {
           Apply To All
         </Button>
       </CardFooter>
-      {saved && (
-        <Alert className="mt-4 bg-green-50 text-green-800 border-green-200">
-          <AlertDescription>
-            Your changes have been saved successfully!
-          </AlertDescription>
-        </Alert>
-      )}
     </Card>
   );
 };

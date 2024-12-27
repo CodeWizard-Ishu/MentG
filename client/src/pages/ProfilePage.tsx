@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { MessageCircle, Zap, Users, Star, Video } from "lucide-react";
+import { Zap, Users, Star, Video } from "lucide-react";
 import BACKEND_URL from "../endpoint";
-import Logo from '../assets/logo.png';
+import Logo from "../assets/logo.png";
+import Spinner from "../components/ui/Spinner";
 
 interface Services {
   name: string;
@@ -18,6 +19,7 @@ const ProfilePage: React.FC = () => {
   const [services, setServices] = useState<Services[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [profileData, setProfileData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -41,10 +43,11 @@ const ProfilePage: React.FC = () => {
 
   const handleBook = () => {
     navigate("/availability");
+    setLoading(false);
   };
 
   if (!profileData) {
-    return <div>Loading...</div>; // Handle loading state
+    return <Spinner clasName="min-h-screen content-center" />; // Handle loading state
   }
 
   return (
@@ -52,11 +55,7 @@ const ProfilePage: React.FC = () => {
       <header className="top-0 z-50 bg-sky-100 backdrop-blur-md flex justify-between items-center p-6 shadow-md">
         <div>
           <a href="/" className="flex items-center">
-            <img
-              src={Logo}
-              alt="Logo"
-              className="h-10 w-10"
-            />
+            <img src={Logo} alt="Logo" className="h-10 w-10" />
             <span className="font-bold text-2xl">MentG</span>
           </a>
         </div>
@@ -207,13 +206,10 @@ const ProfilePage: React.FC = () => {
                   <div className="p-8">
                     <button
                       disabled={!serviceTab}
-                      className="w-full bg-black text-white py-4 rounded-xl flex items-center justify-center space-x-3 hover:bg-gray-700 disabled:opacity-50"
+                      className="w-full bg-black text-white font-semibold text-lg py-4 rounded-xl flex items-center justify-center space-x-3 hover:bg-gray-700 disabled:opacity-50"
                       onClick={handleBook}
                     >
-                      <MessageCircle className="w-6 h-6" />
-                      <span className="font-semibold text-lg">
-                        Book a Session
-                      </span>
+                      {loading ? <Spinner/> : "Book Service"}
                     </button>
                   </div>
                 </div>

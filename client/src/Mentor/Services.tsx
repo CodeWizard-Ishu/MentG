@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import BACKEND_URL from "../endpoint";
+import { Bounce, toast } from "react-toastify";
+import Spinner from "../components/ui/Spinner";
 
 const domainOptions = [
   "Technology",
@@ -23,6 +25,7 @@ const serviceOptions = [
 const Services: React.FC = () => {
   const [domain, setDomain] = useState<string>();
   const [service, setService] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
@@ -38,7 +41,15 @@ const Services: React.FC = () => {
         setDomain(data.domain[0]); // Assuming only one domain is returned
         setService(data.services);
       } catch (error) {
-        console.error("Error fetching services:", error);
+        // console.error("Error fetching services:", error);
+        toast.error(`${error}`, {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        })
+      }
+      finally{
+        setLoading(false);
       }
     };
     fetchServices();
@@ -46,7 +57,11 @@ const Services: React.FC = () => {
 
   const handleSave = async () => {
     if (!domain || service.length === 0) {
-      alert("Please select a domain and at least one service.");
+      toast.warning("Please select a domain and at least one service.", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
       return;
     }
 
@@ -72,12 +87,20 @@ const Services: React.FC = () => {
         throw new Error("Network response was not ok");
       }
 
-      const data = await response.json();
-      console.log("Success:", data);
-      alert("Profile updated successfully!");
+      // const data = await response.json();
+      // console.log("Success:", data);
+      toast.success("Profile updated successfully!", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
     } catch (error) {
-      console.error("Error:", error);
-      alert("Failed to update profile.");
+      // console.error("Error:", error);
+      toast.error(`Failed to update profile, ${error}`, {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      })
     }
   };
 
@@ -90,6 +113,8 @@ const Services: React.FC = () => {
       prev.includes(item) ? prev.filter((e) => e !== item) : [...prev, item]
     );
   };
+
+  if(loading) return <Spinner/>
 
   return (
     <div className="min-h-screen">

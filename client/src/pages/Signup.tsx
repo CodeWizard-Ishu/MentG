@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { User, Mail, Lock } from "lucide-react";
 import BACKEND_URL from "../endpoint";
 import Logo from '../assets/logo.png';
+import Spinner from "../components/ui/Spinner";
+import { Bounce, toast } from "react-toastify";
 
 interface SignupPageProps {
   onLoginClick?: () => void;
@@ -13,10 +15,13 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loadingMentor, setLoadingMentor] = useState(false);
+  const [loadingMentee, setLoadingMentee] = useState(false);
   const navigate = useNavigate();
 
   const handleJoinAsMentee = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoadingMentee(true);
     try {
       const response = await fetch(`${BACKEND_URL}/auth/signup/mentee`, {
         method: "POST",
@@ -28,14 +33,29 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
 
       const data = await response.json();
       console.log(data);
-      navigate("/login");
+      
+      if(response.ok){
+        toast.success("SignUp Successful!", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+        navigate("/login");
+      }
     } catch (error) {
       console.error(error);
+      toast.error("Something went wrong!", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+      setLoadingMentee(false);
     }
   };
 
   const handleJoinAsMentor = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoadingMentor(true);
     try {
       const response = await fetch(`${BACKEND_URL}/auth/signup/mentor`, {
         method: "POST",
@@ -47,9 +67,22 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
 
       const data = await response.json();
       console.log(data);
-      navigate("/login");
+      if(response.ok){
+        toast.success("SignUp Successful!", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+        navigate("/login");
+      }
     } catch (error) {
       console.error(error);
+      toast.error("Something went wrong!", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+      setLoadingMentor(false);
     }
   };
 
@@ -212,18 +245,18 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
 
             <div className="flex space-x-4">
               <button
-                type="button"
+                type="submit"
                 onClick={handleJoinAsMentee}
                 className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
               >
-                Join as Mentee
+                {loadingMentee ? <Spinner/> : "Join as Mentee"}
               </button>
               <button
-                type="button"
+                type="submit"
                 onClick={handleJoinAsMentor}
                 className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold"
               >
-                Join as Mentor
+                {loadingMentor ? <Spinner/> : "Join as Mentor"}
               </button>
             </div>
           </form>
