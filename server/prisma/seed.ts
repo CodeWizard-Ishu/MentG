@@ -1,23 +1,23 @@
-// // import { PrismaClient } from "@prisma/client";
-// // const prisma = new PrismaClient();
+// import { PrismaClient } from "@prisma/client";
+// const prisma = new PrismaClient();
 
-// // async function seedDatabase() {
-// //   try {
-// //     // Seed domains
-// //     await prisma.domain.createMany({
-// //       data: [
-// //         { name: "Technology" },
-// //         { name: "Business" },
-// //         { name: "Career" },
-// //         { name: "Marketing" },
-// //         { name: "Finance" },
-// //         { name: "Health" },
-// //         { name: "Engineering" },
-// //         { name: "Medical" },
-// //         { name: "Mental Fitness" },
-// //       ],
-// //       skipDuplicates: true,
-// //     });
+// async function seedDatabase() {
+//   try {
+//     // Seed domains
+//     await prisma.domain.createMany({
+//       data: [
+//         { name: "Technology" },
+//         { name: "Business" },
+//         { name: "Career" },
+//         { name: "Marketing" },
+//         { name: "Finance" },
+//         { name: "Health" },
+//         { name: "Engineering" },
+//         { name: "Medical" },
+//         { name: "Mental Fitness" },
+//       ],
+//       skipDuplicates: true,
+//     });
 
 // //     // Seed mentors
 // //     const mentorUsers = await Promise.all(
@@ -68,15 +68,15 @@
 // //       )
 // //     );
 
-// //     console.log("Database seeded successfully!");
-// //   } catch (error) {
-// //     console.error("Error seeding database:", error);
-// //   } finally {
-// //     await prisma.$disconnect();
-// //   }
-// // }
+//     console.log("Database seeded successfully!");
+//   } catch (error) {
+//     console.error("Error seeding database:", error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
-// // seedDatabase();
+// seedDatabase();
 // import { PrismaClient } from '@prisma/client';
 // const prisma = new PrismaClient();
 
@@ -340,13 +340,45 @@
 //         await prisma.$disconnect();
 //     });
 
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-const getAllMentorProfiles = async() => {
-    const result = await prisma.availability.findMany();
-    console.log(result);
-};
+// const getAllMentorProfiles = async() => {
+//     const result = await prisma.availability.findMany();
+//     console.log(result);
+// };
 
-getAllMentorProfiles();
+// getAllMentorProfiles();
+
+
+// import { PrismaClient } from '@prisma/client';
+
+// const prisma = new PrismaClient();
+
+// async function main() {
+//   // Define the services to be seeded without mentorId
+//   const services = [
+//     { name: '1:1 Sessions', description: 'Personalized sessions.' },
+//     { name: 'Quick Chat', description: 'Short discussions & tips.' },
+//     { name: 'Priority DMs', description: 'Quick Response.' },
+//     { name: 'Webinars', description: 'Interactive workshops for groups.' },
+//   ];
+
+//   // Seed each service into the database
+//   for (const service of services) {
+//     await prisma.service.create({
+//       data: service,
+//     });
+//   }
+
+//   console.log('Services seeded successfully');
+// }
+
+// main()
+//   .catch(e => {
+//     console.error(e);
+//   })
+//   .finally(async () => {
+//     await prisma.$disconnect();
+//   });

@@ -8,7 +8,7 @@ export const getMenteeDetails = async (req: any, res: any) => {
   try {
     const userId = parseInt(menteeId, 10);
     if (isNaN(userId)) {
-      return res.status(400).json({ error: "Invalid mentor ID" });
+      return res.status(400).json({ error: "Invalid mentee ID" });
     }
 
     const Mentee = await prisma.menteeProfile.findUnique({

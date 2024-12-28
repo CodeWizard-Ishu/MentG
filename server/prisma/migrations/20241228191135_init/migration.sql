@@ -47,7 +47,8 @@ CREATE TABLE "Service" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
-    "mentorId" INTEGER NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "mentorId" INTEGER,
 
     CONSTRAINT "Service_pkey" PRIMARY KEY ("id")
 );
@@ -97,19 +98,23 @@ CREATE TABLE "Availability" (
 );
 
 -- CreateTable
+CREATE TABLE "SocialLink" (
+    "id" SERIAL NOT NULL,
+    "linkedin" TEXT,
+    "twitter" TEXT,
+    "instagram" TEXT,
+    "mentorId" INTEGER,
+    "menteeId" INTEGER,
+
+    CONSTRAINT "SocialLink_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_MentorDomains" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL,
 
     CONSTRAINT "_MentorDomains_AB_pkey" PRIMARY KEY ("A","B")
-);
-
--- CreateTable
-CREATE TABLE "_MenteeDomains" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL,
-
-    CONSTRAINT "_MenteeDomains_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateIndex
@@ -125,10 +130,19 @@ CREATE UNIQUE INDEX "MenteeProfile_userId_key" ON "MenteeProfile"("userId");
 CREATE UNIQUE INDEX "Domain_name_key" ON "Domain"("name");
 
 -- CreateIndex
-CREATE INDEX "_MentorDomains_B_index" ON "_MentorDomains"("B");
+CREATE INDEX "Rating_mentorId_idx" ON "Rating"("mentorId");
 
 -- CreateIndex
-CREATE INDEX "_MenteeDomains_B_index" ON "_MenteeDomains"("B");
+CREATE INDEX "Rating_menteeId_idx" ON "Rating"("menteeId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SocialLink_mentorId_key" ON "SocialLink"("mentorId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SocialLink_menteeId_key" ON "SocialLink"("menteeId");
+
+-- CreateIndex
+CREATE INDEX "_MentorDomains_B_index" ON "_MentorDomains"("B");
 
 -- AddForeignKey
 ALTER TABLE "MentorProfile" ADD CONSTRAINT "MentorProfile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -137,7 +151,7 @@ ALTER TABLE "MentorProfile" ADD CONSTRAINT "MentorProfile_userId_fkey" FOREIGN K
 ALTER TABLE "MenteeProfile" ADD CONSTRAINT "MenteeProfile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Service" ADD CONSTRAINT "Service_mentorId_fkey" FOREIGN KEY ("mentorId") REFERENCES "MentorProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Service" ADD CONSTRAINT "Service_mentorId_fkey" FOREIGN KEY ("mentorId") REFERENCES "MentorProfile"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Booking" ADD CONSTRAINT "Booking_mentorId_fkey" FOREIGN KEY ("mentorId") REFERENCES "MentorProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -155,13 +169,13 @@ ALTER TABLE "Rating" ADD CONSTRAINT "Rating_menteeId_fkey" FOREIGN KEY ("menteeI
 ALTER TABLE "Availability" ADD CONSTRAINT "Availability_mentorId_fkey" FOREIGN KEY ("mentorId") REFERENCES "MentorProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "SocialLink" ADD CONSTRAINT "SocialLink_mentorId_fkey" FOREIGN KEY ("mentorId") REFERENCES "MentorProfile"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SocialLink" ADD CONSTRAINT "SocialLink_menteeId_fkey" FOREIGN KEY ("menteeId") REFERENCES "MenteeProfile"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "_MentorDomains" ADD CONSTRAINT "_MentorDomains_A_fkey" FOREIGN KEY ("A") REFERENCES "Domain"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_MentorDomains" ADD CONSTRAINT "_MentorDomains_B_fkey" FOREIGN KEY ("B") REFERENCES "MentorProfile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_MenteeDomains" ADD CONSTRAINT "_MenteeDomains_A_fkey" FOREIGN KEY ("A") REFERENCES "Domain"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_MenteeDomains" ADD CONSTRAINT "_MenteeDomains_B_fkey" FOREIGN KEY ("B") REFERENCES "MenteeProfile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
