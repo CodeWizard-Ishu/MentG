@@ -31,8 +31,8 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
         body: JSON.stringify({ firstName, lastName, email, password }),
       });
 
-      const data = await response.json();
-      console.log(data);
+      if(response.status===400)
+        location.reload();
       
       if(response.ok){
         toast.success("SignUp Successful!", {
@@ -65,8 +65,9 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
         body: JSON.stringify({ firstName, lastName, email, password }),
       });
 
-      const data = await response.json();
-      console.log(data);
+      if(response.status===400)
+        location.reload();
+      
       if(response.ok){
         toast.success("SignUp Successful!", {
           position: "bottom-right",
