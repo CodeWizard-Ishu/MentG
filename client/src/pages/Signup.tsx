@@ -32,7 +32,14 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
       });
 
       if(response.status===400)
-        location.reload();
+      {
+        toast.error("Something went wrong!", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+        setLoadingMentee(false);
+      }
       
       if(response.ok){
         toast.success("SignUp Successful!", {
@@ -66,8 +73,15 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
       });
 
       if(response.status===400)
-        location.reload();
-      
+      {
+        toast.error("Something went wrong!", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+        setLoadingMentor(false);
+      }
+
       if(response.ok){
         toast.success("SignUp Successful!", {
           position: "bottom-right",
