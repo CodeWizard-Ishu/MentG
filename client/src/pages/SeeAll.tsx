@@ -28,7 +28,7 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
   const fetchMentors = async (domain: string) => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/mentee/getMentors?domain=${domain}&page=${currentPage}`
+        `${BACKEND_URL}/api/getMentors?domain=${domain}&page=${currentPage}`
       );
       if (!response.ok) {
         // throw new Error("Network response was not ok");

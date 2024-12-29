@@ -13,13 +13,11 @@ import {
 } from "../controllers/mentors/mentorAvailablity";
 import { getMentors } from "../controllers/mentee/menteeDashboard";
 import { getAllMenteeMeetings } from "../controllers/mentee/meetingsData";
-import { getPrismaClient } from "../prisma";
 import { getProfileData } from "../controllers/mentors/mentorProfile";
 import { getMentorDetails } from "../controllers/mentors/mentorDetails";
 import { getMenteeDetails } from "../controllers/mentee/menteeDetails";
 import verifyToken from "../middleware/auth";
 
-const prisma = getPrismaClient();
 const router = express.Router();
 
 router.post("/auth/signup/mentor", signupMentor);
@@ -37,8 +35,9 @@ router.get("/api/mentor/services/:mentorId",verifyToken, getServices);
 router.post("/api/mentor/updateAvailability",verifyToken, updateAvailability);
 router.get("/api/mentor/getAvailability/:mentorId",verifyToken, getAvailability);
 
-router.get("/api/mentee/getMentors", getMentors);
-router.get("/api/mentee/:id/meetings", getAllMenteeMeetings);
+router.get("/api/mentee/getMentors",verifyToken, getMentors);
+router.get("/api/getMentors",getMentors);
+router.get("/api/mentee/:id/meetings",verifyToken, getAllMenteeMeetings);
 
 router.get("/api/data/mentor/:id", getProfileData);
 

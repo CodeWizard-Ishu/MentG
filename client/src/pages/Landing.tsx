@@ -71,9 +71,9 @@ const LandingPage: React.FC<LandingPageProps> = ({
     "Career",
     "Marketing",
     "Finance",
-    "Health",
     "Engineering",
-    "Medical",
+    "Health",
+    "Fitness",
     "Mental Fitness",
   ];
 

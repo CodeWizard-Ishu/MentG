@@ -9,9 +9,9 @@ const domainOptions = [
   "Career",
   "Marketing",
   "Finance",
-  "Health",
   "Engineering",
-  "Medical",
+  "Health",
+  "Fitness",
   "Mental Fitness",
 ];
 
