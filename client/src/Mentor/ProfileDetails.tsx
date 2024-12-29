@@ -42,9 +42,16 @@ const ProfileDetails: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [user, setUser] = useState<User>();
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   const getMentorDetails = async () => {
-    const response = await fetch(`${BACKEND_URL}/api/mentorDetails/${userId}`);
+    const response = await fetch(`${BACKEND_URL}/api/mentorDetails/${userId}`, {
+      method: "GET",
+      headers: {
+        Authorization: token,
+        "Content-Type": "application/json",
+      },
+    });
     setUser(await response.json());
   };
 

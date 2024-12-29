@@ -27,12 +27,20 @@ const Services: React.FC = () => {
   const [service, setService] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   useEffect(() => {
     const fetchServices = async () => {
       try {
         const response = await fetch(
-          `${BACKEND_URL}/api/mentor/services/${userId}`
+          `${BACKEND_URL}/api/mentor/services/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: token,
+              "Content-Type": "application/json",
+            },
+          }
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -46,14 +54,13 @@ const Services: React.FC = () => {
           position: "bottom-right",
           pauseOnHover: false,
           transition: Bounce,
-        })
-      }
-      finally{
+        });
+      } finally {
         setLoading(false);
       }
     };
     fetchServices();
-  }, [userId]);
+  }, [userId, token]);
 
   const handleSave = async () => {
     if (!domain || service.length === 0) {
@@ -77,6 +84,7 @@ const Services: React.FC = () => {
           // Replace with your actual URL
           method: "PUT",
           headers: {
+            Authorization: token,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
@@ -100,7 +108,7 @@ const Services: React.FC = () => {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
-      })
+      });
     }
   };
 
@@ -114,7 +122,7 @@ const Services: React.FC = () => {
     );
   };
 
-  if(loading) return <Spinner/>
+  if (loading) return <Spinner />;
 
   return (
     <div className="min-h-screen">
