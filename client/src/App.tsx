@@ -24,7 +24,6 @@ function App() {
   });
 
   const handleLogin = (
-    email: string,
     token: string,
     isMentor: boolean,
     userId: string,
@@ -43,8 +42,6 @@ function App() {
     localStorage.setItem("fullName", formattedName);
     setLoggedIn(true);
     setMentor(isMentor);
-    console.log(`Logged in as: ${email}`);
-    console.log(`Mento : ${isMentor}`);
   };
 
   const handleLogout = () => {

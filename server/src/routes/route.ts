@@ -14,7 +14,7 @@ import {
 import { getMentors } from "../controllers/mentee/menteeDashboard";
 import { getAllMenteeMeetings } from "../controllers/mentee/meetingsData";
 import { getProfileData } from "../controllers/mentors/mentorProfile";
-import { getMentorDetails } from "../controllers/mentors/mentorDetails";
+import { getMentorDetails, updateMentorDetails } from "../controllers/mentors/mentorDetails";
 import { getMenteeDetails } from "../controllers/mentee/menteeDetails";
 import verifyToken from "../middleware/auth";
 
@@ -42,6 +42,7 @@ router.get("/api/mentee/:id/meetings",verifyToken, getAllMenteeMeetings);
 router.get("/api/data/mentor/:id", getProfileData);
 
 router.get("/api/mentorDetails/:mentorId",verifyToken, getMentorDetails);
+router.put("/api/updateMentorDetails/:mentorId",verifyToken, updateMentorDetails);
 router.get("/api/menteeDetails/:menteeId", getMenteeDetails);
 
 export default router;

@@ -21,7 +21,7 @@ export const getMentorData = async (req:any, res:any) => {
         const totalEarnings = mentorData.bookings.reduce((sum, booking) => sum + booking.payment, 0);
         const totalBookings = mentorData.bookings.length;
         const uniqueMentees = new Set(mentorData.bookings.map(booking => booking.menteeId)).size;
-
+        const profilePicture = mentorData.profilePicture;
         // Get recent meetings (last 5 bookings)
         const recentMeetings = await prisma.booking.findMany({
             where: { mentorId: mentorData.id },
@@ -40,6 +40,7 @@ export const getMentorData = async (req:any, res:any) => {
 
         // Prepare response data without full name
         const responseData = {
+            profilePicture,
             totalEarnings,
             totalBookings,
             uniqueMentees,

@@ -18,8 +18,11 @@ interface Meeting {
   duration: number; // Changed to match your backend response
   status: string;
 }
+interface DashboardProps {
+  getProfilePicture?: (profilePicture: string) => void; // Function to receive profile picture
+}
 
-const Home = () => {
+const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
   const [stats, setStats] = useState<Stat[]>([]);
   const [recentMeetings, setRecentMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,6 +60,7 @@ const Home = () => {
         }
 
         const data = await response.json();
+        getProfilePicture(data.profilePicture);
         setStats([
           {
             icon: <DollarSign className="text-green-500" />,
@@ -93,6 +97,7 @@ const Home = () => {
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) return <Spinner />;

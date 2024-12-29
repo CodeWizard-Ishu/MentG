@@ -8,7 +8,6 @@ import { Bounce, toast } from "react-toastify";
 
 interface LoginPageProps {
   onLogin?: (
-    email: string,
     token: string,
     isMentor: boolean,
     userId: string,
@@ -37,9 +36,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
       });
 
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       onLogin(
-        data.user.email,
         data.token,
         data.user.isMentor,
         data.user.id,

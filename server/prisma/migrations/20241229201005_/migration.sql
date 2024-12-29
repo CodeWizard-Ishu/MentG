@@ -23,8 +23,12 @@ CREATE TABLE "MentorProfile" (
     "userId" INTEGER NOT NULL,
     "bio" TEXT,
     "profilePicture" TEXT,
+    "phoneNumber" TEXT,
     "experience" TEXT,
     "rating" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "linkedin" TEXT,
+    "twitter" TEXT,
+    "instagram" TEXT,
     "totalEarnings" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "totalBookings" INTEGER NOT NULL DEFAULT 0,
     "uniqueMentees" INTEGER NOT NULL DEFAULT 0,
@@ -37,7 +41,11 @@ CREATE TABLE "MenteeProfile" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "goals" TEXT,
+    "phoneNumber" TEXT,
     "profilePicture" TEXT,
+    "linkedin" TEXT,
+    "twitter" TEXT,
+    "instagram" TEXT,
 
     CONSTRAINT "MenteeProfile_pkey" PRIMARY KEY ("id")
 );
@@ -98,18 +106,6 @@ CREATE TABLE "Availability" (
 );
 
 -- CreateTable
-CREATE TABLE "SocialLink" (
-    "id" SERIAL NOT NULL,
-    "linkedin" TEXT,
-    "twitter" TEXT,
-    "instagram" TEXT,
-    "mentorId" INTEGER,
-    "menteeId" INTEGER,
-
-    CONSTRAINT "SocialLink_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "_MentorDomains" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL,
@@ -134,12 +130,6 @@ CREATE INDEX "Rating_mentorId_idx" ON "Rating"("mentorId");
 
 -- CreateIndex
 CREATE INDEX "Rating_menteeId_idx" ON "Rating"("menteeId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "SocialLink_mentorId_key" ON "SocialLink"("mentorId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "SocialLink_menteeId_key" ON "SocialLink"("menteeId");
 
 -- CreateIndex
 CREATE INDEX "_MentorDomains_B_index" ON "_MentorDomains"("B");
@@ -167,12 +157,6 @@ ALTER TABLE "Rating" ADD CONSTRAINT "Rating_menteeId_fkey" FOREIGN KEY ("menteeI
 
 -- AddForeignKey
 ALTER TABLE "Availability" ADD CONSTRAINT "Availability_mentorId_fkey" FOREIGN KEY ("mentorId") REFERENCES "MentorProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "SocialLink" ADD CONSTRAINT "SocialLink_mentorId_fkey" FOREIGN KEY ("mentorId") REFERENCES "MentorProfile"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "SocialLink" ADD CONSTRAINT "SocialLink_menteeId_fkey" FOREIGN KEY ("menteeId") REFERENCES "MenteeProfile"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_MentorDomains" ADD CONSTRAINT "_MentorDomains_A_fkey" FOREIGN KEY ("A") REFERENCES "Domain"("id") ON DELETE CASCADE ON UPDATE CASCADE;

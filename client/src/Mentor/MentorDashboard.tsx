@@ -36,7 +36,7 @@ interface MentorDashboardProps {
 }
 const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
-
+  const [profilePicture, setProfilePicture] = useState<string>("https://shorturl.at/XCudT");
   const navItems: NavItem[] = [
     { name: "Home", icon: <HomeIcon />, tab: "home" },
     { name: "Messages", icon: <MessageCircle />, tab: "messages" },
@@ -52,7 +52,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   const renderTabContent = () => {
     switch (activeTab) {
       case "home":
-        return <Home />;
+        return <Home getProfilePicture={setProfilePicture} />;
       case "messages":
         return <Messages />;
       case "meetings":
@@ -113,7 +113,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
           <div className="p-6 border-b">
             <div className="flex items-center">
               <img
-                src="https://img.freepik.com/premium-photo/fun-unique-cartoon-profile-picture-that-represents-your-style-personality_1283595-14000.jpg"
+                src={profilePicture}
                 alt="User Image"
                 className="w-20 h-20 rounded-full"
               />
