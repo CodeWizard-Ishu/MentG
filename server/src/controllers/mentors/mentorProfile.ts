@@ -61,6 +61,7 @@ export const getProfileData = async (req: any, res: any) => {
         id: service.id,
         name: service.name,
         description: service.description,
+        price : service.price
       })),
     };
 

@@ -85,9 +85,8 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
               <img
                 src={Logo}
                 alt="Logo"
-                className="h-10 w-10"
+                className="h-10 w-full"
               />
-              <span className="text-2xl font-bold">MentG</span>
             </a>
           </div>
           <nav className="p-4">

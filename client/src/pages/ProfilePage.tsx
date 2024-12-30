@@ -9,6 +9,7 @@ interface Services {
   name: string;
   id: number;
   description: string;
+  price: number;
 }
 
 const ProfilePage: React.FC = () => {
@@ -20,6 +21,15 @@ const ProfilePage: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [profileData, setProfileData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+
+  const formatCurrency = (amount: number): string => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+      minimumFractionDigits: 0,
+    }).format(amount);
+  };
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -210,7 +220,7 @@ const ProfilePage: React.FC = () => {
                             </div>
                           </div>
                           <span className="text-xs md:text-sm font-semibold text-black">
-                            Free
+                            <span className="line-through text-red-500">  {formatCurrency(service.price)} </span> Free
                           </span>
                         </button>
                       </div>
