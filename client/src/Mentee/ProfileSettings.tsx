@@ -21,6 +21,7 @@ const ProfileDetails: React.FC = () => {
   const getMenteeDetails = async () => {
     const response = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`);
     setUser(await response.json());
+    console.log(await response.json());
   };
 
   useEffect(() => {

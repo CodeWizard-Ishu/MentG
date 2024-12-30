@@ -34,7 +34,14 @@ const Meetings = () => {
       }
 
       try {
-        const response = await fetch(`${BACKEND_URL}/api/mentor/${mentorId}/meetings?page=${pagination.pageIndex + 1}&limit=${pagination.pageSize}`);
+        const token = localStorage.getItem('userToken') ?? "";
+        const response = await fetch(`${BACKEND_URL}/api/mentor/${mentorId}/meetings?page=${pagination.pageIndex + 1}&limit=${pagination.pageSize}`, {
+          method: "GET",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        });
         if (!response.ok) {
           // throw new Error("Failed to fetch meetings");
           toast.error("Failed to fetch meetings",{

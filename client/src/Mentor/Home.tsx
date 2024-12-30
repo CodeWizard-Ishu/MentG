@@ -18,8 +18,11 @@ interface Meeting {
   duration: number; // Changed to match your backend response
   status: string;
 }
+interface DashboardProps {
+  getProfilePicture?: (profilePicture: string) => void; // Function to receive profile picture
+}
 
-const Home = () => {
+const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
   const [stats, setStats] = useState<Stat[]>([]);
   const [recentMeetings, setRecentMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,23 +34,33 @@ const Home = () => {
 
       if (!mentorId) {
         // setError("Mentor ID not found in local storage.");
-        setError("Something went wrong!")
+        setError("Something went wrong!");
         setLoading(false);
         return;
       }
 
       try {
-        const response = await fetch(`${BACKEND_URL}/api/mentor/${mentorId}`);
+        const token = localStorage.getItem("userToken") ?? "";
+
+        // Make the fetch request with the Authorization header
+        const response = await fetch(`${BACKEND_URL}/api/mentor/${mentorId}`, {
+          method: "GET",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        });
         if (!response.ok) {
           // throw new Error("Failed to fetch mentor data");
-          toast.error("Failed to fetch mentor data",{
+          toast.error("Failed to fetch mentor data", {
             position: "bottom-right",
             pauseOnHover: false,
             transition: Bounce,
-          })
+          });
         }
 
         const data = await response.json();
+        getProfilePicture(data.profilePicture);
         setStats([
           {
             icon: <DollarSign className="text-green-500" />,
@@ -66,11 +79,12 @@ const Home = () => {
           },
         ]);
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setRecentMeetings(data.recentMeetings.map((meeting:any) => ({
-          menteeName: meeting.menteeName,
-          dateTime: new Date(meeting.dateTime).toLocaleString(), // Format date as needed
-          duration: `${meeting.duration} mins`, // Format duration as needed
+        setRecentMeetings(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          data.recentMeetings.map((meeting: any) => ({
+            menteeName: meeting.menteeName,
+            dateTime: new Date(meeting.dateTime).toLocaleString(), // Format date as needed
+            duration: `${meeting.duration} mins`, // Format duration as needed
             status: meeting.status,
           }))
         );
@@ -83,11 +97,12 @@ const Home = () => {
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) return <Spinner />;
-  if (error) return <div className="text-2xl font-semibold">{error}</div>
-  
+  if (error) return <div className="text-2xl font-semibold">{error}</div>;
+
   return (
     <div>
       {/* Stats Cards */}

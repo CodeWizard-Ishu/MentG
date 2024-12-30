@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import BACKEND_URL from "../endpoint"; // Adjust this import based on your project structure
-import Spinner from '../components/ui/Spinner';
-import { Bounce, toast } from 'react-toastify';
+import Spinner from "../components/ui/Spinner";
+import { Bounce, toast } from "react-toastify";
 
 // Define interfaces for type safety
 interface Meeting {
@@ -21,7 +21,7 @@ const MenteeMeetings = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const token = localStorage.getItem("userToken") ?? "";
   useEffect(() => {
     const fetchMeetings = async () => {
       const menteeId = localStorage.getItem("userId");
@@ -34,28 +34,41 @@ const MenteeMeetings = () => {
       }
 
       try {
-        const response = await fetch(`${BACKEND_URL}/api/mentee/${menteeId}/meetings?page=${pagination.pageIndex + 1}&limit=${pagination.pageSize}`);
+        const response = await fetch(
+          `${BACKEND_URL}/api/mentee/${menteeId}/meetings?page=${
+            pagination.pageIndex + 1
+          }&limit=${pagination.pageSize}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: token,
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (!response.ok) {
           // throw new Error("Failed to fetch meetings");
-          toast.error("Failed to fetch meetings",{
+          toast.error("Failed to fetch meetings", {
             position: "bottom-right",
             pauseOnHover: false,
             transition: Bounce,
-          })
+          });
         }
 
         const data = await response.json();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setMeetings(data.bookings.map((meeting:any) => ({
-          mentorName: meeting.mentorName,
-          dateTime: new Date(meeting.dateTime).toLocaleString(), // Format date as needed
-          duration: `${meeting.duration} mins`, // Format duration as needed
-          status : meeting.status,
-          amount : meeting.amount
-        })));
+        setMeetings(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          data.bookings.map((meeting: any) => ({
+            mentorName: meeting.mentorName,
+            dateTime: new Date(meeting.dateTime).toLocaleString(), // Format date as needed
+            duration: `${meeting.duration} mins`, // Format duration as needed
+            status: meeting.status,
+            amount: meeting.amount,
+          }))
+        );
         setTotalCount(data.totalBookingsCount); // Adjust based on your API response structure
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (err:any) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);
@@ -63,10 +76,10 @@ const MenteeMeetings = () => {
     };
 
     fetchMeetings();
-  }, [pagination.pageIndex, pagination.pageSize]);
+  }, [pagination.pageIndex, pagination.pageSize,token]);
 
-  if (loading) return <Spinner/>;
-  if (error) return <div className="text-2xl font-semibold">{error}</div>
+  if (loading) return <Spinner />;
+  if (error) return <div className="text-2xl font-semibold">{error}</div>;
 
   // Calculate total pages
   const totalPages = Math.ceil(totalCount / pagination.pageSize);
@@ -92,11 +105,19 @@ const MenteeMeetings = () => {
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              <th className="text-left p-3 text-gray-500 font-medium">Mentor</th>
+              <th className="text-left p-3 text-gray-500 font-medium">
+                Mentor
+              </th>
               <th className="text-left p-3 text-gray-500 font-medium">Date</th>
-              <th className="text-left p-3 text-gray-500 font-medium">Duration</th>
-              <th className="text-left p-3 text-gray-500 font-medium">Status</th>
-              <th className="text-left p-3 text-gray-500 font-medium">Amount</th>
+              <th className="text-left p-3 text-gray-500 font-medium">
+                Duration
+              </th>
+              <th className="text-left p-3 text-gray-500 font-medium">
+                Status
+              </th>
+              <th className="text-left p-3 text-gray-500 font-medium">
+                Amount
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -108,15 +129,16 @@ const MenteeMeetings = () => {
                 <td className="p-3">
                   <span
                     className={`px-3 py-1 rounded-full text-xs ${
-                      meeting.status === 'COMPLETED'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-blue-100 text-blue-800'
+                      meeting.status === "COMPLETED"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-blue-100 text-blue-800"
                     }`}
                   >
                     {meeting.status}
                   </span>
                 </td>
-                <td className="p-3">${meeting.amount.toFixed(2)}</td> {/* Display Amount with Two Decimal Places */}
+                <td className="p-3">${meeting.amount.toFixed(2)}</td>{" "}
+                {/* Display Amount with Two Decimal Places */}
               </tr>
             ))}
           </tbody>
@@ -129,11 +151,11 @@ const MenteeMeetings = () => {
             disabled={pagination.pageIndex === 0}
             className="px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200"
           >
-            {'< Previous'}
+            {"< Previous"}
           </button>
 
           <span>
-            Page{' '}
+            Page{" "}
             <strong>
               {pagination.pageIndex + 1} of {totalPages}
             </strong>
@@ -144,7 +166,7 @@ const MenteeMeetings = () => {
             disabled={pagination.pageIndex >= totalPages - 1}
             className="px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200"
           >
-            {'Next >'}
+            {"Next >"}
           </button>
         </div>
       </div>

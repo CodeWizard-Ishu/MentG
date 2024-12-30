@@ -95,13 +95,20 @@ const Calender = () => {
     },
   });
 
-  const [saved, setSaved] = useState(false);
+  const [, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem('userToken')??"";
 
   const fetchAvailability = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/mentor/getAvailability/${userId}`);
+      const response = await fetch(`${BACKEND_URL}/api/mentor/getAvailability/${userId}`,{
+        method: "GET",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+      });
       if (!response.ok) {
         // throw new Error("Failed to fetch availability");
         toast.error("Failed to fetch availability", {
@@ -268,6 +275,7 @@ const Calender = () => {
           // Adjust the URL as needed
           method: "POST",
           headers: {
+            Authorization :token,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({

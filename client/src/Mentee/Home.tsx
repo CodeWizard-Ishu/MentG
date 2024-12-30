@@ -11,6 +11,7 @@ const Home: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedDomain, setSelectedDomain] = useState("");
+  const token = localStorage.getItem('userToken')??"";
 
   const options = [
     { label: "Technology", value: "Technology" },
@@ -18,17 +19,22 @@ const Home: React.FC = () => {
     { label: "Career", value: "Career" },
     { label: "Marketing", value: "Marketing" },
     { label: "Finance", value: "Finance" },
-    { label: "Health", value: "Health" },
     { label: "Engineering", value: "Engineering" },
-    { label: "Medical", value: "Medical" },
+    { label: "Health", value: "Health" },
+    { label: "Fitness", value: "Fitness" },
     { label: "Mental Fitness", value: "Mental Fitness" },
   ];
 
   const fetchMentors = async (domain: string) => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/mentee/getMentors?domain=${domain}&page=${currentPage}`
-      );
+        `${BACKEND_URL}/api/mentee/getMentors?domain=${domain}&page=${currentPage}`, {
+          method: "GET",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        });
       if (!response.ok) {
         // throw new Error("Network response was not ok");
         toast.error("Network response was not ok",{

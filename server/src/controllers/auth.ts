@@ -73,7 +73,7 @@ export const signupMentee = async (req: any, res: any) => {
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const response = await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         firstName,
         lastName,
@@ -84,7 +84,17 @@ export const signupMentee = async (req: any, res: any) => {
       },
     });
 
-    res.status(201).json({ msg: "Signup Success", response: response });
+    const menteeProfile = await prisma.menteeProfile.create({
+      data: {
+        userId: user.id, // Link to the newly created user
+        profilePicture: null, // Default value for profile picture
+        goals: null, // Goals of the mentee
+        bookings: { create: [] }, // Relationship to bookings
+        ratings: { create: [] }, // Relationship to ratings
+      },
+    });
+
+    res.status(201).json({ msg: "Signup Success", user, menteeProfile });
     console.log(`User signed up: ${email}`);
   } catch (e) {
     console.error(e);
@@ -104,18 +114,17 @@ export const login = async (req: any, res: any) => {
       return res.status(401).json({ msg: "Invalid credentials" });
     }
 
-    // const isMatch = await bcrypt.compare(password, user.password);
-    // if (!isMatch) {
-    //     return res.status(401).json({ msg: "Invalid credentials" });
-    // }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ msg: "Invalid credentials" });
+    }
 
-    // const secret : any = process.env.JWT_SECRET;
-    // const token = jwt.sign({ id: user.id }, secret, {
-    //     expiresIn: '1h', // Token expiration time
-    // });
+    const secret: any = process.env.JWT_SECRET;
+    const token = jwt.sign({ id: user.id }, secret, {
+      expiresIn: "3h", // Token expiration time
+    });
 
-    // res.status(200).json({ msg: "Login Success", token, user });
-    res.status(200).json({ user });
+    res.status(200).json({ msg: "Login Success", token, user });
   } catch (e) {
     console.error(e);
     res.status(500).json({ msg: "Login Failed" });

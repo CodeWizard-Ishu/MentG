@@ -3,138 +3,148 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id              Int             @id @default(autoincrement())
-  firstName       String   
-  lastName        String?  
-  email           String           @unique
-  password        String   
-  isMentor        Boolean   
-  isActive        Boolean   
+  id        Int     @id @default(autoincrement())
+  firstName String
+  lastName  String?
+  email     String  @unique
+  password  String
+  isMentor  Boolean
+  isActive  Boolean
 
   // Relationships
-  mentorProfile   MentorProfile?   @relation("UserMentorProfile")
-  menteeProfile   MenteeProfile?   @relation("UserMenteeProfile")
+  mentorProfile MentorProfile? @relation("UserMentorProfile")
+  menteeProfile MenteeProfile? @relation("UserMenteeProfile")
 }
 
 model MentorProfile {
-  id              Int             @id @default(autoincrement())
-  userId          Int             @unique
-  bio             String?
-  profilePicture  String?         // URL for the profile picture
-  services        Service[]       
-  experience      String?
-  rating          Float            @default(0) // Average rating calculated from ratings
-  bookings        Booking[]        // Relationship to bookings
+  id             Int       @id @default(autoincrement())
+  userId         Int       @unique
+  bio            String? // Brief biography of the mentor
+  profilePicture String? // URL for the profile picture
+  phoneNumber    String? // phone number of mentor
+  services       Service[] // Relationship to services offered by the mentor
+  experience     String? // Description of the mentor's experience
+  rating         Float     @default(0) // Average rating calculated from ratings
+  bookings       Booking[] // Relationship to bookings
+  linkedin       String?
+  twitter        String?
+  instagram      String?
+  totalEarnings  Float     @default(0) // Total earnings from bookings
+  totalBookings  Int       @default(0) // Total number of bookings received
+  uniqueMentees  Int       @default(0) // Number of unique mentees who have booked
 
-  totalEarnings   Float            @default(0) // Total earnings from bookings
-  totalBookings   Int              @default(0) // Total number of bookings received
-  uniqueMentees   Int              @default(0) // Number of unique mentees who have booked
+  domains Domain[] @relation("MentorDomains") // Areas of expertise
 
-  domains         Domain[]         @relation("MentorDomains")
+  ratings Rating[] // Relationship to ratings given by mentees
 
-  ratings         Rating[]         // Added relationship to ratings
+  user User @relation("UserMentorProfile", fields: [userId], references: [id])
 
-  user            User             @relation("UserMentorProfile", fields: [userId], references: [id])
-  
-  // New relationship for availability
-  availability    Availability[]    // Relationship to availability
+  availability Availability[] // Relationship to availability slots for bookings
 }
 
 model MenteeProfile {
-  id              Int             @id @default(autoincrement())
-  userId          Int             @unique
-  goals           String?
+  id             Int       @id @default(autoincrement())
+  userId         Int       @unique
+  goals          String? // Goals of the mentee
+  phoneNumber    String? // phone number of mentee
+  profilePicture String? // URL for the profile picture
+  linkedin       String?
+  twitter        String?
+  instagram      String?
+  bookings       Booking[] // Relationship to bookings
 
-  profilePicture  String?         // URL for the profile picture
+  ratings Rating[] // Relationship to ratings
 
-  domains         Domain[]         @relation("MenteeDomains")
-
-  bookings        Booking[]        // Added relationship to bookings
-
-  ratings         Rating[]         // Added relationship to ratings
-
-  user            User             @relation("UserMenteeProfile", fields: [userId], references: [id])
+  user User @relation("UserMenteeProfile", fields: [userId], references: [id])
 }
 
 model Service {
-  id              Int             @id @default(autoincrement())
-  name            String    
-  description     String?   
+  id          Int     @id @default(autoincrement())
+  name        String // Name of the service offered by the mentor
+  description String? // Description of the service
+  price       Float   @default(0) // Price for the service
+  mentorId    Int? // Foreign key linking to MentorProfile
 
-  // Relationship
-  mentorId        Int       
-  mentor          MentorProfile    @relation(fields: [mentorId], references: [id])
+  mentor MentorProfile? @relation(fields: [mentorId], references: [id])
 }
 
 model Booking {
-  id              Int             @id @default(autoincrement())
-  mentorId        Int
-  menteeId        Int
-  dateTime        DateTime
-  duration        Int              // Duration in minutes
-  payment         Float            // Payment amount
-  status          BookingStatus
+  id Int @id @default(autoincrement())
+
+  mentorId Int // Foreign key linking to MentorProfile
+  menteeId Int // Foreign key linking to MenteeProfile
+
+  dateTime DateTime // Date and time of the booking
+  duration Int // Duration in minutes
+  payment  Float // Payment amount
+  status   BookingStatus // Status of the booking
 
   // Relationships
-  mentor          MentorProfile    @relation(fields: [mentorId], references: [id])
-  mentee          MenteeProfile    @relation(fields: [menteeId], references: [id])
+  mentor MentorProfile @relation(fields: [mentorId], references: [id])
+  mentee MenteeProfile @relation(fields: [menteeId], references: [id])
 }
 
 model Domain {
-  id              Int             @id @default(autoincrement())
-  name            String           @unique
-  
+  id Int @id @default(autoincrement())
+
+  name String @unique
+
   // Many-to-many relationship with MentorProfile and MenteeProfile
-  mentors         MentorProfile[]   @relation("MentorDomains")
-  
-  mentees         MenteeProfile[]   @relation("MenteeDomains")
+  mentors MentorProfile[] @relation("MentorDomains")
 }
 
 model Rating {
-  id              Int             @id @default(autoincrement())
-  mentorId        Int
-  menteeId        Int
-  score           Int               // Rating score (e.g., from a scale of 1-5)
-  feedback        String?           // Optional feedback text
-  createdAt       DateTime         @default(now())
+  id       Int @id @default(autoincrement())
+  mentorId Int // Foreign key linking to MentorProfile
+  menteeId Int // Foreign key linking to MenteeProfile
 
+  score    Int // Rating score (must be between 1 and 5)
+  feedback String? // Optional feedback text
+
+  createdAt DateTime      @default(now())
   // Relationships
-  mentor          MentorProfile    @relation(fields: [mentorId], references: [id])
-  mentee          MenteeProfile    @relation(fields: [menteeId], references: [id])
+  mentor    MentorProfile @relation(fields: [mentorId], references: [id])
+  mentee    MenteeProfile @relation(fields: [menteeId], references: [id])
+
+  @@index([mentorId]) // Indexing mentorId for faster lookups 
+  @@index([menteeId]) // Indexing menteeId for faster lookups 
 }
 
 // New Availability model to store mentor availability details
 model Availability {
-    id              Int             @id @default(autoincrement())
-    mentorId        Int             // Foreign key to MentorProfile
-    
-    dayOfWeek       DayOfWeek       // Enum for days of the week (e.g., MONDAY, TUESDAY, etc.)
-    startTime       DateTime        // Start time of availability (e.g., "2024-12-14T09:00:00Z")
-    endTime         DateTime        // End time of availability (e.g., "2024-12-14T17:00:00Z")
+  id Int @id @default(autoincrement())
 
-    mentor          MentorProfile    @relation(fields: [mentorId], references: [id])
+  mentorId Int // Foreign key to MentorProfile
+
+  dayOfWeek DayOfWeek // Enum for days of the week (e.g., MONDAY, TUESDAY, etc.)
+
+  startTime DateTime // Start time of availability (e.g., "2024-12-14T09:00:00Z")
+
+  endTime DateTime // End time of availability (e.g., "2024-12-14T17:00:00Z")
+
+  mentor MentorProfile @relation(fields: [mentorId], references: [id])
 }
 
 // Enum for days of the week
 enum DayOfWeek {
-    MONDAY
-    TUESDAY
-    WEDNESDAY
-    THURSDAY
-    FRIDAY
-    SATURDAY
-    SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
 }
 
 enum BookingStatus {
-    PENDING
-    CONFIRMED
-    COMPLETED
-    CANCELED
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELED
 }
