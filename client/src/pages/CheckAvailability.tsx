@@ -120,110 +120,114 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-sky-100">
-      <Header/>
-      
-      <Card className="mt-16 max-w-3xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold text-center">
-            Book Your Appointment
-          </CardTitle>
-          <p className="text-center text-gray-600">
-            Book up to {maxBookingDays} days in advance
-          </p>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Calendar Section */}
-            <div className="bg-white rounded-lg p-4">
-              <h3 className="text-lg font-semibold mb-4">Select Date</h3>
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={handleDateSelect}
-                disabled={{
-                  before: dateBounds.minDate,
-                  after: dateBounds.maxDate,
-                }}
-                className="rounded-md border"
-              />
-            </div>
+    <div className="min-h-screen bg-sky-200">
+      <Header />
 
-            {/* Time Slots Section */}
-            <div className="bg-white rounded-lg p-4">
-              <h3 className="text-lg font-semibold mb-4">
-                {selectedDate
-                  ? `Available Time Slots for ${selectedDate.toLocaleDateString(
-                      "en-IN"
-                    )} (IST)`
-                  : "Please select a date to view available time slots"}
-              </h3>
-              <div className="grid grid-cols-1 gap-2">
-                {selectedDate &&
-                  timeSlots.map((slot) => (
-                    <Button
-                      key={slot.id}
-                      variant={
-                        selectedTimeSlot?.id === slot.id ? "default" : "outline"
-                      }
-                      disabled={!slot.available}
-                      onClick={() => handleTimeSlotSelect(slot)}
-                      className={`flex items-center justify-center p-2 ${
-                        !slot.available ? "bg-gray-100" : ""
-                      } ${
-                        selectedTimeSlot?.id === slot.id
-                          ? "ring-2 ring-primary"
-                          : ""
-                      }`}
-                    >
-                      <Clock className="w-4 h-4 mr-2" />
-                      <span>
-                        {formatTime(slot.startTime)} -{" "}
-                        {formatTime(slot.endTime)}
-                      </span>
-                    </Button>
-                  ))}
-                {!selectedDate && (
-                  <p className="text-gray-500 text-center p-4">
-                    Select a date to view available time slots
-                  </p>
-                )}
+      <div className="px-4 sm:px-6 lg:px-8 pb-10">
+        <Card className="mt-16 max-w-3xl mx-auto">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-2xl sm:text-3xl font-bold text-center">
+              Book Your Appointment
+            </CardTitle>
+            <p className="text-center text-gray-600">
+              Book up to {maxBookingDays} days in advance
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Calendar Section */}
+              <div className="bg-white rounded-lg p-4">
+                <h3 className="text-lg font-semibold mb-4">Select Date</h3>
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={handleDateSelect}
+                  disabled={{
+                    before: dateBounds.minDate,
+                    after: dateBounds.maxDate,
+                  }}
+                  className="rounded-md border"
+                />
+              </div>
+
+              {/* Time Slots Section */}
+              <div className="bg-white rounded-lg p-4">
+                <h3 className="text-lg font-semibold mb-4">
+                  {selectedDate
+                    ? `Available Time Slots for ${selectedDate.toLocaleDateString(
+                        "en-IN"
+                      )} (IST)`
+                    : "Please select a date to view available time slots"}
+                </h3>
+                <div className="grid grid-cols-1 gap-2">
+                  {selectedDate &&
+                    timeSlots.map((slot) => (
+                      <Button
+                        key={slot.id}
+                        variant={
+                          selectedTimeSlot?.id === slot.id
+                            ? "default"
+                            : "outline"
+                        }
+                        disabled={!slot.available}
+                        onClick={() => handleTimeSlotSelect(slot)}
+                        className={`flex items-center justify-center p-2 ${
+                          !slot.available ? "bg-gray-100" : ""
+                        } ${
+                          selectedTimeSlot?.id === slot.id
+                            ? "ring-2 ring-primary"
+                            : ""
+                        }`}
+                      >
+                        <Clock className="w-4 h-4 mr-2" />
+                        <span>
+                          {formatTime(slot.startTime)} -{" "}
+                          {formatTime(slot.endTime)}
+                        </span>
+                      </Button>
+                    ))}
+                  {!selectedDate && (
+                    <p className="text-gray-500 text-center p-4">
+                      Select a date to view available time slots
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Error Message */}
-          {error && (
-            <Alert variant="destructive" className="mt-4">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
+            {/* Error Message */}
+            {error && (
+              <Alert variant="destructive" className="mt-4">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
 
-          {/* Selected Details */}
-          {selectedDate && selectedTimeSlot && (
-            <div className="mt-4 p-4 bg-gray-300 rounded-lg">
-              <h4 className="font-semibold">Selected Slot:</h4>
-              <p>
-                Date: {selectedDate.toLocaleDateString("en-IN")}
-                <br />
-                Time: {formatTime(selectedTimeSlot.startTime)} -{" "}
-                {formatTime(selectedTimeSlot.endTime)} IST
-              </p>
+            {/* Selected Details */}
+            {selectedDate && selectedTimeSlot && (
+              <div className="mt-4 p-4 bg-gray-300 rounded-lg">
+                <h4 className="font-semibold">Selected Slot:</h4>
+                <p>
+                  Date: {selectedDate.toLocaleDateString("en-IN")}
+                  <br />
+                  Time: {formatTime(selectedTimeSlot.startTime)} -{" "}
+                  {formatTime(selectedTimeSlot.endTime)} IST
+                </p>
+              </div>
+            )}
+
+            {/* Submit Button */}
+            <div className="mt-8 text-center">
+              <Button
+                onClick={handleSubmit}
+                disabled={!selectedDate || !selectedTimeSlot}
+                className="w-full md:w-auto bg-[#08286b] hover:bg-[#08276bcc]"
+              >
+                Confirm Slot
+              </Button>
             </div>
-          )}
-
-          {/* Submit Button */}
-          <div className="mt-8 text-center">
-            <Button
-              onClick={handleSubmit}
-              disabled={!selectedDate || !selectedTimeSlot}
-              className="w-full md:w-auto"
-            >
-              Confirm Slot
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

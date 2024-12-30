@@ -12,7 +12,7 @@ interface Services {
 }
 
 const ProfilePage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("sessions");
+  const [activeTab, setActiveTab] = useState("services");
   const [serviceTab, setServiceTab] = useState<string>("");
   const { userId } = useParams();
   const navigate = useNavigate();
@@ -29,8 +29,6 @@ const ProfilePage: React.FC = () => {
         );
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
-
-        // Set profile data and services
         setProfileData(data);
         setServices(data.services);
       } catch (error) {
@@ -47,37 +45,44 @@ const ProfilePage: React.FC = () => {
   };
 
   if (!profileData) {
-    return <Spinner clasName="min-h-screen content-center" />; // Handle loading state
+    return <Spinner clasName="min-h-screen content-center" />;
   }
 
   return (
-    <div className="min-h-screen bg-sky-100">
-      <header className="top-0 z-50 bg-sky-100 backdrop-blur-md flex justify-between items-center p-6 shadow-md">
+    <div className="min-h-screen bg-sky-200">
+      <header className="sticky top-0 z-50 bg-[#08286b] flex justify-between items-center p-3 md:p-4 lg:p-6 shadow-md">
         <div>
           <a href="/" className="flex items-center">
-            <img src={Logo} alt="Logo" className="h-10 w-10" />
-            <span className="font-bold text-2xl">MentG</span>
+            <img
+              src={Logo}
+              alt="Logo"
+              className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
+            />
           </a>
         </div>
       </header>
 
-      <div className="min-h-screen flex justify-center items-center">
-        <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl grid grid-cols-3 overflow-hidden">
+      <div className="min-h-screen flex justify-center items-center p-4">
+        <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl grid grid-cols-1 md:grid-cols-3 overflow-hidden">
           {/* Sidebar Profile Section */}
-          <div className="col-span-1 bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-8 relative">
+          <div className="col-span-1 bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-4 md:p-8 relative">
             <div className="flex flex-col items-center">
-              <img
-                src="https://img.freepik.com/free-photo/portrait-handsome-hipster-man-glasses-3d-rendering_1142-51612.jpg?t=st=1733590809~exp=1733594409~hmac=9e08d769b04a2fdaf8018054b9eabb4bd1bb0fc810193338363431e4b0f3707c&w=740"
-                alt="Profile"
-                className="w-36 h-36 rounded-full border-4 border-white/30 mb-6 shadow-lg"
-              />
+              <div className="flex flex-col items-center">
+                <img
+                  src="https://img.freepik.com/free-photo/portrait-handsome-hipster-man-glasses-3d-rendering_1142-51612.jpg?t=st=1733590809~exp=1733594409~hmac=9e08d769b04a2fdaf8018054b9eabb4bd1bb0fc810193338363431e4b0f3707c&w=740"
+                  alt="Profile"
+                  className="w-24 h-24 md:w-36 md:h-36 rounded-full border-4 border-white/30 mb-4 md:mb-6 shadow-lg"
+                />
 
-              <h1 className="text-2xl font-bold mb-2">
-                {profileData.fullName}
-              </h1>
-              <p className="text-sm text-purple-200 mb-4">{profileData.bio}</p>
+                <h1 className="text-xl md:text-2xl font-bold mb-2">
+                  {profileData.fullName}
+                </h1>
+                <p className="text-xs md:text-sm text-purple-200 mb-4 text-center truncate">
+                  {profileData.bio}
+                </p>
+              </div>
 
-              <div className="grid grid-cols-3 gap-4 w-full text-center mb-6">
+              <div className="grid grid-cols-3 gap-2 md:gap-4 w-full text-center mb-4 md:mb-6">
                 {[
                   {
                     icon: Users,
@@ -95,63 +100,72 @@ const ProfilePage: React.FC = () => {
                     label: "Sessions Taken",
                   },
                 ].map((stat) => (
-                  <div key={stat.label} className="bg-white/20 rounded-lg p-3">
+                  <div
+                    key={stat.label}
+                    className="bg-white/20 rounded-lg p-2 md:p-3"
+                  >
                     <div className="flex justify-center items-center space-x-1 mb-1">
-                      <stat.icon className="w-5 h-5 text-white" />
-                      <p className="text-sm font-semibold text-white">
+                      <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                      <p className="text-xs md:text-sm font-semibold text-white">
                         {stat.value}
                       </p>
                     </div>
-                    <p className="text-xs text-purple-200">{stat.label}</p>
+                    <p className="text-[10px] md:text-xs text-purple-200">
+                      {stat.label}
+                    </p>
                   </div>
                 ))}
               </div>
             </div>
+
             <div className="border-t pt-4 pb-4">
-              <span className="text-lg font-semibold mb-3">Domain : </span>
-              <span className="text-xs">
-                {
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  profileData.domains.map((domain: any, idx: any) => (
-                    <span
-                      key={idx}
-                      className="bg-indigo-50 text-indigo-700 text-xs mx-2 px-3 py-1 rounded-full"
-                    >
-                      {domain}
-                    </span>
-                  ))
-                }
-              </span>
+              <div className="flex flex-col space-y-2">
+                <span className="text-base md:text-lg font-semibold">
+                  Domain:
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    profileData.domains.map((domain: any, idx: any) => (
+                      <span
+                        key={idx}
+                        className="bg-indigo-50 text-indigo-700 text-xs px-2 md:px-3 py-1 rounded-full"
+                      >
+                        {domain}
+                      </span>
+                    ))
+                  }
+                </div>
+              </div>
             </div>
 
             <div className="border-t pt-4">
-              {" "}
-              <h3 className="text-lg font-semibold mb-3">Expertise</h3>{" "}
+              <h3 className="text-base md:text-lg font-semibold mb-3">
+                Services providing:
+              </h3>
               <div className="flex flex-wrap gap-2">
-                {" "}
                 {services.map((service) => (
                   <span
                     key={service.id}
-                    className="bg-indigo-50 text-indigo-700 text-xs px-3 py-1 rounded-full"
+                    className="bg-indigo-50 text-indigo-700 text-xs px-2 md:px-3 py-1 rounded-full"
                   >
-                    {" "}
-                    {service.name}{" "}
+                    {service.name}
                   </span>
-                ))}{" "}
-              </div>{" "}
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Main Content Area */}
-          <div className="col-span-2 bg-white">
+          <div className="col-span-1 md:col-span-2 bg-white">
             {/* Tabs */}
             <div className="border-b">
               <div className="flex">
-                {["sessions", "about", "reviews"].map((tab) => (
+                {["services", "about", "reviews"].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`flex-1 py-4 text-md font-medium border-b-2 transition-colors ${
+                    className={`flex-1 py-3 md:py-4 text-sm md:text-md font-medium border-b-2 transition-colors ${
                       activeTab === tab
                         ? "border-black text-black"
                         : "border-transparent text-gray-500 hover:border-gray-300"
@@ -164,52 +178,52 @@ const ProfilePage: React.FC = () => {
             </div>
 
             {/* Tab Content */}
-            <div className="p-8">
-              {activeTab === "sessions" && (
+            <div className="p-4 md:p-8">
+              {activeTab === "services" && (
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800 mb-6">
+                  <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">
                     Available Services
                   </h2>
 
                   {services &&
                     services.map((service) => (
-                      <div key={service.id} className="mb-8 space-y-4">
+                      <div key={service.id} className="mb-4 md:mb-8 space-y-4">
                         <button
                           onClick={() => setServiceTab(service.name)}
-                          className={`flex items-center justify-between w-full p-4 rounded-xl transition-colors ${
+                          className={`flex items-center justify-between w-full p-3 md:p-4 rounded-xl transition-colors ${
                             serviceTab === service.name
                               ? "bg-indigo-500 text-black"
                               : "bg-sky-100"
                           }`}
                         >
-                          <div className="flex items-center space-x-4">
-                            <div className="bg-indigo-100 p-3 rounded-full">
-                              <Video className="w-6 h-6 text-black" />
+                          <div className="flex items-center space-x-3 md:space-x-4">
+                            <div className="bg-indigo-100 p-2 md:p-3 rounded-full">
+                              <Video className="w-5 h-5 md:w-6 md:h-6 text-black" />
                             </div>
                             <div className="text-left">
-                              {" "}
-                              {/* Added text-left for left alignment */}
-                              <h3 className="text-sm font-semibold text-black">
+                              <h3 className="text-xs md:text-sm font-semibold text-black">
                                 {service.name}
                               </h3>
-                              <p className="text-xs text-black">
+                              <p className="text-[10px] md:text-xs text-black">
                                 {service.description}
                               </p>
                             </div>
                           </div>
-                          <span className="font-semibold text-black">Free</span>
+                          <span className="text-xs md:text-sm font-semibold text-black">
+                            Free
+                          </span>
                         </button>
                       </div>
                     ))}
 
                   {/* Book Session Button */}
-                  <div className="p-8">
+                  <div className="p-4 md:p-8">
                     <button
                       disabled={!serviceTab}
-                      className="w-full bg-black text-white font-semibold text-lg py-4 rounded-xl flex items-center justify-center space-x-3 hover:bg-gray-700 disabled:opacity-50"
+                      className="w-full bg-[#08286b] text-white font-semibold text-base md:text-lg py-3 md:py-4 rounded-xl flex items-center justify-center space-x-3 hover:bg-[#08276bcc] disabled:opacity-50"
                       onClick={handleBook}
                     >
-                      {loading ? <Spinner/> : "Book Service"}
+                      {loading ? <Spinner /> : "Book Service"}
                     </button>
                   </div>
                 </div>
@@ -217,13 +231,15 @@ const ProfilePage: React.FC = () => {
 
               {activeTab === "about" && (
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">Bio</h2>
-                  {profileData.bio}
+                  <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">
+                    Bio
+                  </h2>
+                  <p className="text-sm md:text-base">{profileData.bio}</p>
                 </div>
               )}
 
               {activeTab === "reviews" && (
-                <div className="text-center text-gray-500 py-12">
+                <div className="text-center text-gray-500 py-8 md:py-12 text-sm md:text-base">
                   No reviews yet
                 </div>
               )}

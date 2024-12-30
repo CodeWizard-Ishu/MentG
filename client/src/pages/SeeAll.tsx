@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ProfileCard from "../components/ui/ProfileCard";
-import { Facebook, Instagram, Linkedin, MapPin, Twitter } from "lucide-react";
 import Logo from "../assets/logo.png";
 import BACKEND_URL from "../endpoint";
 import { Bounce, toast } from "react-toastify";
+import Footer from "../components/Footer";
 
 interface AboutUsProps {
   loggedIn: boolean;
@@ -12,10 +12,9 @@ interface AboutUsProps {
   onLogout: () => void;
 }
 
-
 const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
   const { domain } = useParams();
-  const domainName: string = domain || 'Technology'; 
+  const domainName: string = domain || "Technology";
   const [mentors, setMentors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -36,7 +35,7 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
           position: "bottom-right",
           pauseOnHover: false,
           transition: Bounce,
-        })
+        });
       }
       const data = await response.json();
       setMentors(data.mentors);
@@ -47,7 +46,7 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
-      })
+      });
     }
   };
 
@@ -66,46 +65,49 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
   return (
     <div className="min-h-screen bg-sky-100">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md flex justify-between items-center p-6 shadow-md">
+      <header className="sticky top-0 z-50 bg-[#08286b] flex justify-between items-center p-3 md:p-4 lg:p-6 shadow-md">
         <div>
           <a href="/" className="flex items-center">
-            <img src={Logo} alt="Logo" className="h-12 w-12" />
-            <span className="font-bold text-2xl">MentG</span>
+            <img
+              src={Logo}
+              alt="Logo"
+              className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
+            />
           </a>
         </div>
         {!loggedIn ? (
-          <div className="space-x-4">
+          <div className="space-x-2 md:space-x-4">
             <Link to="/login">
-              <button className="px-4 py-2 text-black border rounded-lg hover:border-black transition">
+              <button className="px-2 md:px-4 py-1.5 md:py-2 text-white text-sm md:text-base lg:text-base border rounded-lg hover:border-gray-500 transition">
                 Login
               </button>
             </Link>
 
             <Link to="/signup">
-              <button className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-700">
+              <button className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-sm md:text-base lg:text-base text-black rounded-md hover:bg-gray-300 transition-colors">
                 Join Now
               </button>
             </Link>
           </div>
         ) : (
-          <div className="space-x-4">
+          <div className="space-x-2 md:space-x-4">
             <Link to="/">
               <button
                 onClick={onLogout}
-                className="px-4 py-2 text-black border rounded-lg hover:border-black transition"
+                className="px-2 md:px-4 py-1.5 md:py-2 text-white text-sm md:text-base lg:text-base border rounded-lg hover:border-gray-500 transition"
               >
                 Logout
               </button>
             </Link>
             {mentor ? (
               <Link to="/dashboard">
-                <button className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
+                <button className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-black text-sm md:text-base lg:text-base rounded-md hover:bg-gray-300 transition-colors">
                   Dashboard
                 </button>
               </Link>
             ) : (
               <Link to="/dashboard/mentee">
-                <button className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
+                <button className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-black text-sm md:text-base lg:text-base rounded-md hover:bg-gray-300 transition-colors">
                   Dashboard
                 </button>
               </Link>
@@ -115,10 +117,10 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
       </header>
 
       <section>
-        <div className="container mx-auto px-16 py-16 min-h-screen bg-sky-100">
-          <h1 className="text-5xl font-bold underline">{domain} :</h1>
-          <div className="mt-24 mb-24">
-            <div className="grid md:grid-cols-5 gap-8">
+        <div className="container mx-auto px-4 md:px-8 lg:px-16 py-8 md:py-12 lg:py-16 min-h-screen bg-sky-100">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold underline">{domain} :</h1>
+          <div className="mt-12 md:mt-16 lg:mt-24 mb-12 md:mb-16 lg:mb-24">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 lg:gap-8">
               {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 mentors.map((mentor: any, idx: any) => (
@@ -168,105 +170,7 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-black text-white py-12">
-        <div className="mx-auto w-full max-w-screen-2xl p-4 py-6 lg:py-8">
-          <div className="md:flex md:justify-between">
-            <div className="mb-6 md:mb-0">
-              <a href="/" className="flex items-center">
-                <img
-                  src="https://i.ibb.co/B4LTdRP/logo-light.png"
-                  className="h-12 me-3"
-                  alt="MentG Logo"
-                />
-                <span className="self-center text-3xl font-semibold whitespace-nowrap">
-                  MentG
-                </span>
-              </a>
-              <address className="flex justify-between text-gray-500 not-italic mt-9">
-                <MapPin size={28} className="mt-2 mr-4 text-white" /> Navi
-                Mumbai, Maharashtra
-                <br />
-                India
-              </address>
-            </div>
-            <div className="grid grid-cols-2 gap-8 sm:gap-20 sm:grid-cols-2">
-              <div>
-                <h2 className="mb-6 text-sm font-semibold uppercase">
-                  Company
-                </h2>
-                <ul className="text-gray-500 font-medium">
-                  <li className="mb-4">
-                    <a href="/about" className="hover:underline">
-                      About
-                    </a>
-                  </li>
-                  <li className="mb-4">
-                    <a href="/contact" className="hover:underline">
-                      Contact Us
-                    </a>
-                  </li>
-                  <li className="mb-4">
-                    <a href="#" className="hover:underline">
-                      Privacy Policy
-                    </a>
-                  </li>
-                  <li className="mb-4">
-                    <a href="#" className="hover:underline">
-                      Terms & Conditions
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h2 className="mb-6 text-sm font-semibold uppercase">
-                  Platform
-                </h2>
-                <ul className="text-gray-500 font-medium">
-                  <li className="mb-4">
-                    <a href="#" className="hover:underline ">
-                      Pricing
-                    </a>
-                  </li>
-                  <li className="mb-4">
-                    <a href="#" className="hover:underline">
-                      Blog
-                    </a>
-                  </li>
-                  <li className="mb-4">
-                    <a href="#" className="hover:underline">
-                      Community
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <hr className="my-6 border-gray-200 sm:mx-auto lg:my-8" />
-          <div className="sm:flex sm:items-center sm:justify-between">
-            <span className="text-sm text-gray-500 sm:text-center">
-              © 2024{" "}
-              <a href="/" className="hover:underline">
-                MentG™
-              </a>
-              . All Rights Reserved.
-            </span>
-            <div className="flex mt-4 sm:justify-center sm:mt-0 space-x-6">
-              <a href="https://www.linkedin.com/company/mentg/">
-                <Linkedin />
-              </a>
-              <a href="#">
-                <Instagram />
-              </a>
-              <a href="#">
-                <Facebook />
-              </a>
-              <a href="#">
-                <Twitter />
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer/>
     </div>
   );
 };

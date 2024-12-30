@@ -3,6 +3,7 @@ import { User } from "lucide-react";
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import BACKEND_URL from "../endpoint";
 import { Link } from "react-router-dom";
+import Spinner from "../components/ui/Spinner";
 
 interface FormValues {
   profileImage: string | null;
@@ -54,7 +55,7 @@ const ProfileDetails: React.FC = () => {
   }, []);
 
   if (!user) {
-    return <div>Loading...</div>; // Optionally show a loading indicator
+    return <Spinner/>; // Optionally show a loading indicator
   }
 
   const initialValues: FormValues = {

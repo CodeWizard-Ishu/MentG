@@ -20,7 +20,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       <img src={imageUrl} alt={name} className="object-cover" />
       <div className="pt-4">
         <h3 className="text-md font-bold truncate">{name}</h3>
-        <p className="text-xs text-gray-600 mt-2">{desc}</p>
+        <p className="text-xs text-gray-600 mt-2 truncate">{desc}</p>
       </div>
     </div>
   );
