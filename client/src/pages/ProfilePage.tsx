@@ -50,7 +50,7 @@ const ProfilePage: React.FC = () => {
   }, [userId]);
 
   const handleBook = () => {
-    navigate("/availability");
+    navigate(`/availability/${userId}`);
     setLoading(false);
   };
 

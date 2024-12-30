@@ -17,6 +17,7 @@ import { getProfileData } from "../controllers/mentors/mentorProfile";
 import { getMentorDetails, updateMentorDetails } from "../controllers/mentors/mentorDetails";
 import { getMenteeDetails } from "../controllers/mentee/menteeDetails";
 import verifyToken from "../middleware/auth";
+import { getBookingAvailablity } from "../controllers/bookings/Availablity";
 
 const router = express.Router();
 
@@ -44,5 +45,8 @@ router.get("/api/data/mentor/:id", getProfileData);
 router.get("/api/mentorDetails/:mentorId",verifyToken, getMentorDetails);
 router.put("/api/updateMentorDetails/:mentorId",verifyToken, updateMentorDetails);
 router.get("/api/menteeDetails/:menteeId", getMenteeDetails);
+
+
+router.get("/api/availability/:mentorId",getBookingAvailablity);
 
 export default router;
