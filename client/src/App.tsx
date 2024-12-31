@@ -88,8 +88,8 @@ function App() {
             />
           }
         />
-        <Route path="/availability" element={<CheckAvailability />} />
-        <Route path="/booking" element={<BookingPage />} />
+        <Route path="/availability/:mentorId" element={<CheckAvailability />} />
+        <Route path="/booking/:mentorId" element={<BookingPage />} />
         <Route
           path="/about"
           element={

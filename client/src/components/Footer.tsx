@@ -4,7 +4,7 @@ import { Facebook, Instagram, Linkedin, MapPin, Twitter } from "lucide-react";
 const Footer = () => {
   return (
     <div>
-      <footer className="bg-[#08286b] text-white py-8 md:py-12">
+      <footer className="bg-[#08286b] text-white">
         <div className="mx-auto w-full max-w-screen-2xl p-4 py-4 md:py-6 lg:py-8">
           <div className="md:flex md:justify-between">
             <div className="mb-6 md:mb-0">
@@ -71,7 +71,7 @@ const Footer = () => {
               </div>
             </div>
           </div>
-          <hr className="my-4 md:my-6 lg:my-8 border-gray-200 sm:mx-auto" />
+          <hr className="my-2 md:my-4 lg:my-8 border-gray-200 sm:mx-auto" />
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0">
             <span className="text-xs md:text-sm text-gray-400 text-left">
               © 2024{" "}

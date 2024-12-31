@@ -13,7 +13,6 @@ import {
   TabletSmartphone,
 } from "lucide-react";
 import ProfileCard from "../components/ui/ProfileCard";
-import ScrollToTop from "../components/ui/ScrollToTop";
 import Footer from "../components/Footer";
 
 interface LandingPageProps {
@@ -317,7 +316,6 @@ const LandingPage: React.FC<LandingPageProps> = ({
 
       {/* Footer */}
       <Footer />
-      <ScrollToTop />
     </div>
   );
 };
