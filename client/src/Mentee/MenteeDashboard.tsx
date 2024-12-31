@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from "react";
+import React, { useState, ReactNode, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Calendar,
@@ -15,6 +15,7 @@ import Meetings from "./Meetings";
 import Messages from "./Messages";
 import Settings from "./ProfileSettings";
 import Logo from "../assets/logo.png";
+import BACKEND_URL from "../endpoint";
 
 interface NavItem {
   name: string;
@@ -27,8 +28,36 @@ interface MenteeDashboardProps {
 }
 const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
-  const [profilePicture] = useState<string>("https://shorturl.at/Pfj9i");
+  const [profilePicture,setProfilePicture] = useState<string>("https://shorturl.at/Pfj9i");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
+  const fullName = localStorage.getItem("fullName") || "Mentee";
+
+  const getMenteeDetails = async () => {
+    const response = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`, {
+      method: "GET",
+      headers: {
+        Authorization: token,
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    setProfilePicture(data.profilePicture);
+    const capitalize = (string: string) => {
+      if (!string) return "";
+      return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    };
+    const formattedName = `${capitalize(data.user.firstName)} ${capitalize(
+      data.user.lastName
+    )}`;
+    localStorage.setItem("fullName",formattedName);
+  };
+
+  useEffect(()=>{
+    getMenteeDetails();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[activeTab]);
 
   const navItems: NavItem[] = [
     { name: "Home", icon: <HomeIcon />, tab: "home" },
@@ -55,9 +84,6 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
-
-  const userId = localStorage.getItem("userId");
-  const fullName = localStorage.getItem("fullName") || "Mentee";
   
   return (
     <div>

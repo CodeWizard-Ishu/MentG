@@ -229,6 +229,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 mentorsData.map((mentor: any) => (
                   <Link
+                    key={mentor.id}
                     to={`/profile/${mentor.userId}`}
                     style={{ textDecoration: "none" }}
                   >

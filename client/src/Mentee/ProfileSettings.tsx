@@ -35,7 +35,7 @@ const ProfileDetails: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [user, setUser] = useState<User>();
   const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("userToken")??"";
+  const token = localStorage.getItem("userToken") ?? "";
 
   const getMenteeDetails = async () => {
     const response = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`, {
@@ -45,8 +45,8 @@ const ProfileDetails: React.FC = () => {
         "Content-Type": "application/json",
       },
     });
-    setUser(await response.json());
-    console.log(await response.json());
+    const data = await response.json();
+    setUser(data);
   };
 
   useEffect(() => {
@@ -149,6 +149,7 @@ const ProfileDetails: React.FC = () => {
       }
 
       alert("Changes saved successfully!");
+      getMenteeDetails();
       setSubmitting(false);
     } catch (error) {
       console.error(error);
