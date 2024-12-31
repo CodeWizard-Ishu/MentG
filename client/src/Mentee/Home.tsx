@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ProfileCard from "../components/ui/ProfileCard";
 import Dropdown from "../components/ui/Dropdown";
@@ -6,7 +6,7 @@ import BACKEND_URL from "../endpoint";
 import Logo from '../assets/logo.png';
 import { Bounce, toast } from "react-toastify";
 
-const Home: React.FC = () => {
+const Home = () => {
   const [mentors, setMentors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);

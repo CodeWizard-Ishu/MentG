@@ -24,6 +24,7 @@ interface MenteeDashboardProps {
 }
 const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
+  const [profilePicture] = useState<string>("https://shorturl.at/Pfj9i");
 
   const navItems: NavItem[] = [
     { name: "Home", icon: <HomeIcon />, tab: "home" },
@@ -57,9 +58,8 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
               <img
                 src={Logo}
                 alt="Logo"
-                className="h-10 w-10"
+                className="h-10 w-full"
               />
-              <span className="text-2xl font-bold">MentG</span>
             </a>
           </div>
           <nav className="p-4">
@@ -85,7 +85,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
           <div className="border-b p-6">
             <div className="flex items-center">
               <img
-                src="https://img.freepik.com/premium-vector/young-man-face-avater-vector-illustration-design_968209-13.jpg"
+                src={profilePicture}
                 alt="User Image"
                 className="w-20 h-20 rounded-full"
               />

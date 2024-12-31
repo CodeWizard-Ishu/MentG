@@ -18,6 +18,7 @@ interface Meeting {
   duration: number; // Changed to match your backend response
   status: string;
 }
+
 interface DashboardProps {
   getProfilePicture?: (profilePicture: string) => void; // Function to receive profile picture
 }

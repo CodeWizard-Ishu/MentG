@@ -1,12 +1,30 @@
 import React, { useEffect, useRef, useState } from "react";
 import { User } from "lucide-react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FormikHelpers } from "formik";
 import BACKEND_URL from "../endpoint";
+import Pica from "pica";
+
+interface FormValues {
+  profilePicture: string | null;
+  firstName: string;
+  lastName: string | null;
+  goals: string | null;
+  linkedin: string | null;
+  instagram: string | null;
+  twitter: string | null;
+  phoneNumber: string | null;
+  email: string;
+}
+
 interface User {
   id: number;
   userId: number;
   goals: string | null;
   profilePicture: string | null;
+  linkedin: string | null;
+  instagram: string | null;
+  twitter: string | null;
+  phoneNumber: string | null;
   user: {
     firstName: string;
     lastName: string | null;
@@ -17,9 +35,16 @@ const ProfileDetails: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [user, setUser] = useState<User>();
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken")??"";
 
   const getMenteeDetails = async () => {
-    const response = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`);
+    const response = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`, {
+      method: "GET",
+      headers: {
+        Authorization: token,
+        "Content-Type": "application/json",
+      },
+    });
     setUser(await response.json());
     console.log(await response.json());
   };
@@ -31,33 +56,104 @@ const ProfileDetails: React.FC = () => {
 
   if (!user) return <div>Loading...</div>;
 
-  const initialValues = {
-    profileImage: null as string | null,
+  const initialValues: FormValues = {
+    profilePicture: user.profilePicture,
     firstName: user.user.firstName,
     lastName: user.user.lastName,
-    about: user.goals,
-    socialLinks: {
-      linkedin: "",
-      instagram: "",
-      twitter: "",
-    },
+    goals: user.goals,
+    phoneNumber: user.phoneNumber,
+    linkedin: user.linkedin,
+    instagram: user.instagram,
+    twitter: user.twitter,
     email: user.user.email,
-    password: "",
-    confirmPassword: "",
   };
 
-  const handleImageUpload = (
+  const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setFieldValue: (field: string, value: any) => void
   ) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Create an image element
+      const img = new Image();
       const reader = new FileReader();
+
       reader.onloadend = () => {
-        setFieldValue("profileImage", reader.result as string);
+        img.src = reader.result as string; // Set image source to FileReader result
       };
-      reader.readAsDataURL(file);
+
+      img.onload = async () => {
+        // Create a canvas element for resizing
+        const canvas = document.createElement("canvas");
+        const pica = new Pica(); // Initialize Pica
+
+        // Set desired dimensions for the resized image
+        const MAX_WIDTH = 300;
+        const MAX_HEIGHT = 300;
+
+        let width = img.width;
+        let height = img.height;
+
+        // Calculate new dimensions while maintaining aspect ratio
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width; // Set canvas width
+        canvas.height = height; // Set canvas height
+
+        try {
+          // Use Pica to resize the image
+          await pica.resize(img, canvas);
+          // Convert the resized canvas to a Base64 image
+          const resizedImageDataUrl = canvas.toDataURL("image/webp", 0.9);
+          // Get compressed file size in KB
+          setFieldValue("profilePicture", resizedImageDataUrl); // Set the resized image as Base64
+        } catch (error) {
+          console.error("Error resizing image with Pica:", error);
+        }
+      };
+
+      reader.readAsDataURL(file); // Read the file as Data URL
+    }
+  };
+
+  const handleSubmit = async (
+    values: FormValues,
+    { setSubmitting }: FormikHelpers<FormValues>
+  ) => {
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/updateMenteeDetails/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update mentor details");
+      }
+
+      alert("Changes saved successfully!");
+      setSubmitting(false);
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred while saving changes.");
+      setSubmitting(false);
     }
   };
 
@@ -67,22 +163,15 @@ const ProfileDetails: React.FC = () => {
         <div className="w-full md:w-2/4">
           <h2 className="text-2xl font-bold mb-4">Profile Details</h2>
 
-          <Formik
-            initialValues={initialValues}
-            onSubmit={(values, { setSubmitting }) => {
-              console.log(values);
-              alert("Changes saved successfully!");
-              setSubmitting(false);
-            }}
-          >
+          <Formik initialValues={initialValues} onSubmit={handleSubmit}>
             {({ values, errors, touched, setFieldValue, isSubmitting }) => (
               <Form>
                 <div className="flex items-center justify-between space-x-6 mb-6">
                   <div className="relative font-medium">
                     <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                      {values.profileImage ? (
+                      {values.profilePicture ? (
                         <img
-                          src={values.profileImage}
+                          src={values.profilePicture}
                           alt="Profile"
                           className="w-full h-full object-cover"
                         />
@@ -146,14 +235,14 @@ const ProfileDetails: React.FC = () => {
                     About Yourself
                   </label>
                   <Field
-                    name="about"
+                    name="goals"
                     as="textarea"
                     className="block w-full border rounded p-2"
                     placeholder="Tell us about yourself"
                   />
-                  {errors.about && touched.about && (
+                  {errors.goals && touched.goals && (
                     <div className="text-red-500 text-sm mt-1">
-                      {errors.about}
+                      {errors.goals}
                     </div>
                   )}
                 </div>
@@ -164,41 +253,38 @@ const ProfileDetails: React.FC = () => {
                   </label>
                   <div className="space-y-2">
                     <Field
-                      name="socialLinks.linkedin"
+                      name="linkedin"
                       type="text"
                       className="block w-full border rounded p-2"
                       placeholder="LinkedIn URL"
                     />
-                    {errors.socialLinks?.linkedin &&
-                      touched.socialLinks?.linkedin && (
-                        <div className="text-red-500 text-sm mt-1">
-                          {errors.socialLinks.linkedin}
-                        </div>
-                      )}
+                    {errors.linkedin && touched.linkedin && (
+                      <div className="text-red-500 text-sm mt-1">
+                        {errors.linkedin}
+                      </div>
+                    )}
                     <Field
-                      name="socialLinks.instagram"
+                      name="instagram"
                       type="text"
                       className="block w-full border rounded p-2"
                       placeholder="Instagram URL"
                     />
-                    {errors.socialLinks?.instagram &&
-                      touched.socialLinks?.instagram && (
-                        <div className="text-red-500 text-sm mt-1">
-                          {errors.socialLinks.instagram}
-                        </div>
-                      )}
+                    {errors.instagram && touched.instagram && (
+                      <div className="text-red-500 text-sm mt-1">
+                        {errors.instagram}
+                      </div>
+                    )}
                     <Field
-                      name="socialLinks.twitter"
+                      name="twitter"
                       type="text"
                       className="block w-full border rounded p-2"
                       placeholder="Twitter URL"
                     />
-                    {errors.socialLinks?.twitter &&
-                      touched.socialLinks?.twitter && (
-                        <div className="text-red-500 text-sm mt-1">
-                          {errors.socialLinks.twitter}
-                        </div>
-                      )}
+                    {errors.twitter && touched.twitter && (
+                      <div className="text-red-500 text-sm mt-1">
+                        {errors.twitter}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -213,7 +299,7 @@ const ProfileDetails: React.FC = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
                     <label className="block font-medium mb-2">Password</label>
                     <Field
@@ -244,7 +330,7 @@ const ProfileDetails: React.FC = () => {
                       </div>
                     )}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="flex justify-start mt-14">
                   <button
