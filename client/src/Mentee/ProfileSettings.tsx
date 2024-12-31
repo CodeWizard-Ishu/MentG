@@ -3,6 +3,8 @@ import { User } from "lucide-react";
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import BACKEND_URL from "../endpoint";
 import Pica from "pica";
+import Spinner from "../components/ui/Spinner";
+import { Bounce, toast } from "react-toastify";
 
 interface FormValues {
   profilePicture: string | null;
@@ -31,7 +33,12 @@ interface User {
     email: string;
   };
 }
-const ProfileDetails: React.FC = () => {
+
+interface ProfileDetailsProps {
+  onProfileUpdate?: () => Promise<void>;
+}
+
+const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [user, setUser] = useState<User>();
   const userId = localStorage.getItem("userId");
@@ -54,7 +61,7 @@ const ProfileDetails: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!user) return <div>Loading...</div>;
+  if (!user) return <Spinner/>;
 
   const initialValues: FormValues = {
     profilePicture: user.profilePicture,
@@ -145,15 +152,29 @@ const ProfileDetails: React.FC = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to update mentor details");
+        toast.error("Something went wrong!", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        })
       }
 
-      alert("Changes saved successfully!");
-      getMenteeDetails();
+      toast.success("Changes saved successfully!", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      })
+      await getMenteeDetails();
+      if (onProfileUpdate) {
+        await onProfileUpdate();
+      }
       setSubmitting(false);
     } catch (error) {
-      console.error(error);
-      alert("An error occurred while saving changes.");
+      toast.error(`An error occurred while saving changes, ${error}`, {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      })
       setSubmitting(false);
     }
   };

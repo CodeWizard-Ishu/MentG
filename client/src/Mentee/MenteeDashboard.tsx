@@ -1,4 +1,4 @@
-import React, { useState, ReactNode, useEffect } from "react";
+import React, { useState, ReactNode, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
   Calendar,
@@ -6,7 +6,6 @@ import {
   LogOut,
   HomeIcon,
   UserPen,
-  ExternalLink,
   Menu,
   X,
 } from "lucide-react";
@@ -28,13 +27,17 @@ interface MenteeDashboardProps {
 }
 const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
-  const [profilePicture,setProfilePicture] = useState<string>("https://shorturl.at/Pfj9i");
+  const [profilePicture, setProfilePicture] = useState<string>(
+    "https://shorturl.at/Pfj9i"
+  );
+  const [fullName, setFullName] = useState<string>(
+    localStorage.getItem("fullName") || "Mentee"
+  );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("userToken") ?? "";
-  const fullName = localStorage.getItem("fullName") || "Mentee";
 
-  const getMenteeDetails = async () => {
+  const getMenteeDetails = useCallback(async () => {
     const response = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`, {
       method: "GET",
       headers: {
@@ -51,13 +54,14 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
     const formattedName = `${capitalize(data.user.firstName)} ${capitalize(
       data.user.lastName
     )}`;
-    localStorage.setItem("fullName",formattedName);
-  };
+    setFullName(formattedName);
+    localStorage.setItem("fullName", formattedName);
+    return data;
+  }, [userId, token]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getMenteeDetails();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[activeTab]);
+  }, [getMenteeDetails]);
 
   const navItems: NavItem[] = [
     { name: "Home", icon: <HomeIcon />, tab: "home" },
@@ -75,7 +79,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
       case "messages":
         return <Messages />;
       case "settings":
-        return <Settings />;
+        return <Settings onProfileUpdate={getMenteeDetails} />;
       default:
         return <div>404 Not Found...</div>;
     }
@@ -84,7 +88,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
-  
+
   return (
     <div>
       {/* Mobile Header */}
@@ -139,11 +143,13 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
             {isMobileMenuOpen ? (
               <h2 className="text-white font-semibold text-lg">Navigate to:</h2>
             ) : (
-              <img
-                src={Logo}
-                alt="Logo"
-                className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
-              />
+              <a href="/">
+                <img
+                  src={Logo}
+                  alt="Logo"
+                  className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
+                />
+              </a>
             )}
           </div>
           <nav className="p-4">
@@ -204,13 +210,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
                   </h2>
                 </div>
               </div>
-              <div className="md:absolute md:flex md:justify-between md:space-x-4 md:top-4 md:right-4 space-y-2 md:space-y-0">
-                <a href={`/profile/${userId}`} className="block">
-                  <button className="w-full md:w-auto text-black px-4 py-2 border-2 border-black rounded-lg flex items-center justify-center space-x-2 hover:transition-all hover:shadow-gray-700 hover:shadow-md hover:text-gray-700">
-                    <ExternalLink className="w-5 h-5" />
-                    <span>Go to Profile</span>
-                  </button>
-                </a>
+              <div className="md:absolute md:space-x-4 md:top-4 md:right-4 space-y-2 md:space-y-0">
                 <Link to="/" className="block">
                   <button
                     onClick={onLogout}
