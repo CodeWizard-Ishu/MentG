@@ -1,8 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Mail, PhoneCall } from "lucide-react";
 import Logo from "../assets/logo.png";
 import Footer from "../components/Footer";
+import Spinner from "../components/ui/Spinner";
+import { Bounce, toast } from "react-toastify";
+import contactImage from "../assets/contact-bg-image.png"
 
 interface AboutUsProps {
   loggedIn: boolean;
@@ -11,7 +14,18 @@ interface AboutUsProps {
 }
 
 const ContactUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
+  const [loading, setLoading] = useState(false);
   useEffect(() => {}, [loggedIn, mentor]);
+
+  const handleSubmit = () => {
+    // submit implementation here...
+    toast.success("Your Mesaage has been sent Successfully!", {
+      position: "bottom-right",
+      pauseOnHover: false,
+      transition: Bounce,
+    })
+    setLoading(false)
+  }
 
   return (
     <div className="min-h-screen bg-sky-100">
@@ -71,10 +85,10 @@ const ContactUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
         <div className="max-w-7xl mx-auto relative bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden">
           <div className="grid md:grid-cols-2 gap-6 md:gap-8 p-4 sm:p-6 md:p-8">
             <div className="text-center flex flex-col items-center justify-center">
-              <img src="https://i.ibb.co/dk0VGk3/rb-12860.png " />
+              <img src={contactImage} />
             </div>
 
-            <form className="mx-auto">
+            <form className="mx-auto" onClick={handleSubmit}>
               <div className="mb-6">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black capitalize mb-4">
                   Contact us
@@ -84,7 +98,7 @@ const ContactUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                   <p className="flex items-start mx-2">
                     <MapPin className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" />
                     <span className="mx-2 text-sm sm:text-base text-gray-700 truncate w-72">
-                      Navi Mumbai, Maharashtra, India
+                      Mumbai, India
                     </span>
                   </p>
 
@@ -109,21 +123,24 @@ const ContactUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                 <input
                   type="text"
                   placeholder="Name"
+                  required
                   className="w-full bg-gray-100 rounded-md py-2.5 sm:py-3 px-3 sm:px-4 text-sm sm:text-base outline-black focus-within:bg-transparent transition-colors"
                 />
                 <input
                   type="email"
                   placeholder="Email"
+                  required
                   className="w-full bg-gray-100 rounded-md py-2.5 sm:py-3 px-3 sm:px-4 text-sm sm:text-base outline-black focus-within:bg-transparent transition-colors"
                 />
                 <textarea
                   placeholder="Message"
+                  required
                   className="w-full bg-gray-100 rounded-md px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-black focus-within:bg-transparent transition-colors"
                   rows={6}
                 ></textarea>
 
                 <button
-                  type="button"
+                  type="submit"
                   className="text-white w-full bg-black hover:bg-gray-700 rounded-md text-sm sm:text-base px-4 sm:px-6 py-2.5 sm:py-3 transition-colors flex items-center justify-center"
                 >
                   <svg
@@ -141,7 +158,7 @@ const ContactUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                       data-original="#000000"
                     />
                   </svg>
-                  Send Message
+                  {loading ? <Spinner/> : "Send Message"}
                 </button>
               </div>
             </form>

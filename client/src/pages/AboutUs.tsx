@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Earth, Sparkles, Users } from "lucide-react";
+import { Sparkles, UserCheck, Users } from "lucide-react";
 
 interface AboutUsProps {
   loggedIn: boolean;
@@ -84,7 +84,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                 fostering growth and success through mentorship.
               </p>
               <div className="flex gap-6">
-                <a href="/">
+                <a href="/signup">
                   <button className="px-8 py-4 bg-[#08286b] hover:bg-[#08276bcc] text-white rounded-lg font-medium transition-colors shadow-lg shadow-[#000000]/20">
                     Get Started
                   </button>
@@ -140,10 +140,10 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                 desc: "Built for simplicity and efficiency to ensure an intuitive experience for mentors and mentees",
               },
               {
-                title: "Global Reach",
-                icon: <Earth className="w-6 h-6" />,
+                title: "User-Friendly Design",
+                icon: <UserCheck className="w-6 h-6" />,
                 color: "#2563eb",
-                desc: "Connecting mentees with mentors worldwide through a secure and intuitive platform.",
+                desc: "A clean, intuitive interface designed for creators and professionals of all experience levels",
               },
             ].map((feature, index) => (
               <div key={index} className="group">
