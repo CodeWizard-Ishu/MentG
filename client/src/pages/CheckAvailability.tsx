@@ -14,6 +14,14 @@ import Header from "../components/Header";
 import BACKEND_URL from "../endpoint"; // Adjust your endpoint import
 
 // Types
+type AvailabilitySlot = {
+  id: number;
+  mentorId: number;
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
+};
+
 type TimeSlot = {
   id: string;
   startTime: string;
@@ -31,15 +39,89 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
   maxBookingDays = 30,
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | null>(
-    null
-  );
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | null>(null);
   const [error, setError] = useState<string>("");
-  const [availability, setAvailability] = useState<TimeSlot[]>([]);
+  const [availability, setAvailability] = useState<AvailabilitySlot[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const navigate = useNavigate();
   const { mentorId } = useParams(); // Get mentorId from URL parameters
 
   // Calculate date bounds once using useMemo
+  // const dateBounds = useMemo(() => {
+  //   const today = new Date();
+  //   today.setHours(0, 0, 0, 0);
+  //   const maxDate = new Date(today);
+  //   maxDate.setDate(today.getDate() + maxBookingDays);
+  //   return {
+  //     minDate: today,
+  //     maxDate,
+  //   };
+  // }, [maxBookingDays]);
+
+  // Fetch availability data
+  useEffect(() => {
+    const fetchAvailability = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          `${BACKEND_URL}/api/availability/${mentorId}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        setAvailability(result.data);
+      } catch (error) {
+        console.error("Error fetching availability:", error);
+        setError("Failed to load mentor's availability. Please try again later.");
+      }
+      finally{
+        setIsLoading(false);
+      }
+    };
+
+    fetchAvailability();
+  }, [mentorId]); // Fetch availability whenever mentorId changes
+
+  // // Generate time slots for the selected date
+  // const timeSlots = useMemo(() => {
+  //   const slots: TimeSlot[] = [];
+  //   const startHour = 9; // Start hour of availability
+  //   const endHour = 18; // End hour of availability
+
+  //   if (!selectedDate) return slots;
+
+  //   const selectedDayIndex = selectedDate.getDay();
+
+  //   const availableSlotsForDay = availability.filter((slot) => {
+  //     const slotStartTime = new Date(slot.startTime);
+  //     return slotStartTime.getDay() === selectedDayIndex;
+  //   });
+
+  //   for (let hour = startHour; hour < endHour; hour++) {
+  //     const startTime = `${hour.toString().padStart(2, "0")}:00`;
+  //     const endTime = `${(hour + 1).toString().padStart(2, "0")}:00`;
+
+  //     const isAvailable = availableSlotsForDay.some((slot) => {
+  //       const slotStartTime = new Date(slot.startTime);
+  //       return slotStartTime.getHours() === hour;
+  //     });
+
+  //     slots.push({
+  //       id: `slot-${hour}`,
+  //       startTime,
+  //       endTime,
+  //       available: isAvailable,
+  //     });
+  //   }
+
+  //   return slots;
+  // }, [selectedDate, availability]);
+
+  // Calculate date bounds
   const dateBounds = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -51,67 +133,40 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
     };
   }, [maxBookingDays]);
 
-  // Fetch availability data
-  useEffect(() => {
-    const fetchAvailability = async () => {
-      try {
-        const response = await fetch(
-          `${BACKEND_URL}/api/availability/${mentorId}`
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const availableSlots = await response.json();
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const formattedSlots = availableSlots.data.map((slot: any) => ({
-          id: slot.id,
-          startTime: new Date(slot.startTime).toISOString(),
-          endTime: new Date(slot.endTime).toISOString(),
-          available: true,
-        }));
-
-        setAvailability(formattedSlots);
-        console.log(formattedSlots);
-      } catch (error) {
-        console.error("Error fetching availability:", error);
-      }
-    };
-
-    fetchAvailability();
-  }, [mentorId]); // Fetch availability whenever mentorId changes
+  // Function to check if a date should be disabled
+  const isDateDisabled = (date: Date) => {
+    const dayName = date.toLocaleString('en-US', { weekday: 'long' }).toUpperCase();
+    return !availability.some(slot => slot.dayOfWeek === dayName);
+  };
 
   // Generate time slots for the selected date
   const timeSlots = useMemo(() => {
     const slots: TimeSlot[] = [];
-    const startHour = 9; // Start hour of availability
-    const endHour = 18; // End hour of availability
-
+    
     if (!selectedDate) return slots;
 
-    const selectedDayIndex = selectedDate.getDay();
+    // Find if the selected day has availability
+    const selectedDayName = selectedDate.toLocaleString('en-US', { weekday: 'long' }).toUpperCase();
+    const availableDay = availability.find(
+      slot => slot.dayOfWeek === selectedDayName
+    );
 
-    const availableSlotsForDay = availability.filter((slot) => {
-      const slotStartTime = new Date(slot.startTime);
-      return slotStartTime.getDay() === selectedDayIndex;
-    });
+    if (!availableDay) return slots;
 
+    // Parse the start and end times
+    const startHour = new Date(availableDay.startTime).getUTCHours();
+    const endHour = new Date(availableDay.endTime).getUTCHours();
+
+    // Generate hourly slots between start and end time
     for (let hour = startHour; hour < endHour; hour++) {
       const startTime = `${hour.toString().padStart(2, "0")}:00`;
       const endTime = `${(hour + 1).toString().padStart(2, "0")}:00`;
-
-      const isAvailable = availableSlotsForDay.some((slot) => {
-        const slotStartTime = new Date(slot.startTime);
-        return slotStartTime.getHours() === hour;
-      });
 
       slots.push({
         id: `slot-${hour}`,
         startTime,
         endTime,
-        available: isAvailable,
+        available: true
       });
     }
 
@@ -140,10 +195,11 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
       return;
     }
 
-    navigate("/booking");
     onSubmit(selectedDate, selectedTimeSlot);
+    navigate("/booking");
   };
 
+  // Helper function to format time
   const formatTime = (time: string) => {
     return new Date(`2024-01-01T${time}:00+05:30`).toLocaleTimeString("en-IN", {
       hour: "2-digit",
@@ -152,6 +208,17 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
       timeZone: "Asia/Kolkata",
     });
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-sky-200 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4">Loading availability...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Render the component
   return (
@@ -176,9 +243,11 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
                   mode="single"
                   selected={selectedDate}
                   onSelect={handleDateSelect}
-                  disabled={{
-                    before: dateBounds.minDate,
-                    after: dateBounds.maxDate,
+                  disabled={(date) => {
+                    const isBefore = date < dateBounds.minDate;
+                    const isAfter = date > dateBounds.maxDate;
+                    const isUnavailable = isDateDisabled(date);
+                    return isBefore || isAfter || isUnavailable;
                   }}
                   className='rounded-md border'
                 />
@@ -194,7 +263,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
                     : "Please select a date to view available time slots"}
                 </h3>
                 <div className="grid grid-cols-1 gap-2">
-                  {selectedDate &&
+                  {selectedDate && timeSlots.length > 0 ? (
                     timeSlots.map((slot) => (
                       <Button
                         key={slot.id}
@@ -219,8 +288,12 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
                           {formatTime(slot.endTime)}
                         </span>
                       </Button>
-                    ))}
-                  {!selectedDate && (
+                    ))
+                  ) : selectedDate ? (
+                    <p className="text-gray-500 text-center p-4">
+                      No available time slots for this date
+                    </p>
+                  ) : (
                     <p className="text-gray-500 text-center p-4">
                       Select a date to view available time slots
                     </p>
