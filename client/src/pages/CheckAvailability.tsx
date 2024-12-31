@@ -47,18 +47,6 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
   const navigate = useNavigate();
   const { mentorId } = useParams(); // Get mentorId from URL parameters
 
-  // Calculate date bounds once using useMemo
-  // const dateBounds = useMemo(() => {
-  //   const today = new Date();
-  //   today.setHours(0, 0, 0, 0);
-  //   const maxDate = new Date(today);
-  //   maxDate.setDate(today.getDate() + maxBookingDays);
-  //   return {
-  //     minDate: today,
-  //     maxDate,
-  //   };
-  // }, [maxBookingDays]);
-
   // Fetch availability data
   useEffect(() => {
     const fetchAvailability = async () => {
@@ -85,41 +73,6 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
 
     fetchAvailability();
   }, [mentorId]); // Fetch availability whenever mentorId changes
-
-  // // Generate time slots for the selected date
-  // const timeSlots = useMemo(() => {
-  //   const slots: TimeSlot[] = [];
-  //   const startHour = 9; // Start hour of availability
-  //   const endHour = 18; // End hour of availability
-
-  //   if (!selectedDate) return slots;
-
-  //   const selectedDayIndex = selectedDate.getDay();
-
-  //   const availableSlotsForDay = availability.filter((slot) => {
-  //     const slotStartTime = new Date(slot.startTime);
-  //     return slotStartTime.getDay() === selectedDayIndex;
-  //   });
-
-  //   for (let hour = startHour; hour < endHour; hour++) {
-  //     const startTime = `${hour.toString().padStart(2, "0")}:00`;
-  //     const endTime = `${(hour + 1).toString().padStart(2, "0")}:00`;
-
-  //     const isAvailable = availableSlotsForDay.some((slot) => {
-  //       const slotStartTime = new Date(slot.startTime);
-  //       return slotStartTime.getHours() === hour;
-  //     });
-
-  //     slots.push({
-  //       id: `slot-${hour}`,
-  //       startTime,
-  //       endTime,
-  //       available: isAvailable,
-  //     });
-  //   }
-
-  //   return slots;
-  // }, [selectedDate, availability]);
 
   // Calculate date bounds
   const dateBounds = useMemo(() => {
