@@ -125,17 +125,19 @@ const Services: React.FC = () => {
   if (loading) return <Spinner />;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen px-4 sm:px-6 lg:px-8">
       {/* PAGE BODY from here.. */}
 
       <div className="mb-9">
-        <h1 className="text-2xl font-semibold mb-6">Choose your Domain</h1>
-        <div className="grid grid-cols-3 gap-2 w-full md:w-2/4">
+        <h1 className="text-2xl font-semibold mb-6 text-center sm:text-left">
+          Choose your Domain
+        </h1>
+        <div className="grid grid-cols-2 gap-2 w-full sm:grid-cols-3 lg:grid-cols-4">
           {domainOptions.map((option) => (
             <button
               type="button"
               key={option}
-              className={`py-2 px-4 rounded border ${
+              className={`py-2 px-4 rounded border text-center ${
                 domain === option
                   ? "border-black bg-gray-400 rounded-full font-medium text-black transition-all"
                   : "bg-white rounded-full text-black"
@@ -149,15 +151,15 @@ const Services: React.FC = () => {
       </div>
 
       <div className="mb-9">
-        <label className="block text-gray-700 font-medium mb-2">
+        <label className="block text-lg text-black font-medium mb-4 text-center sm:text-left">
           Which service you want to give?
         </label>
-        <div className="grid grid-cols-3 gap-2 w-full md:w-2/4">
+        <div className="grid grid-cols-2 gap-2 w-full sm:grid-cols-3 lg:grid-cols-4">
           {serviceOptions.map((option) => (
             <button
               type="button"
               key={option}
-              className={`py-2 px-4 rounded border ${
+              className={`py-2 px-4 rounded border text-center ${
                 service.includes(option)
                   ? "border-black bg-gray-400 rounded-full font-medium text-black transition-all"
                   : "bg-white rounded-full text-black"
@@ -171,7 +173,7 @@ const Services: React.FC = () => {
       </div>
 
       {/* Save Button */}
-      <div className="flex justify-start mt-14">
+      <div className="flex justify-center sm:justify-start mt-10 sm:mt-14">
         <button
           onClick={handleSave}
           className="bg-black text-white px-4 py-2 w-32 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"

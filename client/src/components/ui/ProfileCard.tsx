@@ -15,7 +15,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 }) => {
   return (
     <div
-      className={`bg-white p-4 shadow-md rounded-lg overflow-hidden w-44 ${className}`}
+      className={`bg-white p-4 shadow-md rounded-lg overflow-hidden w-36 sm:w-44 ${className}`}
     >
       <img src={imageUrl} alt={name} className="object-cover" />
       <div className="pt-4">

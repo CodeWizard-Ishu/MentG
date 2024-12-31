@@ -27,12 +27,12 @@ const Footer = () => {
                 <ul className="text-white text-sm md:text-base font-medium">
                   <li className="mb-2 md:mb-4">
                     <a href="/about" className="hover:underline">
-                      About
+                      About Us
                     </a>
                   </li>
                   <li className="mb-2 md:mb-4">
                     <a href="/contact" className="hover:underline">
-                      Contact Us
+                      Contact
                     </a>
                   </li>
                   <li className="mb-2 md:mb-4">

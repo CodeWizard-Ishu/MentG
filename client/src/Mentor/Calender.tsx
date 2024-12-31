@@ -320,7 +320,7 @@ const Calender = () => {
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-2xl font-bold">
+        <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl font-bold">
           <Clock className="w-6 h-6" />
           Set Your Availability
         </CardTitle>

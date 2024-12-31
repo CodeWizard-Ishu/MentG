@@ -77,54 +77,56 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen">
-      <h1 className="text-2xl font-semibold mb-12">Choose your Domain to get Top Mentors</h1>
+    <div className="min-h-screen px-4 sm:px-6 lg:px-0 py-6 sm:py-8 lg:py-0">
+      <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-6 sm:mb-8 lg:mb-12 text-center sm:text-left">Choose your Domain to get Top Mentors</h1>
 
-      <Dropdown
-        options={options}
-        onChange={(value) => {
-          setSelectedDomain(value);
-          setCurrentPage(1); // Reset to first page on new selection
-        }}
-      />
-      <br />
-
-      <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          mentors.map((mentor: any,idx:any) => (
-            <Link
-              key={idx}
-              to={`/profile/${mentor.userId}`}
-              style={{ textDecoration: "none" }}
-            >
-              <ProfileCard
-                key={idx}
-                name={`${mentor.user.firstName} ${mentor.user.lastName}`}
-                imageUrl={
-                  mentor.profilePicture || Logo
-                }
-                desc={mentor.bio || "No description available."}
-              />
-            </Link>
-          ))
-        }
+      <div className="w-full sm:w-3/4 lg:w-1/2 mx-auto sm:mx-0">
+        <Dropdown
+          options={options}
+          onChange={(value) => {
+            setSelectedDomain(value);
+            setCurrentPage(1); // Reset to first page on new selection
+          }}
+        />
       </div>
-
-      <br />
+      
+      <div className="mt-8 sm:mt-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            mentors.map((mentor: any,idx:any) => (
+              <Link
+                key={idx}
+                to={`/profile/${mentor.userId}`}
+                style={{ textDecoration: "none" }}
+                className="transform transition-transform duration-300 hover:scale-105"
+              >
+                <ProfileCard
+                  key={idx}
+                  name={`${mentor.user.firstName} ${mentor.user.lastName}`}
+                  imageUrl={
+                    mentor.profilePicture || Logo
+                  }
+                  desc={mentor.bio || "No description available."}
+                />
+              </Link>
+            ))
+          }
+        </div>
+      </div>
 
       {/* Conditional Rendering of Pagination Controls */}
       {selectedDomain && totalPages > 0 && (
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex flex-row justify-between items-center mt-8 sm:mt-12 gap-4 sm:gap-0">
           <button
             onClick={handlePreviousPage}
             disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200"
+            className=" sm:w-auto px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200 hover:bg-gray-400 transition-colors duration-300"
           >
             {"< Previous"}
           </button>
 
-          <span>
+          <span className="text-sm sm:text-base">
             Page{" "}
             <strong>
               {currentPage} of {totalPages}
@@ -134,7 +136,7 @@ const Home: React.FC = () => {
           <button
             onClick={handleNextPage}
             disabled={currentPage >= totalPages}
-            className="px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200"
+            className="sm:w-auto px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200 hover:bg-gray-400 transition-colors duration-300"
           >
             {"Next >"}
           </button>

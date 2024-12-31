@@ -6,11 +6,11 @@ import jobImage from "../assets/job-image.jpg";
 import {
   Building2,
   Users,
-  Globe,
   ChevronRight,
   CheckCircle,
   Search,
   ArrowRight,
+  TabletSmartphone,
 } from "lucide-react";
 import ProfileCard from "../components/ui/ProfileCard";
 import ScrollToTop from "../components/ui/ScrollToTop";
@@ -85,9 +85,9 @@ const LandingPage: React.FC<LandingPageProps> = ({
       description: "Book 1:1 sessions with top professionals",
     },
     {
-      icon: <Globe size={32} className="text-purple-500" />,
-      title: "Global Reach",
-      description: "Access talent from anywhere in the world",
+      icon: <TabletSmartphone size={32} className="text-purple-500" />,
+      title: "Multi-Platform Access",
+      description: "Accessible on mobile or any device to ensure seamless connectivity wherever you are",
     },
   ];
 
