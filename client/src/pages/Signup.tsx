@@ -223,11 +223,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
               >
                 I accept the{" "}
                 <a href="/privacy" className="underline">
-                  terms
-                </a>{" "}
-                and{" "}
-                <a href="/privacy" className="underline">
-                  privacy policy
+                  terms & privacy policy
                 </a>{" "}
                 of MentG
               </label>
@@ -244,7 +240,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
               <button
                 type="submit"
                 onClick={handleJoinAsMentor}
-                className="w-full bg-green-700 text-white py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold text-sm sm:text-base"
+                className="w-full bg-white text-[#08286b] py-3 rounded-lg hover:bg-[#08276b2b] border-2 border-[#08286b]  transition-colors font-bold text-sm sm:text-base"
               >
                 {loadingMentor ? <Spinner /> : "Join as Mentor"}
               </button>
