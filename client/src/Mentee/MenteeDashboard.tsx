@@ -69,7 +69,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
               <img
                 src={Logo}
                 alt="Logo"
-                className="h-10 w-10"
+                className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
               />
             </a>
           </div>
@@ -162,17 +162,21 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
           </nav>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 ml-64 relative bg-white">
-          <div className="border-b p-6">
-            <div className="flex items-center">
-              <img
-                src="https://img.freepik.com/premium-vector/young-man-face-avater-vector-illustration-design_968209-13.jpg"
-                alt="User Image"
-                className="w-20 h-20 rounded-full"
-              />
-              <div>
-                <h1 className="text-3xl font-bold p-2">{fullName}</h1>
+        <div className="flex-1  relative">
+          {/* Desktop Header */}
+          <div className="hidden md:block p-4 md:p-6 border-b">
+            <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0">
+              <div className="flex items-center">
+                <img
+                  src={profilePicture}
+                  alt="User Image"
+                  className="w-16 h-16 md:w-20 md:h-20 rounded-full"
+                />
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-bold p-2">
+                    {fullName}
+                  </h2>
+                </div>
               </div>
               <div className="md:absolute md:flex md:justify-between md:space-x-4 md:top-4 md:right-4 space-y-2 md:space-y-0">
                 <a href={`/profile/${userId}`} className="block">

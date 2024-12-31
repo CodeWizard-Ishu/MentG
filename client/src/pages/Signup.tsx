@@ -17,10 +17,19 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
   const [password, setPassword] = useState("");
   const [loadingMentor, setLoadingMentor] = useState(false);
   const [loadingMentee, setLoadingMentee] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const navigate = useNavigate();
 
   const handleJoinAsMentee = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!acceptTerms) {
+      toast.error("Please accept the terms and privacy policy", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+      return;
+    }
     setLoadingMentee(true);
     try {
       const response = await fetch(`${BACKEND_URL}/auth/signup/mentee`, {
@@ -61,6 +70,14 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
 
   const handleJoinAsMentor = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!acceptTerms) {
+      toast.error("Please accept the terms and privacy policy", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+      return;
+    }
     setLoadingMentor(true);
     try {
       const response = await fetch(`${BACKEND_URL}/auth/signup/mentor`, {
@@ -124,16 +141,20 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
       </header>
 
       {/* Signup Form */}
-      <div className="container mx-auto px-4 flex items-center justify-center min-h-[calc(100vh-72px)]">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold text-gray-900">Create Account</h1>
-            <p className="text-gray-600 mt-2">Start your journey</p>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-[calc(100vh-72px)] py-8 sm:py-12">
+        <div className="w-full max-w-md sm:max-w-lg md:max-w-xl bg-white/80 backdrop-blur-sm p-6 sm:p-8 md:p-10 rounded-xl shadow-lg">
+          <div className="text-center mb-6 sm:mb-8 md:mb-10">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900">
+              Create Account
+            </h1>
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 mt-2 sm:mt-3">
+              Start your journey
+            </p>
           </div>
 
-          <form className="space-y-4">
-            <div className="flex space-x-4">
-              <div className="relative w-1/2">
+          <form className="space-y-4 sm:space-y-5 md:space-y-6">
+            <div className="flex flex-row gap-4 sm:space-x-4">
+              <div className="relative w-full sm:w-1/2">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <User className="text-gray-400" size={20} />
                 </div>
@@ -142,17 +163,17 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
                   placeholder="First Name"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
                   required
                 />
               </div>
-              <div className="relative w-1/2">
+              <div className="relative w-full sm:w-1/2">
                 <input
                   type="text"
                   placeholder="Last Name"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
                   required
                 />
               </div>
@@ -167,7 +188,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
                 required
               />
             </div>
@@ -181,23 +202,49 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
                 required
               />
             </div>
 
-            <div className="flex space-x-4">
+            {/* Terms and Privacy Policy Checkbox */}
+            <div className="flex items-start sm:items-center space-x-2 px-1">
+              <input
+                type="checkbox"
+                id="terms"
+                checked={acceptTerms}
+                onChange={(e) => setAcceptTerms(e.target.checked)}
+                className="w-4 h-4 mt-1 sm:mt-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                required
+              />
+              <label
+                htmlFor="terms"
+                className="text-sm sm:text-base text-gray-600"
+              >
+                I accept the{" "}
+                <a href="/privacy" className="underline">
+                  terms
+                </a>{" "}
+                and{" "}
+                <a href="/privacy" className="underline">
+                  privacy policy
+                </a>{" "}
+                of MentG
+              </label>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 sm:space-x-4">
               <button
                 type="submit"
                 onClick={handleJoinAsMentee}
-                className="w-full bg-[#08286b] text-white py-3 rounded-lg hover:bg-[#08276bcc] transition-colors font-semibold"
+                className="w-full bg-[#08286b] text-white py-3 rounded-lg hover:bg-[#08276bcc] transition-colors font-semibold text-sm sm:text-base"
               >
                 {loadingMentee ? <Spinner /> : "Join as Mentee"}
               </button>
               <button
                 type="submit"
                 onClick={handleJoinAsMentor}
-                className="w-full bg-green-700 text-white py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold"
+                className="w-full bg-green-700 text-white py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold text-sm sm:text-base"
               >
                 {loadingMentor ? <Spinner /> : "Join as Mentor"}
               </button>
@@ -205,7 +252,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
           </form>
 
           <div className="text-center mt-6">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm sm:text-base text-gray-600">
               Already have an account?
               <Link to="/login">
                 <button

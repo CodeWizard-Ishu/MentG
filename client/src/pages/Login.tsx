@@ -100,24 +100,29 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
       </header>
 
       {/* Login Form */}
-      <div className="container mx-auto px-4 flex items-center justify-center min-h-[calc(100vh-72px)]">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold text-gray-900">Welcome Back</h1>
-            <p className="text-gray-600 mt-2">Login to continue</p>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-[calc(100vh-72px)] py-8 sm:py-12">
+        <div className="w-full max-w-sm sm:max-w-md md:max-w-lg bg-white/80 backdrop-blur-sm p-6 sm:p-8 md:p-10 rounded-xl shadow-lg">
+          <div className="text-center mb-6 sm:mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900">
+              Welcome Back
+            </h1>
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 mt-2">
+              Login to continue
+            </p>
           </div>
 
           {/* Social Signup Buttons */}
-          <div className="flex space-x-4 mb-6">
+          <div className="flex flex-col sm:flex-row gap-4 sm:space-x-4 mb-6">
             <button
               onClick={handleGoogleSignup}
-              className="flex-1 flex items-center justify-center bg-white border border-gray-300 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+              className="flex-1 flex items-center justify-center bg-white border border-gray-300 py-2 sm:py-3 px-4 rounded-lg hover:bg-gray-300 transition-colors text-sm sm:text-base"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
+                className="w-5 h-5 sm:w-6 sm:h-6"
               >
                 <path
                   fill="#4285F4"
@@ -140,13 +145,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
             </button>
             <button
               onClick={handleLinkedInSignup}
-              className="flex-1 flex items-center justify-center bg-white border border-gray-300 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+              className="flex-1 flex items-center justify-center bg-white border border-gray-300 py-2 sm:py-3 px-4 rounded-lg hover:bg-gray-300 transition-colors text-sm sm:text-base"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
+                className="w-5 h-5 sm:w-6 sm:h-6"
               >
                 <path
                   fill="#0A66C2"
@@ -160,55 +166,55 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
           {/* Divider */}
           <div className="flex items-center my-6">
             <div className="flex-grow border-t border-gray-400"></div>
-            <span className="px-4 text-gray-500 text-sm">or</span>
+            <span className="px-4 text-gray-500 text-xs sm:text-sm">or</span>
             <div className="flex-grow border-t border-gray-400"></div>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4 sm:space-y-6">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="text-gray-400" size={20} />
+                <Mail className="text-gray-400 w-5 h-5 sm:w-6 sm:h-6" />
               </div>
               <input
                 type="email"
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
                 required
               />
             </div>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="text-gray-400" size={20} />
+                <Lock className="text-gray-400 w-5 h-5 sm:w-6 sm:h-6" />
               </div>
               <input
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
                 required
               />
             </div>
             <div className="text-right">
               <button
                 type="button"
-                className="text-sm text-gray-600 hover:underline"
+                className="text-xs sm:text-sm text-gray-600 hover:underline"
               >
                 Forgot password?
               </button>
             </div>
             <button
               type="submit"
-              className="w-full bg-[#08286b] text-white py-3 rounded-lg hover:bg-[#08276bcc] transition-colors font-semibold"
+              className="w-full bg-[#08286b] text-white py-3 rounded-lg hover:bg-[#08276bcc] transition-colors font-semibold text-sm sm:text-base"
             >
               {loading ? <Spinner /> : "Login"}
             </button>
           </form>
 
-          <div className="text-center mt-6">
-            <p className="text-sm text-gray-600">
+          <div className="text-center mt-6 sm:mt-8">
+            <p className="text-sm sm:text-base text-gray-600">
               Don't have an account?
               <Link to="/signup">
                 <button className="text-black hover:underline ml-1 font-semibold">
