@@ -149,7 +149,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
     }
 
     onSubmit(selectedDate, selectedTimeSlot);
-    navigate("/booking");
+    navigate(`/booking/${mentorId}`);
   };
 
   // Helper function to format time
