@@ -13,7 +13,6 @@ import AboutUs from "./pages/AboutUs";
 import SeeAll from "./pages/SeeAll";
 import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsOfService from "./pages/TermsOfService";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(() => {
@@ -114,16 +113,6 @@ function App() {
           path="/privacy"
           element={
             <PrivacyPolicy
-              loggedIn={loggedIn}
-              mentor={mentor}
-              onLogout={handleLogout}
-            />
-          }
-        />
-        <Route
-          path="/terms"
-          element={
-            <TermsOfService
               loggedIn={loggedIn}
               mentor={mentor}
               onLogout={handleLogout}
