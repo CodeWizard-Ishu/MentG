@@ -97,6 +97,7 @@ const Calender = () => {
 
   const [, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setSubmitting] = useState(false);
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem('userToken')??"";
 
@@ -283,6 +284,7 @@ const Calender = () => {
   };
 
   const handleSave = async () => {
+    setSubmitting(true);
     try {
       const response = await fetch(
         `${BACKEND_URL}/api/mentor/updateAvailability`,
@@ -307,7 +309,11 @@ const Calender = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        toast.error("Network response was not ok",{
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        })
       }
 
       // const result = await response.json();
@@ -317,7 +323,7 @@ const Calender = () => {
         pauseOnHover: false,
         transition: Bounce,
       })
-
+      setSubmitting(false);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000); // Reset saved state after a short delay
     } catch (error) {
@@ -374,13 +380,12 @@ const Calender = () => {
         </div>
       </CardContent>
       <CardFooter className="flex justify-between items-center">
-        <Button
-          variant="default"
-          className="bg-black text-white hover:bg-gray-800"
+        <button
+          className="bg-black text-white px-4 py-2 w-40 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
           onClick={handleSave}
         >
-          Save Changes
-        </Button>
+          {isSubmitting ? <Spinner/> : "Save Changes"}
+        </button>
         <Button
           variant="ghost"
           className="text-green-500 hover:text-green-600 hover:bg-green-50"

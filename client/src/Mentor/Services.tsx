@@ -26,6 +26,7 @@ const Services: React.FC = () => {
   const [domain, setDomain] = useState<string>();
   const [service, setService] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setSubmitting] = useState(false);
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("userToken") ?? "";
 
@@ -63,6 +64,7 @@ const Services: React.FC = () => {
   }, [userId, token]);
 
   const handleSave = async () => {
+    setSubmitting(true);
     if (!domain || service.length === 0) {
       toast.warning("Please select a domain and at least one service.", {
         position: "bottom-right",
@@ -102,6 +104,7 @@ const Services: React.FC = () => {
         pauseOnHover: false,
         transition: Bounce,
       });
+      setSubmitting(false)
     } catch (error) {
       // console.error("Error:", error);
       toast.error(`Failed to update profile, ${error}`, {
@@ -176,9 +179,9 @@ const Services: React.FC = () => {
       <div className="flex justify-center sm:justify-start mt-10 sm:mt-14">
         <button
           onClick={handleSave}
-          className="bg-black text-white px-4 py-2 w-32 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
+          className="bg-black text-white px-4 py-2 w-40 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
         >
-          Save
+          {isSubmitting ? <Spinner/> : "Save Changes"}
         </button>
       </div>
     </div>

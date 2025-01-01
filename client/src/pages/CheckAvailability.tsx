@@ -12,6 +12,7 @@ import { Clock } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import BACKEND_URL from "../endpoint"; // Adjust your endpoint import
+import Spinner from "../components/ui/Spinner";
 
 // Types
 type AvailabilitySlot = {
@@ -43,6 +44,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
   const [error, setError] = useState<string>("");
   const [availability, setAvailability] = useState<AvailabilitySlot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setSubmitting] = useState(false);
 
   const navigate = useNavigate();
   const { mentorId } = useParams(); // Get mentorId from URL parameters
@@ -143,12 +145,14 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
   };
 
   const handleSubmit = () => {
+    setSubmitting(true);
     if (!selectedDate || !selectedTimeSlot) {
       setError("Please select both date and time slot");
       return;
     }
 
     onSubmit(selectedDate, selectedTimeSlot);
+    setSubmitting(false);
     navigate(`/booking/${mentorId}`);
   };
 
@@ -282,7 +286,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
                 disabled={!selectedDate || !selectedTimeSlot}
                 className="w-full md:w-auto bg-[#08286b] hover:bg-[#08276bcc]"
               >
-                Confirm Slot
+                {isSubmitting ? <Spinner/> : "Confirm Slot"}
               </Button>
             </div>
           </CardContent>
