@@ -4,9 +4,9 @@ import { Zap, Users, Star, Video } from "lucide-react";
 import BACKEND_URL from "../endpoint";
 import Logo from "../assets/logo.png";
 import Spinner from "../components/ui/Spinner";
-import Instagram from "../assets/instagram.png"
-import LinkedIn from "../assets/linkedin.png"
-import Twitter from "../assets/twitter.png"
+import Instagram from "../assets/instagram.png";
+import LinkedIn from "../assets/linkedin.png";
+import Twitter from "../assets/twitter.png";
 
 interface Services {
   name: string;
@@ -24,7 +24,9 @@ const ProfilePage: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [profileData, setProfileData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [profilePicture,setProfilePicture] = useState<string>("https://shorturl.at/XCudT");
+  const [profilePicture, setProfilePicture] = useState<string>(
+    "https://shorturl.at/XCudT"
+  );
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -43,8 +45,7 @@ const ProfilePage: React.FC = () => {
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         setProfileData(data);
-        if(data.profilePicture)
-          setProfilePicture(data.profilePicture);
+        if (data.profilePicture) setProfilePicture(data.profilePicture);
         setServices(data.services);
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -93,7 +94,7 @@ const ProfilePage: React.FC = () => {
                   {profileData.fullName}
                 </h1>
                 <p className="text-xs md:text-sm text-purple-200 mb-4 text-center truncate">
-                  {`${profileData.bio.slice(0,35)}...`}
+                  {`${profileData.bio.slice(0, 35)}...`}
                 </p>
               </div>
 
@@ -133,15 +134,31 @@ const ProfilePage: React.FC = () => {
               </div>
               <div className="flex mb-4 space-x-2">
                 <h2 className="font-semibold mt-1">Connect with me:</h2>
-                <a href={profileData.linkedin}>
-                  <img src={LinkedIn} alt="LinkedIn" className="w-8 h-8"/>
-                </a>
-                <a href={profileData.instagram}>
-                  <img src={Instagram} alt="LinkedIn" className="w-8 h-8"/>
-                </a>
-                <a href={profileData.twitter}>
-                  <img src={Twitter} alt="LinkedIn" className="w-8 h-8 bg-white rounded-lg"/>
-                </a>
+                {profileData.linkedin ? (
+                  <a href={profileData.linkedin} target="_blank">
+                    <img src={LinkedIn} alt="LinkedIn" className="w-8 h-8" />
+                  </a>
+                ) : (
+                  ""
+                )}
+                {profileData.instagram ? (
+                  <a href={profileData.instagram} target="_blank">
+                    <img src={Instagram} alt="Instagram" className="w-8 h-8" />
+                  </a>
+                ) : (
+                  ""
+                )}
+                {profileData.twitter ? (
+                  <a href={profileData.twitter} target="_blank">
+                    <img
+                      src={Twitter}
+                      alt="Twitter/X"
+                      className="w-8 h-8 bg-white rounded-lg"
+                    />
+                  </a>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
 
@@ -237,7 +254,11 @@ const ProfilePage: React.FC = () => {
                             </div>
                           </div>
                           <span className="text-xs md:text-sm font-semibold text-black">
-                            <span className="line-through text-red-500">  {formatCurrency(service.price)} </span> Free
+                            <span className="line-through text-red-500">
+                              {" "}
+                              {formatCurrency(service.price)}{" "}
+                            </span>{" "}
+                            Free
                           </span>
                         </button>
                       </div>
