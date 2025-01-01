@@ -48,8 +48,8 @@ interface ProfileDetailsProps {
 const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [user, setUser] = useState<User>();
-  const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("userToken") ?? "";
+  const userId = sessionStorage.getItem("userId");
+  const token = sessionStorage.getItem("userToken") ?? "";
 
   const getMentorDetails = async () => {
     try {

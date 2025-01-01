@@ -27,8 +27,8 @@ const Services: React.FC = () => {
   const [service, setService] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setSubmitting] = useState(false);
-  const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("userToken") ?? "";
+  const userId = sessionStorage.getItem("userId");
+  const token = sessionStorage.getItem("userToken") ?? "";
 
   useEffect(() => {
     const fetchServices = async () => {

@@ -31,11 +31,11 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
     "https://shorturl.at/Pfj9i"
   );
   const [fullName, setFullName] = useState<string>(
-    localStorage.getItem("fullName") || "Mentee"
+    sessionStorage.getItem("fullName") || "Mentee"
   );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("userToken") ?? "";
+  const userId = sessionStorage.getItem("userId");
+  const token = sessionStorage.getItem("userToken") ?? "";
 
   const getMenteeDetails = useCallback(async () => {
     const response = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`, {
@@ -55,7 +55,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
       data.user.lastName
     )}`;
     setFullName(formattedName);
-    localStorage.setItem("fullName", formattedName);
+    sessionStorage.setItem("fullName", formattedName);
     return data;
   }, [userId, token]);
 

@@ -30,7 +30,7 @@
 
 //   useEffect(() => {
 //     const fetchData = async () => {
-//       const mentorId = localStorage.getItem("userId");
+//       const mentorId = sessionStorage.getItem("userId");
 
 //       if (!mentorId) {
 //         // setError("Mentor ID not found in local storage.");
@@ -40,7 +40,7 @@
 //       }
 
 //       try {
-//         const token = localStorage.getItem("userToken") ?? "";
+//         const token = sessionStorage.getItem("userToken") ?? "";
 
 //         // Make the fetch request with the Authorization header
 //         const response = await fetch(`${BACKEND_URL}/api/mentor/${mentorId}`, {
@@ -207,7 +207,7 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const mentorId = localStorage.getItem("userId");
+      const mentorId = sessionStorage.getItem("userId");
 
       if (!mentorId) {
         // setError("Mentor ID not found in local storage.");
@@ -217,7 +217,7 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
       }
 
       try {
-        const token = localStorage.getItem("userToken") ?? "";
+        const token = sessionStorage.getItem("userToken") ?? "";
 
         // Make the fetch request with the Authorization header
         const response = await fetch(`${BACKEND_URL}/api/mentor/${mentorId}`, {

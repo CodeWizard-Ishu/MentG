@@ -24,7 +24,7 @@ const Meetings = () => {
 
   useEffect(() => {
     const fetchMeetings = async () => {
-      const mentorId = localStorage.getItem("userId");
+      const mentorId = sessionStorage.getItem("userId");
 
       if (!mentorId) {
         // setError("Mentor ID not found in local storage.");
@@ -34,7 +34,7 @@ const Meetings = () => {
       }
 
       try {
-        const token = localStorage.getItem('userToken') ?? "";
+        const token = sessionStorage.getItem('userToken') ?? "";
         const response = await fetch(`${BACKEND_URL}/api/mentor/${mentorId}/meetings?page=${pagination.pageIndex + 1}&limit=${pagination.pageSize}`, {
           method: "GET",
           headers: {

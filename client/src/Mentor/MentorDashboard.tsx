@@ -41,9 +41,9 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
   const [profilePicture, setProfilePicture] = useState<string>("https://shorturl.at/XCudT");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const userId = localStorage.getItem("userId");
-  const [fullName, setFullName] = useState<string>(localStorage.getItem("fullName") || "Mentor");
-  const token = localStorage.getItem("userToken") ?? "";
+  const userId = sessionStorage.getItem("userId");
+  const [fullName, setFullName] = useState<string>(sessionStorage.getItem("fullName") || "Mentor");
+  const token = sessionStorage.getItem("userToken") ?? "";
 
   const refreshDashboardData = async () => {
     // Fetch updated user data
