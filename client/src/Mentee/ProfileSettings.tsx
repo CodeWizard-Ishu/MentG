@@ -360,7 +360,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                     disabled={isSubmitting}
                     className="bg-black text-white px-4 py-2 w-40 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
                   >
-                    {isSubmitting ? "Saving..." : "Save Changes"}
+                    {isSubmitting ? <Spinner/> : "Save Changes"}
                   </button>
                 </div>
               </Form>

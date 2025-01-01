@@ -1,5 +1,6 @@
 import React, { useState, ReactNode } from "react";
 import { Link } from "react-router-dom";
+import BACKEND_URL from "../endpoint";
 import {
   Calendar,
   MessageCircle,
@@ -38,10 +39,28 @@ interface MentorDashboardProps {
 
 const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
-  const [profilePicture, setProfilePicture] = useState<string>(
-    "https://shorturl.at/XCudT"
-  );
+  const [profilePicture, setProfilePicture] = useState<string>("https://shorturl.at/XCudT");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const userId = localStorage.getItem("userId");
+  const [fullName, setFullName] = useState<string>(localStorage.getItem("fullName") || "Mentor");
+  const token = localStorage.getItem("userToken") ?? "";
+
+  const refreshDashboardData = async () => {
+    // Fetch updated user data
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/mentorDetails/${userId}`, {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setProfilePicture(data.profilePicture);
+      setFullName(`${data.user.firstName} ${data.user.lastName || ''}`);
+    } catch (error) {
+      console.error("Error refreshing dashboard data:", error);
+    }
+  };
 
   const navItems: NavItem[] = [
     { name: "Home", icon: <HomeIcon />, tab: "home" },
@@ -74,14 +93,11 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
       case "payments":
         return <Payments />;
       case "settings":
-        return <ProfileDetails />;
+        return <ProfileDetails onProfileUpdate={refreshDashboardData} />;
       default:
         return <div>404 Not Found...</div>;
     }
   };
-
-  const userId = localStorage.getItem("userId");
-  const fullName = localStorage.getItem("fullName") || "Mentor";
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);

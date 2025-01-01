@@ -226,6 +226,21 @@ const Calender = () => {
         })
         return prev; // Return previous state if validation fails
       }
+      // Validate start time is before end time
+      if (
+        type === "startTime" &&
+        value !== EMPTY_TIME &&
+        currentDaySchedule.timeSlot.endTime !== EMPTY_TIME &&
+        value >= currentDaySchedule.timeSlot.endTime
+      ) {
+        // alert("End time must be after start time.");
+        toast.warning("Start time must be before end time.",{
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        })
+        return prev; // Return previous state if validation fails
+      }
 
       return {
         ...prev,

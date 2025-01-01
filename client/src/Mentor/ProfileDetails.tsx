@@ -5,6 +5,7 @@ import BACKEND_URL from "../endpoint";
 import { Link } from "react-router-dom";
 import Pica from "pica";
 import Spinner from "../components/ui/Spinner";
+import { Bounce, toast } from "react-toastify";
 
 interface FormValues {
   profilePicture: string | null;
@@ -40,21 +41,34 @@ interface User {
   twitter: string | null;
 }
 
-const ProfileDetails: React.FC = () => {
+interface ProfileDetailsProps {
+  onProfileUpdate?: () => void;
+}
+
+const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [user, setUser] = useState<User>();
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("userToken") ?? "";
 
   const getMentorDetails = async () => {
-    const response = await fetch(`${BACKEND_URL}/api/mentorDetails/${userId}`, {
-      method: "GET",
-      headers: {
-        Authorization: token,
-        "Content-Type": "application/json",
-      },
-    });
-    setUser(await response.json());
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/mentorDetails/${userId}`, {
+        method: "GET",
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setUser(data);
+    } catch (error) {
+      toast.error(`Error fetching mentor details, ${error}`,{
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      })
+    }
   };
 
   useEffect(() => {
@@ -97,14 +111,32 @@ const ProfileDetails: React.FC = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to update mentor details");
+        toast.error("Failed to update mentor details",{
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        })
       }
 
-      alert("Changes saved successfully!");
+      await getMentorDetails();
+
+      if (onProfileUpdate) {
+        onProfileUpdate();
+      }
+      
+      toast.success("Changes saved successfully!",{
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      })
       setSubmitting(false);
     } catch (error) {
       console.error(error);
-      alert("An error occurred while saving changes.");
+      toast.error("An error occurred while saving changes",{
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      })
       setSubmitting(false);
     }
   };
@@ -409,7 +441,7 @@ const ProfileDetails: React.FC = () => {
               disabled={isSubmitting}
               className="bg-black text-white px-4 py-2 w-40 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
             >
-              Save Changes
+              {isSubmitting ? <Spinner/> : "Save Changes"}
             </button>
           </div>
         </Form>
