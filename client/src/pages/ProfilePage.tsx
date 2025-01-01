@@ -90,7 +90,7 @@ const ProfilePage: React.FC = () => {
                   {profileData.fullName}
                 </h1>
                 <p className="text-xs md:text-sm text-purple-200 mb-4 text-center truncate">
-                  {profileData.bio}
+                  {`${profileData.bio.slice(0,35)}...`}
                 </p>
               </div>
 
