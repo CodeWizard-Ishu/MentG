@@ -4,6 +4,9 @@ import { Zap, Users, Star, Video } from "lucide-react";
 import BACKEND_URL from "../endpoint";
 import Logo from "../assets/logo.png";
 import Spinner from "../components/ui/Spinner";
+import Instagram from "../assets/instagram.png"
+import LinkedIn from "../assets/linkedin.png"
+import Twitter from "../assets/twitter.png"
 
 interface Services {
   name: string;
@@ -127,6 +130,18 @@ const ProfilePage: React.FC = () => {
                     </p>
                   </div>
                 ))}
+              </div>
+              <div className="flex mb-4 space-x-2">
+                <h2 className="font-semibold mt-1">Connect with me:</h2>
+                <a href="">
+                  <img src={LinkedIn} alt="LinkedIn" className="w-8 h-8"/>
+                </a>
+                <a href="">
+                  <img src={Instagram} alt="LinkedIn" className="w-8 h-8"/>
+                </a>
+                <a href="">
+                  <img src={Twitter} alt="LinkedIn" className="w-8 h-8 bg-white rounded-lg"/>
+                </a>
               </div>
             </div>
 
