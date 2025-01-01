@@ -133,13 +133,13 @@ const ProfilePage: React.FC = () => {
               </div>
               <div className="flex mb-4 space-x-2">
                 <h2 className="font-semibold mt-1">Connect with me:</h2>
-                <a href="">
+                <a href={profileData.linkedin}>
                   <img src={LinkedIn} alt="LinkedIn" className="w-8 h-8"/>
                 </a>
-                <a href="">
+                <a href={profileData.instagram}>
                   <img src={Instagram} alt="LinkedIn" className="w-8 h-8"/>
                 </a>
-                <a href="">
+                <a href={profileData.twitter}>
                   <img src={Twitter} alt="LinkedIn" className="w-8 h-8 bg-white rounded-lg"/>
                 </a>
               </div>
