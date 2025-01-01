@@ -61,7 +61,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!user) return <Spinner/>;
+  if (!user) return <Spinner />;
 
   const initialValues: FormValues = {
     profilePicture: user.profilePicture,
@@ -156,14 +156,14 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
           position: "bottom-right",
           pauseOnHover: false,
           transition: Bounce,
-        })
+        });
       }
 
       toast.success("Changes saved successfully!", {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
-      })
+      });
       await getMenteeDetails();
       if (onProfileUpdate) {
         await onProfileUpdate();
@@ -174,7 +174,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
-      })
+      });
       setSubmitting(false);
     }
   };
@@ -265,6 +265,26 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                   {errors.goals && touched.goals && (
                     <div className="text-red-500 text-sm mt-1">
                       {errors.goals}
+                    </div>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor="phoneNumber"
+                    className="block font-medium mb-2"
+                  >
+                    Phone Number
+                  </label>
+                  <Field
+                    type="tel"
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    className="block w-full border rounded p-2"
+                    placeholder="Enter your phone number"
+                  />
+                  {errors.phoneNumber && touched.phoneNumber && (
+                    <div className="text-red-500 text-sm mt-1">
+                      {errors.phoneNumber}
                     </div>
                   )}
                 </div>
@@ -360,7 +380,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                     disabled={isSubmitting}
                     className="bg-black text-white px-4 py-2 w-40 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
                   >
-                    {isSubmitting ? <Spinner/> : "Save Changes"}
+                    {isSubmitting ? <Spinner /> : "Save Changes"}
                   </button>
                 </div>
               </Form>
