@@ -53,6 +53,10 @@ export const getProfileData = async (req: any, res: any) => {
     const responseData = {
       fullName: `${mentorProfile.user.firstName} ${mentorProfile.user.lastName}`,
       bio: mentorProfile.bio,
+      linkedin: mentorProfile.linkedin,
+      twitter: mentorProfile.twitter,
+      instagram: mentorProfile.instagram,
+      profilePicture: mentorProfile.profilePicture,
       uniqueMentees,
       completedSessions,
       averageRating,
@@ -61,7 +65,7 @@ export const getProfileData = async (req: any, res: any) => {
         id: service.id,
         name: service.name,
         description: service.description,
-        price : service.price
+        price: service.price,
       })),
     };
 

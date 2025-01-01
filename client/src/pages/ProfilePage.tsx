@@ -21,7 +21,7 @@ const ProfilePage: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [profileData, setProfileData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-
+  const [profilePicture,setProfilePicture] = useState<string>("https://shorturl.at/XCudT");
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -40,6 +40,8 @@ const ProfilePage: React.FC = () => {
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         setProfileData(data);
+        if(data.profilePicture)
+          setProfilePicture(data.profilePicture);
         setServices(data.services);
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -72,14 +74,14 @@ const ProfilePage: React.FC = () => {
         </div>
       </header>
 
-      <div className="min-h-screen flex justify-center items-center p-4">
+      <div className="min-h-full flex justify-center items-center p-4">
         <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl grid grid-cols-1 md:grid-cols-3 overflow-hidden">
           {/* Sidebar Profile Section */}
           <div className="col-span-1 bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-4 md:p-8 relative">
             <div className="flex flex-col items-center">
               <div className="flex flex-col items-center">
                 <img
-                  src="https://img.freepik.com/free-photo/portrait-handsome-hipster-man-glasses-3d-rendering_1142-51612.jpg?t=st=1733590809~exp=1733594409~hmac=9e08d769b04a2fdaf8018054b9eabb4bd1bb0fc810193338363431e4b0f3707c&w=740"
+                  src={profilePicture}
                   alt="Profile"
                   className="w-24 h-24 md:w-36 md:h-36 rounded-full border-4 border-white/30 mb-4 md:mb-6 shadow-lg"
                 />
