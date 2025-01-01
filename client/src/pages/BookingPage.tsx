@@ -14,6 +14,7 @@ import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { Separator } from "../components/ui/separator";
 import Header from "../components/Header";
+import BACKEND_URL from "../endpoint";
 
 interface PaymentInfo {
   sessionFees: number;
@@ -23,9 +24,18 @@ interface PaymentInfo {
 
 interface FormValues {
   name: string;
-  phone: string;
+  phone: string | null;
   email: string;
   sessionDetails: string;
+}
+
+interface Mentee {
+  phoneNumber: string | null;
+  user: {
+    email: string;
+    firstName: string;
+    lastName: string | null;
+  };
 }
 
 const validationSchema = Yup.object({
@@ -56,15 +66,25 @@ const fetchPaymentInfo = async (): Promise<PaymentInfo> => {
 const BookingPage: React.FC = () => {
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  const initialValues: FormValues = {
-    name: "",
-    phone: "",
-    email: "",
-    sessionDetails: "",
-  };
+  const [mentee, setMentee] = useState<Mentee|null>();
+  const token = sessionStorage.getItem("userToken") ?? "";
+  const menteeId = sessionStorage.getItem("userId");
 
   useEffect(() => {
+    const getFormData = async () => {
+      const response = await fetch(
+        `${BACKEND_URL}/api/bookingform/${menteeId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      setMentee(data);
+    };
     const getPaymentInfo = async () => {
       try {
         const info = await fetchPaymentInfo();
@@ -75,9 +95,17 @@ const BookingPage: React.FC = () => {
         setIsLoading(false);
       }
     };
-
+    getFormData();
     getPaymentInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const initialValues: FormValues = {
+    name: sessionStorage.getItem("fullName") || "",
+    phone: mentee?.phoneNumber || "",
+    email: mentee?.user.email || "",
+    sessionDetails: "",
+  };
 
   const handleSubmit = (
     values: FormValues,
@@ -116,7 +144,7 @@ const BookingPage: React.FC = () => {
           </CardHeader>
 
           <CardContent className="p-4 sm:p-6">
-            <Formik
+            {mentee && <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
@@ -132,6 +160,7 @@ const BookingPage: React.FC = () => {
                       id="name"
                       name="name"
                       type="text"
+                      disabled
                       className={`text-sm sm:text-base ${
                         touched.name && errors.name ? "border-red-500" : ""
                       }`}
@@ -152,6 +181,7 @@ const BookingPage: React.FC = () => {
                       id="phone"
                       name="phone"
                       type="tel"
+                      disabled
                       className={`text-sm sm:text-base ${
                         touched.phone && errors.phone ? "border-red-500" : ""
                       }`}
@@ -172,6 +202,7 @@ const BookingPage: React.FC = () => {
                       id="email"
                       name="email"
                       type="email"
+                      disabled
                       className={`text-sm sm:text-base ${
                         touched.email && errors.email ? "border-red-500" : ""
                       }`}
@@ -259,6 +290,7 @@ const BookingPage: React.FC = () => {
                 </Form>
               )}
             </Formik>
+}
           </CardContent>
         </Card>
       </div>
