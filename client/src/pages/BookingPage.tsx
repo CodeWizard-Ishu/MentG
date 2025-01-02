@@ -16,11 +16,12 @@ import { Separator } from "../components/ui/separator";
 import Header from "../components/Header";
 import BACKEND_URL from "../endpoint";
 import useBookingStore from "../Hooks/useBookingStore";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface PaymentInfo {
   sessionFees: number;
   platformFees: number;
+  discount: number;
   total: number;
 }
 
@@ -55,12 +56,20 @@ const validationSchema = Yup.object({
     .required("Session details are required"),
 });
 
-const fetchPaymentInfo = async (): Promise<PaymentInfo> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const fetchPaymentInfo = async (mentorId:any,name:any,token:any) => {
+  const response = await fetch(`${BACKEND_URL}/api/service/${mentorId}/${name.name}`,{
+    method : "GET",
+    headers: {
+      Authorization: token,
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
   return {
-    sessionFees: 0,
+    sessionFees: data.data.price,
     platformFees: 0,
+    discount: -data.data.price,
     total: 0,
   };
 };
@@ -71,6 +80,7 @@ const BookingPage: React.FC = () => {
   const [mentee, setMentee] = useState<Mentee | null>();
   const token = sessionStorage.getItem("userToken") ?? "";
   const menteeId = sessionStorage.getItem("userId");
+  const {mentorId} = useParams();
   const {
     selectedService,
     selectedSlot,
@@ -103,7 +113,7 @@ const BookingPage: React.FC = () => {
     };
     const getPaymentInfo = async () => {
       try {
-        const info = await fetchPaymentInfo();
+        const info = await fetchPaymentInfo(mentorId,selectedService,token);
         setPaymentInfo(info);
       } catch (error) {
         console.error("Error fetching payment information:", error);
@@ -360,6 +370,14 @@ const BookingPage: React.FC = () => {
                                 </span>
                                 <span className="font-medium">
                                   {formatCurrency(paymentInfo.platformFees)}
+                                </span>
+                              </div>
+                              <div className="flex justify-between items-center text-sm text-red-500 sm:text-base">
+                                <span className="text-gray-600">
+                                  Discount
+                                </span>
+                                <span className="font-medium">
+                                  {formatCurrency(paymentInfo.discount)}
                                 </span>
                               </div>
                               <Separator className="my-2" />
