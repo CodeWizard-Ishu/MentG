@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Zap, Users, Star, Video } from "lucide-react";
+import useBookingStore from "../Hooks/useBookingStore";
 import BACKEND_URL from "../endpoint";
 import Logo from "../assets/logo.png";
 import Spinner from "../components/ui/Spinner";
@@ -21,6 +22,7 @@ const ProfilePage: React.FC = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
   const [services, setServices] = useState<Services[]>([]);
+  const { setSelectedService, setMentorDetails } = useBookingStore();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [profileData, setProfileData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -56,6 +58,20 @@ const ProfilePage: React.FC = () => {
   }, [userId]);
 
   const handleBook = () => {
+    const selectedServiceData = services.find(s => s.name === serviceTab);
+    if (selectedServiceData) {
+      setSelectedService({
+        name: selectedServiceData.name,
+        price: selectedServiceData.price,
+        description: selectedServiceData.description
+      });
+      
+      setMentorDetails({
+        id: userId!,
+        name: profileData.fullName,
+        profilePicture: profilePicture
+      });
+    }
     navigate(`/availability/${userId}`);
     setLoading(false);
   };

@@ -13,6 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import BACKEND_URL from "../endpoint"; // Adjust your endpoint import
 import Spinner from "../components/ui/Spinner";
+import useBookingStore from "../Hooks/useBookingStore";
 
 // Types
 type AvailabilitySlot = {
@@ -31,12 +32,11 @@ type TimeSlot = {
 };
 
 type AvailabilityProps = {
-  onSubmit?: (date: Date, timeSlot: TimeSlot) => void; // Made optional
+  // onSubmit?: (date: Date, timeSlot: TimeSlot) => void; // Made optional
   maxBookingDays?: number;
 };
 
 const CheckAvailability: React.FC<AvailabilityProps> = ({
-  onSubmit = (date, timeSlot) => console.log("Booking:", { date, timeSlot }),
   maxBookingDays = 30,
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
@@ -45,6 +45,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
   const [availability, setAvailability] = useState<AvailabilitySlot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setSubmitting] = useState(false);
+  const { setSelectedSlot } = useBookingStore();
 
   const navigate = useNavigate();
   const { mentorId } = useParams(); // Get mentorId from URL parameters
@@ -151,7 +152,12 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
       return;
     }
 
-    onSubmit(selectedDate, selectedTimeSlot);
+    setSelectedSlot({
+      date: selectedDate,
+      startTime: selectedTimeSlot.startTime,
+      endTime: selectedTimeSlot.endTime
+    });
+
     setSubmitting(false);
     navigate(`/booking/${mentorId}`);
   };
