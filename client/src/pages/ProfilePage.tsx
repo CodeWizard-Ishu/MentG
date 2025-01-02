@@ -201,7 +201,7 @@ const ProfilePage: React.FC = () => {
 
             <div className="border-t pt-4">
               <h3 className="text-base md:text-lg font-semibold mb-3">
-                Services providing:
+                Services:
               </h3>
               <div className="flex flex-wrap gap-2">
                 {services.map((service) => (
