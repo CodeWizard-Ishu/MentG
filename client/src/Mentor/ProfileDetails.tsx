@@ -120,8 +120,11 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
 
       await getMentorDetails();
 
+      const newFullName = `${values.firstName} ${values.lastName || ''}`.trim();
+      sessionStorage.setItem("fullName", newFullName);
+
       if (onProfileUpdate) {
-        onProfileUpdate();
+        await onProfileUpdate();
       }
       
       toast.success("Changes saved successfully!",{

@@ -1,4 +1,4 @@
-import Logo from "../assets/logo.png"
+import Logo from "../assets/logo.png";
 import { Facebook, Instagram, Linkedin, MapPin, Twitter } from "lucide-react";
 
 const Footer = () => {
@@ -8,13 +8,15 @@ const Footer = () => {
         <div className="mx-auto w-full max-w-screen-2xl p-4 py-4 md:py-6 lg:py-8">
           <div className="md:flex md:justify-between">
             <div className="mb-6 md:mb-0">
-              <a href="/" className="flex items-center">
-                <img
-                  src={Logo}
-                  className="h-8 md:h-10 lg:h-12 me-1"
-                  alt="MentG Logo"
-                />
-              </a>
+              <div className="flex items-center">
+                <a href="/">
+                  <img
+                    src={Logo}
+                    className="h-8 md:h-10 lg:h-12"
+                    alt="MentG Logo"
+                  />
+                </a>
+              </div>
               <address className="flex text-white not-italic mt-4 md:mt-6 lg:mt-9">
                 <MapPin size={20} className="mr-2 text-white" /> Mumbai, India
               </address>

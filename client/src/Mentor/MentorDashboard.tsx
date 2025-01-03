@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from "react";
+import React, { useState, ReactNode, useEffect } from "react";
 import { Link } from "react-router-dom";
 import BACKEND_URL from "../endpoint";
 import {
@@ -26,6 +26,7 @@ import Calender from "./Calender";
 import Payments from "./Payments";
 import Services from "./Services";
 import Logo from "../assets/logo.png";
+import { Bounce, toast } from "react-toastify";
 
 interface NavItem {
   name: string;
@@ -39,28 +40,49 @@ interface MentorDashboardProps {
 
 const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
-  const [profilePicture, setProfilePicture] = useState<string>("https://shorturl.at/XCudT");
+  const [profilePicture, setProfilePicture] = useState<string>(
+    "https://shorturl.at/XCudT"
+  );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userId = sessionStorage.getItem("userId");
-  const [fullName, setFullName] = useState<string>(sessionStorage.getItem("fullName") || "Mentor");
+  const [fullName, setFullName] = useState<string>(() => {
+    const savedName = sessionStorage.getItem("fullName");
+    if (savedName) return savedName;
+    return "Mentor";
+  });
   const token = sessionStorage.getItem("userToken") ?? "";
 
   const refreshDashboardData = async () => {
     // Fetch updated user data
     try {
-      const response = await fetch(`${BACKEND_URL}/api/mentorDetails/${userId}`, {
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${BACKEND_URL}/api/mentorDetails/${userId}`,
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const data = await response.json();
       setProfilePicture(data.profilePicture);
-      setFullName(`${data.user.firstName} ${data.user.lastName || ''}`);
+      const newFullName = `${data.user.firstName} ${
+        data.user.lastName || ""
+      }`.trim();
+      setFullName(newFullName);
     } catch (error) {
-      console.error("Error refreshing dashboard data:", error);
+      toast.error(`Error refreshing dashboard data: ${error}`, {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
     }
   };
+
+  useEffect(() => {
+    refreshDashboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const navItems: NavItem[] = [
     { name: "Home", icon: <HomeIcon />, tab: "home" },
