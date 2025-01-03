@@ -85,6 +85,11 @@ model Booking {
   payment  Float // Payment amount
   status   BookingStatus // Status of the booking
 
+  // Service details stored directly in Booking
+  serviceName String // Name of the service offered
+  serviceDescription String? // Description of the service
+  servicePrice Float // Price for the service
+
   // Relationships
   mentor MentorProfile @relation(fields: [mentorId], references: [id])
   mentee MenteeProfile @relation(fields: [menteeId], references: [id])

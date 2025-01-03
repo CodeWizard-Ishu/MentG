@@ -20,6 +20,7 @@ import verifyToken from "../middleware/auth";
 import { getBookingAvailablity } from "../controllers/bookings/Availablity";
 import { getBookingFormData } from "../controllers/bookings/BookingForm";
 import { getServiceDetail } from "../controllers/bookings/payment";
+import { updateBooking } from "../controllers/bookings/booking";
 
 const router = express.Router();
 
@@ -54,5 +55,6 @@ router.get("/api/availability/:mentorId",getBookingAvailablity);
 router.get("/api/bookingform/:menteeId",verifyToken,getBookingFormData);
 
 router.get("/api/service/:mentorId/:name",getServiceDetail);
+router.post("/api/booking",verifyToken,updateBooking);
 
 export default router;

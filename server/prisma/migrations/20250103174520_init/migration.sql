@@ -70,6 +70,9 @@ CREATE TABLE "Booking" (
     "duration" INTEGER NOT NULL,
     "payment" DOUBLE PRECISION NOT NULL,
     "status" "BookingStatus" NOT NULL,
+    "serviceName" TEXT NOT NULL,
+    "serviceDescription" TEXT,
+    "servicePrice" DOUBLE PRECISION NOT NULL,
 
     CONSTRAINT "Booking_pkey" PRIMARY KEY ("id")
 );

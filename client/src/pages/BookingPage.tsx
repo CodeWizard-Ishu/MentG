@@ -57,14 +57,17 @@ const validationSchema = Yup.object({
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const fetchPaymentInfo = async (mentorId:any,name:any,token:any) => {
-  const response = await fetch(`${BACKEND_URL}/api/service/${mentorId}/${name.name}`,{
-    method : "GET",
-    headers: {
-      Authorization: token,
-      "Content-Type": "application/json",
-    },
-  });
+const fetchPaymentInfo = async (mentorId: any, name: any, token: any) => {
+  const response = await fetch(
+    `${BACKEND_URL}/api/service/${mentorId}/${name.name}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: token,
+        "Content-Type": "application/json",
+      },
+    }
+  );
   const data = await response.json();
   return {
     sessionFees: data.data.price,
@@ -80,7 +83,7 @@ const BookingPage: React.FC = () => {
   const [mentee, setMentee] = useState<Mentee | null>();
   const token = sessionStorage.getItem("userToken") ?? "";
   const menteeId = sessionStorage.getItem("userId");
-  const {mentorId} = useParams();
+  const { mentorId } = useParams();
   const {
     selectedService,
     selectedSlot,
@@ -113,7 +116,7 @@ const BookingPage: React.FC = () => {
     };
     const getPaymentInfo = async () => {
       try {
-        const info = await fetchPaymentInfo(mentorId,selectedService,token);
+        const info = await fetchPaymentInfo(mentorId, selectedService, token);
         setPaymentInfo(info);
       } catch (error) {
         console.error("Error fetching payment information:", error);
@@ -133,7 +136,7 @@ const BookingPage: React.FC = () => {
     sessionDetails: "",
   };
 
-  const handleSubmit =  (
+  const handleSubmit = async (
     values: FormValues,
     { setSubmitting, resetForm }: FormikHelpers<FormValues>
   ) => {
@@ -145,31 +148,45 @@ const BookingPage: React.FC = () => {
         sessionDetails: values.sessionDetails,
       });
 
-      // const response = await fetch(`${BACKEND_URL}/api/bookings`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Authorization: token,
-      //   },
-      //   body: JSON.stringify({
-      //     mentorId: mentorDetails?.id,
-      //     serviceDetails: selectedService,
-      //     appointmentDate: selectedSlot?.date,
-      //     startTime: selectedSlot?.startTime,
-      //     endTime: selectedSlot?.endTime,
-      //     ...values
-      //   })
-      // });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const calculateDuration = (start: any, end: any): number => {
+        const startDate = new Date(`2025-01-07T${start}:00Z`); // Combine with a date
+        const endDate = new Date(`2025-01-07T${end}:00Z`); // Combine with a date
+        const durationInMinutes: number =
+          (endDate.getTime() - startDate.getTime()) / (1000 * 60); // Convert milliseconds to minutes
+        return durationInMinutes;
+      };
 
-      // if (!response.ok) {
-      //   throw new Error('Booking failed');
-      // }
+      const bookingData = {
+        mentorId: mentorId, // Replace with actual mentor ID
+        menteeId: menteeId, // Replace with actual mentee ID
+        dateTime: new Date(
+          `${selectedSlot?.date.split("T")[0]}T${selectedSlot?.startTime}:00Z`
+        ).toLocaleString(),
+        duration: calculateDuration(
+          selectedSlot?.startTime,
+          selectedSlot?.endTime
+        ),
+        payment: paymentInfo?.total, // Payment amount (can be adjusted based on your logic)
+        serviceName: selectedService?.name,
+        serviceDescription: values.sessionDetails,
+        servicePrice: selectedService?.price,
+      };
 
-      console.log("Form values:", values);
-      console.log("Payment details:", paymentInfo);
+      const response = await fetch(`${BACKEND_URL}/api/booking`, {
+        method: "POST",
+        headers: {
+          Authorization : token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingData),
+      });
+      if (!response.ok) {
+        throw new Error("Booking failed");
+      }
       alert("Form submitted successfully!");
       clearBooking();
-      navigate('/profile/1');
+      navigate("/profile/1");
     } catch (error) {
       console.error("error creating booking:", error);
       alert("failed to create booking!");
@@ -282,7 +299,6 @@ const BookingPage: React.FC = () => {
                           id="phone"
                           name="phone"
                           type="tel"
-                          disabled
                           className={`text-sm sm:text-base ${
                             touched.phone && errors.phone
                               ? "border-red-500"
@@ -373,9 +389,7 @@ const BookingPage: React.FC = () => {
                                 </span>
                               </div>
                               <div className="flex justify-between items-center text-sm text-red-500 sm:text-base">
-                                <span className="text-gray-600">
-                                  Discount
-                                </span>
+                                <span className="text-gray-600">Discount</span>
                                 <span className="font-medium">
                                   {formatCurrency(paymentInfo.discount)}
                                 </span>

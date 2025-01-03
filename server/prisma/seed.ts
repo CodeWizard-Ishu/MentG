@@ -345,7 +345,7 @@
 // const prisma = new PrismaClient();
 
 // const getAllMentorProfiles = async() => {
-//     const result = await prisma.availability.findMany();
+//     const result = await prisma.domain.findMany();
 //     console.log(result);
 // };
 
