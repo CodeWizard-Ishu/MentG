@@ -77,7 +77,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-0 py-6 sm:py-8 lg:py-0">
+    <div className="bg-white shadow-md rounded-lg p-6">
       <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-6 sm:mb-8 lg:mb-12 text-center sm:text-left">Choose your Domain to get Top Mentors</h1>
 
       <div className="w-full sm:w-3/4 lg:w-1/2 mx-auto sm:mx-0">

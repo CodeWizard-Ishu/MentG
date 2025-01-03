@@ -86,7 +86,8 @@ const LandingPage: React.FC<LandingPageProps> = ({
     {
       icon: <TabletSmartphone size={32} className="text-purple-500" />,
       title: "Multi-Platform Access",
-      description: "Accessible on mobile or any device to ensure seamless connectivity wherever you are",
+      description:
+        "Accessible on mobile or any device to ensure seamless connectivity wherever you are",
     },
   ];
 
@@ -224,26 +225,28 @@ const LandingPage: React.FC<LandingPageProps> = ({
                 See all {<ArrowRight />}
               </a>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-8">
-              {mentorsData.length > 0 &&
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                mentorsData.map((mentor: any) => (
-                  <Link
-                    key={mentor.id}
-                    to={`/profile/${mentor.userId}`}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <ProfileCard
+            <div className="bg-white/70 backdrop-blur-sm p-6 sm:p-8 md:p-10 rounded-xl shadow-lg">
+              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-8">
+                {mentorsData.length > 0 &&
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  mentorsData.map((mentor: any) => (
+                    <Link
                       key={mentor.id}
-                      name={`${mentor.user.firstName} ${mentor.user.lastName}`}
-                      imageUrl={
-                        mentor.profilePicture ||
-                        "https://via.placeholder.com/150"
-                      }
-                      desc={mentor.bio || "No bio available."}
-                    />
-                  </Link>
-                ))}
+                      to={`/profile/${mentor.userId}`}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <ProfileCard
+                        key={mentor.id}
+                        name={`${mentor.user.firstName} ${mentor.user.lastName}`}
+                        imageUrl={
+                          mentor.profilePicture ||
+                          "https://via.placeholder.com/150"
+                        }
+                        desc={mentor.bio || "No bio available."}
+                      />
+                    </Link>
+                  ))}
+              </div>
             </div>
           </div>
         </section>
