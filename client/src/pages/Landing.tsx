@@ -226,7 +226,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
               </a>
             </div>
             <div className="bg-white/70 backdrop-blur-sm p-6 sm:p-8 md:p-10 rounded-xl shadow-lg">
-              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-8">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                 {mentorsData.length > 0 &&
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   mentorsData.map((mentor: any) => (

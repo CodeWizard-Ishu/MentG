@@ -118,10 +118,12 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
 
       <section>
         <div className="container mx-auto px-4 md:px-8 lg:px-16 py-8 md:py-12 lg:py-16 min-h-screen bg-sky-100">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold underline">{domain} :</h1>
-          <div className="mt-12 md:mt-16 lg:mt-24 mb-12 md:mb-16 lg:mb-24">
-            <div className="min-h-screen bg-white/70 backdrop-blur-sm p-6 sm:p-8 md:p-10 rounded-xl shadow-lg">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 lg:gap-8">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold underline">
+            {domain} :
+          </h1>
+          <div className="mt-12 md:mt-16 lg:mt-24 ">
+            <div className="bg-white/50 backdrop-blur-sm p-6 sm:p-8 md:p-10 rounded-xl shadow-lg">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                 {
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   mentors.map((mentor: any, idx: any) => (
@@ -140,33 +142,33 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                   ))
                 }
               </div>
-              {domain && totalPages > 0 && (
-                <div className="flex justify-between items-center mt-4">
-                  <button
-                    onClick={handlePreviousPage}
-                    disabled={currentPage === 1}
-                    className="px-4 py-2 text-sm md:text-base bg-gray-300 rounded disabled:bg-gray-200"
-                  >
-                    {"< Previous"}
-                  </button>
-
-                  <span>
-                    Page{" "}
-                    <strong>
-                      {currentPage} of {totalPages}
-                    </strong>
-                  </span>
-
-                  <button
-                    onClick={handleNextPage}
-                    disabled={currentPage >= totalPages}
-                    className="px-4 py-2 text-sm md:text-base bg-gray-300 rounded disabled:bg-gray-200"
-                  >
-                    {"Next >"}
-                  </button>
-                </div>
-              )}
             </div>
+            {domain && totalPages > 0 && (
+              <div className="flex justify-between items-center mt-4">
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 text-sm md:text-base bg-gray-300 rounded disabled:bg-gray-200"
+                >
+                  {"< Previous"}
+                </button>
+
+                <span>
+                  Page{" "}
+                  <strong>
+                    {currentPage} of {totalPages}
+                  </strong>
+                </span>
+
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage >= totalPages}
+                  className="px-4 py-2 text-sm md:text-base bg-gray-300 rounded disabled:bg-gray-200"
+                >
+                  {"Next >"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </section>

@@ -15,12 +15,19 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 }) => {
   return (
     <div
-      className={`bg-white p-4 shadow-md rounded-lg overflow-hidden w-auto h-auto ${className}`}
-    >
-      <img src={imageUrl} alt={name} className="h-20 sm:h-44 object-contain rounded-lg" />
-      <div className="pt-4">
-        <h3 className="text-sm sm:text-md font-bold truncate">{name}</h3>
-        <p className="text-xs text-gray-600 mt-2 truncate">{desc}</p>
+      className={`max-w-xs bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 ${className}`}>
+      <div className="aspect-square w-full relative p-4">
+        <img
+          src={imageUrl}
+          alt={`${name}'s profile`}
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <div className="pl-4 pr-4 pb-4">
+        <h3 className="text-sm sm:text-md lg:text-lg font-bold text-gray-800 mb-1 truncate">
+          {name}
+        </h3>
+        <p className="text-xs text-gray-600 line-clamp-2">{desc}</p>
       </div>
     </div>
   );

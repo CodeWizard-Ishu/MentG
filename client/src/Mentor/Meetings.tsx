@@ -124,7 +124,7 @@ const Meetings = () => {
                     {meeting.status}
                   </span>
                 </td>
-                <td className="p-3">${meeting.amount.toFixed(2)}</td> {/* Display Amount with Two Decimal Places */}
+                <td className="p-3">Rs.{meeting.amount.toFixed(2)}</td> {/* Display Amount with Two Decimal Places */}
               </tr>
             ))}
           </tbody>
