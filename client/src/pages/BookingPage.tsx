@@ -186,7 +186,7 @@ const BookingPage: React.FC = () => {
       }
       alert("Form submitted successfully!");
       clearBooking();
-      navigate("/profile/1");
+      navigate(`/profile/${mentorId}`);
     } catch (error) {
       console.error("error creating booking:", error);
       alert("failed to create booking!");

@@ -28,7 +28,7 @@ model MentorProfile {
   bio            String? // Brief biography of the mentor
   profilePicture String? // URL for the profile picture
   phoneNumber    String? // phone number of mentor
-  services       Service[] // Relationship to services offered by the mentor
+  services Service[] @relation("MentorServices") // Many-to-many relationship with Service
   experience     String? // Description of the mentor's experience
   rating         Float     @default(0) // Average rating calculated from ratings
   bookings       Booking[] // Relationship to bookings
@@ -71,7 +71,7 @@ model Service {
   price       Float   @default(0) // Price for the service
   mentorId    Int? // Foreign key linking to MentorProfile
 
-  mentor MentorProfile? @relation(fields: [mentorId], references: [id])
+  mentor MentorProfile[] @relation("MentorServices") // Many-to-many relationship with MentorProfile
 }
 
 model Booking {

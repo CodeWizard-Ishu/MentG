@@ -51,9 +51,10 @@ export const updateService = async (req: any, res: any) => {
         set: [{ id: domainRecord.id }], // Set the new domain
       },
       services: {
-        set: Array.from(serviceIdsMap.values()).map((id) => ({ id })), // Set the new service IDs
+        connect: Array.from(serviceIdsMap.values()).map((id) => ({ id })), // Connect existing service IDs
       },
     };
+    
 
     // Update Mentor Profile
     const updatedMentor = await prisma.mentorProfile.update({
