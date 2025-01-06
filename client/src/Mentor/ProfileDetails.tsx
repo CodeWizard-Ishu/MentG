@@ -77,7 +77,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
   }, []);
 
   if (!user) {
-    return <Spinner/>; // Optionally show a loading indicator
+    return <Spinner/>;
   }
 
   const initialValues: FormValues = {
@@ -93,6 +93,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
     email: user.user.email,
   };
 
+  //Profile-Details Submit Function
   const handleSubmit = async (
     values: FormValues,
     { setSubmitting }: FormikHelpers<FormValues>
@@ -144,6 +145,8 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
     }
   };
 
+
+  //Image - Upload Function
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -257,7 +260,6 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                     id="mentgLink"
                     name="mentgLink"
                     className="border border-gray-300 rounded-e-md p-2 flex-1"
-                    placeholder="mentg.in/"
                     disabled
                   />
                   <Link to={`/profile/${userId}`}>

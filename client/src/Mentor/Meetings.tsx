@@ -104,7 +104,7 @@ const Meetings = () => {
               <th className="p-3 text-left text-xs sm:text-sm text-gray-500 font-medium">Date</th>
               <th className="p-3 text-left text-xs sm:text-sm text-gray-500 font-medium">Duration</th>
               <th className="p-3 text-left text-xs sm:text-sm text-gray-500 font-medium">Status</th>
-              <th className="p-3 text-left text-xs sm:text-sm text-gray-500 font-medium">Amount</th> {/* New Amount Column */}
+              <th className="p-3 text-left text-xs sm:text-sm text-gray-500 font-medium">Amount</th>
             </tr>
           </thead>
           <tbody>
@@ -124,7 +124,7 @@ const Meetings = () => {
                     {meeting.status}
                   </span>
                 </td>
-                <td className="p-3">Rs.{meeting.amount.toFixed(2)}</td> {/* Display Amount with Two Decimal Places */}
+                <td className="p-3">Rs.{meeting.amount.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>

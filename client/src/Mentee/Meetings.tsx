@@ -76,7 +76,7 @@ const MenteeMeetings = () => {
     };
 
     fetchMeetings();
-  }, [pagination.pageIndex, pagination.pageSize,token]);
+  }, [pagination.pageIndex, pagination.pageSize, token]);
 
   if (loading) return <Spinner />;
   if (error) return <div className="text-2xl font-semibold">{error}</div>;
@@ -137,7 +137,7 @@ const MenteeMeetings = () => {
                     {meeting.status}
                   </span>
                 </td>
-                <td className="p-3">${meeting.amount.toFixed(2)}</td>{" "}
+                <td className="p-3">${meeting.amount.toFixed(2)}</td>
                 {/* Display Amount with Two Decimal Places */}
               </tr>
             ))}

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Sparkles, UserCheck, Users } from "lucide-react";
+import aboutusImage from "../assets/aboutus-image.jpg";
 
 interface AboutUsProps {
   loggedIn: boolean;
@@ -100,7 +101,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
               <div className="aspect-square ">
                 <div className="w-full h-full rounded-full overflow-hidden bg-white">
                   <img
-                    src="https://img.freepik.com/free-vector/live-collaboration-concept-illustration_114360-2514.jpg?t=st=1734991581~exp=1734995181~hmac=c120babef40c8065518d7ea24cba074179e85373f6c0f8be315d3fa3cf62a515&w=996"
+                    src={aboutusImage}
                     alt="Hero"
                     className="w-full h-full object-contain"
                   />

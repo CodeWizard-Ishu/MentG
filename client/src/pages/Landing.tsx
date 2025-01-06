@@ -186,7 +186,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           </form>
 
           <div className="flex justify-center space-x-4">
-            <a href="/all-mentors">
+            <a href="#">
               <button className="bg-[#08286b] text-white px-6 py-3 rounded-lg hover:bg-[#08276bcc] transition">
                 Start Exploring
               </button>
@@ -231,9 +231,8 @@ const LandingPage: React.FC<LandingPageProps> = ({
                   {mentorsData.length > 0 &&
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     mentorsData.map((mentor: any) => (
-                      <div className="w-40 sm:w-48 md:w-44">
+                      <div key={mentor.id} className="w-40 sm:w-48 md:w-44">
                         <Link
-                          key={mentor.id}
                           to={`/profile/${mentor.userId}`}
                           style={{ textDecoration: "none" }}
                         >

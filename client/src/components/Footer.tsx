@@ -85,7 +85,7 @@ const Footer = () => {
                 <Linkedin size={20} />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/mentg.in/"
                 className="text-white hover:text-black transition-colors"
               >
                 <Instagram size={20} />

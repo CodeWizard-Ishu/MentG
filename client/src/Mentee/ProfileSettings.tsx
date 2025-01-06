@@ -9,12 +9,12 @@ import { Bounce, toast } from "react-toastify";
 interface FormValues {
   profilePicture: string | null;
   firstName: string;
-  lastName: string | null;
-  goals: string | null;
-  linkedin: string | null;
-  instagram: string | null;
-  twitter: string | null;
-  phoneNumber: string | null;
+  lastName: string;
+  goals: string;
+  linkedin: string;
+  instagram: string;
+  twitter: string;
+  phoneNumber: string;
   email: string;
 }
 
@@ -66,12 +66,12 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
   const initialValues: FormValues = {
     profilePicture: user.profilePicture,
     firstName: user.user.firstName,
-    lastName: user.user.lastName,
-    goals: user.goals,
-    phoneNumber: user.phoneNumber,
-    linkedin: user.linkedin,
-    instagram: user.instagram,
-    twitter: user.twitter,
+    lastName: user.user.lastName ?? '',
+    goals: user.goals ?? "",
+    phoneNumber: user.phoneNumber ?? '',
+    linkedin: user.linkedin ?? '',
+    instagram: user.instagram ?? '',
+    twitter: user.twitter ?? '',
     email: user.user.email,
   };
 
