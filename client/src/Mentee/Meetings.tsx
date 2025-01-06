@@ -100,75 +100,86 @@ const MenteeMeetings = () => {
   return (
     <div>
       {/* Recent Meetings */}
-      <div className="bg-white shadow-md rounded-lg p-6">
+      <div className="bg-white shadow-md rounded-lg p-6 overflow-x-auto">
         <h1 className="text-xl font-bold mb-4">My Booked Meetings</h1>
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="text-left p-3 text-gray-500 font-medium">
-                Mentor
-              </th>
-              <th className="text-left p-3 text-gray-500 font-medium">Date</th>
-              <th className="text-left p-3 text-gray-500 font-medium">
-                Duration
-              </th>
-              <th className="text-left p-3 text-gray-500 font-medium">
-                Status
-              </th>
-              <th className="text-left p-3 text-gray-500 font-medium">
-                Amount
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {meetings.map((meeting, index) => (
-              <tr key={index} className="border-b hover:bg-gray-50">
-                <td className="p-3">{meeting.mentorName}</td>
-                <td className="p-3">{meeting.dateTime}</td>
-                <td className="p-3">{meeting.duration}</td>
-                <td className="p-3">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs ${
-                      meeting.status === "COMPLETED"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-blue-100 text-blue-800"
-                    }`}
-                  >
-                    {meeting.status}
-                  </span>
-                </td>
-                <td className="p-3">${meeting.amount.toFixed(2)}</td>
-                {/* Display Amount with Two Decimal Places */}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Pagination Controls */}
-        <div className="flex justify-between items-center mt-4">
-          <button
-            onClick={handlePreviousPage}
-            disabled={pagination.pageIndex === 0}
-            className="px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200"
-          >
-            {"< Previous"}
-          </button>
-
-          <span>
-            Page{" "}
-            <strong>
-              {pagination.pageIndex + 1} of {totalPages}
-            </strong>
-          </span>
-
-          <button
-            onClick={handleNextPage}
-            disabled={pagination.pageIndex >= totalPages - 1}
-            className="px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200"
-          >
-            {"Next >"}
-          </button>
+        <div className="min-w-full inline-block align-middle">
+          <div className="overflow-hidden">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="p-3 text-left text-xs sm:text-sm text-gray-500 font-medium">
+                    Mentor
+                  </th>
+                  <th className="p-3 text-left text-xs sm:text-sm text-gray-500 font-medium">
+                    Date
+                  </th>
+                  <th className="p-3 text-left text-xs sm:text-sm text-gray-500 font-medium">
+                    Duration
+                  </th>
+                  <th className="p-3 text-left text-xs sm:text-sm text-gray-500 font-medium">
+                    Status
+                  </th>
+                  <th className="p-3 text-left text-xs sm:text-sm text-gray-500 font-medium">
+                    Amount
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {meetings.map((meeting, index) => (
+                  <tr key={index} className="border-b hover:bg-gray-50">
+                    <td className="p-3 text-sm whitespace-nowrap">
+                      {meeting.mentorName}
+                    </td>
+                    <td className="p-3 text-sm whitespace-nowrap">
+                      {meeting.dateTime}
+                    </td>
+                    <td className="p-3 text-sm whitespace-nowrap">
+                      {meeting.duration}
+                    </td>
+                    <td className="p-3 text-sm whitespace-nowrap">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs ${
+                          meeting.status === "COMPLETED"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-blue-100 text-blue-800"
+                        }`}
+                      >
+                        {meeting.status}
+                      </span>
+                    </td>
+                    <td className="p-3">Rs.{meeting.amount.toFixed(2)}</td>
+                    {/* Display Amount with Two Decimal Places */}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
+      </div>
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={handlePreviousPage}
+          disabled={pagination.pageIndex === 0}
+          className="px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200"
+        >
+          {"< Previous"}
+        </button>
+
+        <span>
+          Page{" "}
+          <strong>
+            {pagination.pageIndex + 1} of {totalPages}
+          </strong>
+        </span>
+
+        <button
+          onClick={handleNextPage}
+          disabled={pagination.pageIndex >= totalPages - 1}
+          className="px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200"
+        >
+          {"Next >"}
+        </button>
       </div>
     </div>
   );
