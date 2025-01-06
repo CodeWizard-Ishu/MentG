@@ -104,7 +104,7 @@ const Services: React.FC = () => {
         pauseOnHover: false,
         transition: Bounce,
       });
-      setSubmitting(false)
+      setSubmitting(false);
     } catch (error) {
       // console.error("Error:", error);
       toast.error(`Failed to update profile, ${error}`, {
@@ -179,9 +179,10 @@ const Services: React.FC = () => {
       <div className="flex justify-center sm:justify-start mt-10 sm:mt-14">
         <button
           onClick={handleSave}
+          disabled={isSubmitting}
           className="bg-black text-white px-4 py-2 w-40 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
         >
-          {isSubmitting ? <Spinner/> : "Save Changes"}
+          {isSubmitting ? <Spinner /> : "Save Changes"}
         </button>
       </div>
     </div>

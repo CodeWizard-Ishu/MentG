@@ -99,36 +99,41 @@ const Calender = () => {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setSubmitting] = useState(false);
   const userId = sessionStorage.getItem("userId");
-  const token = sessionStorage.getItem('userToken')??"";
+  const token = sessionStorage.getItem("userToken") ?? "";
 
   const fetchAvailability = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/mentor/getAvailability/${userId}`,{
-        method: "GET",
+      const response = await fetch(
+        `${BACKEND_URL}/api/mentor/getAvailability/${userId}`,
+        {
+          method: "GET",
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
           },
-      });
+        }
+      );
       if (!response.ok) {
         // throw new Error("Failed to fetch availability");
         toast.error("Failed to fetch availability", {
           position: "bottom-right",
           pauseOnHover: false,
           transition: Bounce,
-        })
+        });
       }
-  
+
       const responseData = await response.json();
       // console.log("Raw response data:", responseData);
-  
+
       const data = responseData.data; // Adjust based on the actual structure of responseData
       // console.log("Processed data array:", data);
-  
+
       if (!Array.isArray(data)) {
-        throw new Error("Expected an array in the 'data' field of the response.");
+        throw new Error(
+          "Expected an array in the 'data' field of the response."
+        );
       }
-  
+
       const newSchedule: WeeklySchedule = {
         Monday: {
           enabled: false,
@@ -159,9 +164,10 @@ const Calender = () => {
           timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
         },
       };
-  
+
       data.forEach(({ dayOfWeek, startTime, endTime }) => {
-        const day = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1).toLowerCase();
+        const day =
+          dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1).toLowerCase();
         newSchedule[day] = {
           enabled: true,
           timeSlot: {
@@ -170,7 +176,7 @@ const Calender = () => {
           },
         };
       });
-  
+
       setSchedule(newSchedule);
     } catch (err) {
       // console.error("Error fetching availability:", err);
@@ -178,16 +184,15 @@ const Calender = () => {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
-      })
-    }
-    finally{
+      });
+    } finally {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchAvailability();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleDay = (day: string) => {
@@ -220,11 +225,11 @@ const Calender = () => {
         value <= currentDaySchedule.timeSlot.startTime
       ) {
         // alert("End time must be after start time.");
-        toast.warning("End time must be after start time.",{
+        toast.warning("End time must be after start time.", {
           position: "bottom-right",
           pauseOnHover: false,
           transition: Bounce,
-        })
+        });
         return prev; // Return previous state if validation fails
       }
       // Validate start time is before end time
@@ -235,11 +240,11 @@ const Calender = () => {
         value >= currentDaySchedule.timeSlot.endTime
       ) {
         // alert("End time must be after start time.");
-        toast.warning("Start time must be before end time.",{
+        toast.warning("Start time must be before end time.", {
           position: "bottom-right",
           pauseOnHover: false,
           transition: Bounce,
-        })
+        });
         return prev; // Return previous state if validation fails
       }
 
@@ -292,7 +297,7 @@ const Calender = () => {
           // Adjust the URL as needed
           method: "POST",
           headers: {
-            Authorization :token,
+            Authorization: token,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -309,11 +314,11 @@ const Calender = () => {
       );
 
       if (!response.ok) {
-        toast.error("Network response was not ok",{
+        toast.error("Network response was not ok", {
           position: "bottom-right",
           pauseOnHover: false,
           transition: Bounce,
-        })
+        });
       }
 
       // const result = await response.json();
@@ -322,21 +327,21 @@ const Calender = () => {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
-      })
+      });
       setSubmitting(false);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000); // Reset saved state after a short delay
     } catch (error) {
       // console.error("Error saving schedule:", error);
-      toast.error(`Failed to save schedule, ${error}`,{
+      toast.error(`Failed to save schedule, ${error}`, {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
-      })
+      });
     }
   };
 
-  if(loading) return <Spinner/>
+  if (loading) return <Spinner />;
 
   return (
     <Card className="w-full max-w-2xl">
@@ -383,8 +388,9 @@ const Calender = () => {
         <button
           className="bg-black text-white px-4 py-2 w-40 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
           onClick={handleSave}
+          disabled={isSubmitting}
         >
-          {isSubmitting ? <Spinner/> : "Save Changes"}
+          {isSubmitting ? <Spinner /> : "Save Changes"}
         </button>
         <Button
           variant="ghost"

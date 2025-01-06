@@ -45,12 +45,23 @@ const validationSchema = Yup.object({
   name: Yup.string()
     .min(2, "Name must be at least 2 characters")
     .required("Name is required"),
-  phone: Yup.string()
-    .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
-    .required("Phone number is required"),
+  phoneNumber: Yup.string()
+    .nullable()
+    .matches(/^(\+\d{1,3}[- ]?)?\d{10}$/, "Please enter a valid phone number")
+    .test("phone-format", "Invalid phone number format", (value) => {
+      if (!value) return true;
+      // Remove all non-digit characters
+      const digitsOnly = value.replace(/\D/g, "");
+      return digitsOnly.length >= 10 && digitsOnly.length <= 15;
+    }),
   email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
+    .required("Email is required")
+    .email("Please enter a valid email address")
+    .max(254, "Email cannot exceed 254 characters")
+    .matches(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      "Please enter a valid email address"
+    ),
   sessionDetails: Yup.string()
     .min(10, "Please provide more details (minimum 10 characters)")
     .required("Session details are required"),
@@ -176,7 +187,7 @@ const BookingPage: React.FC = () => {
       const response = await fetch(`${BACKEND_URL}/api/booking`, {
         method: "POST",
         headers: {
-          Authorization : token,
+          Authorization: token,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(bookingData),

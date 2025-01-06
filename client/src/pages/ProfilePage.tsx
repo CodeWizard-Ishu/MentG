@@ -283,7 +283,7 @@ const ProfilePage: React.FC = () => {
                   {/* Book Session Button */}
                   <div className="p-4 md:p-8">
                     <button
-                      disabled={!serviceTab}
+                      disabled={!serviceTab || loading}
                       className="w-full bg-[#08286b] text-white font-semibold text-base md:text-lg py-3 md:py-4 rounded-xl flex items-center justify-center space-x-3 hover:bg-[#08276bcc] disabled:opacity-50"
                       onClick={handleBook}
                     >

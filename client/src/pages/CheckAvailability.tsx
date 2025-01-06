@@ -289,7 +289,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
             <div className="mt-8 text-center">
               <Button
                 onClick={handleSubmit}
-                disabled={!selectedDate || !selectedTimeSlot}
+                disabled={!selectedDate || !selectedTimeSlot || isSubmitting}
                 className="w-full md:w-auto bg-[#08286b] hover:bg-[#08276bcc]"
               >
                 {isSubmitting ? <Spinner/> : "Confirm Slot"}

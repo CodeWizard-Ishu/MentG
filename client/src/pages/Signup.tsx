@@ -231,14 +231,14 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
 
             <div className="flex flex-col sm:flex-row gap-4 sm:space-x-4">
               <button
-                type="submit"
+                type="button"
                 onClick={handleJoinAsMentee}
                 className="w-full bg-[#08286b] text-white py-3 rounded-lg hover:bg-[#08276bcc] transition-colors font-semibold text-sm sm:text-base"
               >
                 {loadingMentee ? <Spinner /> : "Join as Mentee"}
               </button>
               <button
-                type="submit"
+                type="button"
                 onClick={handleJoinAsMentor}
                 className="w-full bg-white text-[#08286b] py-3 rounded-lg hover:bg-[#08276b2b] border-2 border-[#08286b]  transition-colors font-bold text-sm sm:text-base"
               >

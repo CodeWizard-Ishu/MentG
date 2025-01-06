@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { User } from "lucide-react";
 import { Formik, Form, Field, FormikHelpers } from "formik";
+import * as Yup from "yup";
 import BACKEND_URL from "../endpoint";
 import Pica from "pica";
 import Spinner from "../components/ui/Spinner";
@@ -38,6 +39,122 @@ interface ProfileDetailsProps {
   onProfileUpdate?: () => Promise<void>;
 }
 
+const validationSchema = Yup.object().shape({
+  firstName: Yup.string()
+    .required("First name is required")
+    .matches(
+      /^[a-zA-Z\s]*$/,
+      "First name should only contain letters and spaces"
+    )
+    .trim(),
+
+  lastName: Yup.string()
+    .nullable()
+    .matches(
+      /^[a-zA-Z\s]*$/,
+      "Last name should only contain letters and spaces"
+    )
+    .trim(),
+
+  bio: Yup.string()
+    .nullable()
+    .test("no-urls", "Bio should not contain URLs", (value) => {
+      if (!value) return true;
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      return !urlRegex.test(value);
+    }),
+
+  linkedin: Yup.string()
+    .nullable()
+    .test("linkedin-url", "Please enter a valid LinkedIn URL", (value) => {
+      if (!value) return true;
+      try {
+        const url = new URL(
+          value.startsWith("http") ? value : `https://${value}`
+        );
+        return url.hostname.includes("linkedin.com");
+      } catch {
+        return false;
+      }
+    })
+    .test("url-length", "LinkedIn URL is too long", (value) => {
+      if (!value) return true;
+      return value.length <= 100;
+    }),
+
+  instagram: Yup.string()
+    .nullable()
+    .test("instagram-url", "Please enter a valid Instagram URL", (value) => {
+      if (!value) return true;
+      try {
+        const url = new URL(
+          value.startsWith("http") ? value : `https://${value}`
+        );
+        return url.hostname.includes("instagram.com");
+      } catch {
+        return false;
+      }
+    })
+    .test("url-length", "Instagram URL is too long", (value) => {
+      if (!value) return true;
+      return value.length <= 100;
+    }),
+
+  twitter: Yup.string()
+    .nullable()
+    .test("twitter-url", "Please enter a valid Twitter URL", (value) => {
+      if (!value) return true;
+      try {
+        const url = new URL(
+          value.startsWith("http") ? value : `https://${value}`
+        );
+        return (
+          url.hostname.includes("twitter.com") || url.hostname.includes("x.com")
+        );
+      } catch {
+        return false;
+      }
+    })
+    .test("url-length", "Twitter URL is too long", (value) => {
+      if (!value) return true;
+      return value.length <= 100;
+    }),
+
+  phoneNumber: Yup.string()
+    .nullable()
+    .matches(/^(\+\d{1,3}[- ]?)?\d{10}$/, "Please enter a valid phone number")
+    .test("phone-format", "Invalid phone number format", (value) => {
+      if (!value) return true;
+      // Remove all non-digit characters
+      const digitsOnly = value.replace(/\D/g, "");
+      return digitsOnly.length >= 10 && digitsOnly.length <= 15;
+    }),
+
+  email: Yup.string()
+    .required("Email is required")
+    .email("Please enter a valid email address")
+    .max(254, "Email cannot exceed 254 characters")
+    .matches(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      "Please enter a valid email address"
+    ),
+
+  profilePicture: Yup.string()
+    .nullable()
+    .test("file-size", "Profile picture is too large", (value) => {
+      if (!value) return true;
+      // Check if base64 string size is less than 5MB
+      const sizeInBytes = (value.length * 3) / 4;
+      const sizeInMB = sizeInBytes / (1024 * 1024);
+      return sizeInMB <= 5;
+    })
+    .test("file-type", "Invalid image format", (value) => {
+      if (!value) return true;
+      // Check if the base64 string starts with image data
+      return value.startsWith("data:image/");
+    }),
+});
+
 const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [user, setUser] = useState<User>();
@@ -66,12 +183,12 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
   const initialValues: FormValues = {
     profilePicture: user.profilePicture,
     firstName: user.user.firstName,
-    lastName: user.user.lastName ?? '',
+    lastName: user.user.lastName ?? "",
     goals: user.goals ?? "",
-    phoneNumber: user.phoneNumber ?? '',
-    linkedin: user.linkedin ?? '',
-    instagram: user.instagram ?? '',
-    twitter: user.twitter ?? '',
+    phoneNumber: user.phoneNumber ?? "",
+    linkedin: user.linkedin ?? "",
+    instagram: user.instagram ?? "",
+    twitter: user.twitter ?? "",
     email: user.user.email,
   };
 
@@ -82,6 +199,19 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Check file size (5MB = 5 * 1024 * 1024 bytes)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image size should not exceed 5MB", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+        // Reset the file input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+        return;
+      }
       // Create an image element
       const img = new Image();
       const reader = new FileReader();
@@ -185,7 +315,12 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
         <div className="w-full md:w-2/4">
           <h2 className="text-2xl font-bold mb-4">Profile Details</h2>
 
-          <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+            enableReinitialize
+          >
             {({ values, errors, touched, setFieldValue, isSubmitting }) => (
               <Form>
                 <div className="flex items-center justify-between space-x-6 mb-6">
