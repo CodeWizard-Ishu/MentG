@@ -8,6 +8,7 @@ import Spinner from "../components/ui/Spinner";
 import Instagram from "../assets/instagram.png";
 import LinkedIn from "../assets/linkedin.png";
 import Twitter from "../assets/twitter.png";
+import { Bounce, toast } from "react-toastify";
 
 interface Services {
   name: string;
@@ -39,6 +40,13 @@ const ProfilePage: React.FC = () => {
   };
 
   useEffect(() => {
+    if (sessionStorage.getItem("mentor")) {
+      toast.error("Login as Mentee to book", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+    }
     const fetchProfileData = async () => {
       try {
         const response = await fetch(
@@ -55,7 +63,8 @@ const ProfilePage: React.FC = () => {
     };
 
     fetchProfileData();
-  }, [userId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleBook = () => {
     const selectedServiceData = services.find(s => s.name === serviceTab);
@@ -286,7 +295,7 @@ const ProfilePage: React.FC = () => {
                   {/* Book Session Button */}
                   <div className="p-4 md:p-8">
                     <button
-                      disabled={!serviceTab || loading}
+                      disabled={!serviceTab || loading || sessionStorage.getItem("mentor")==="true"}
                       className="w-full bg-[#08286b] text-white font-semibold text-base md:text-lg py-3 md:py-4 rounded-xl flex items-center justify-center space-x-3 hover:bg-[#08276bcc] disabled:opacity-50"
                       onClick={handleBook}
                     >
