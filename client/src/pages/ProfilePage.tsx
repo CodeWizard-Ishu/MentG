@@ -40,7 +40,7 @@ const ProfilePage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (sessionStorage.getItem("mentor")) {
+    if (sessionStorage.getItem("mentor")==="true") {
       toast.error("Login as Mentee to book", {
         position: "bottom-right",
         pauseOnHover: false,
