@@ -6,12 +6,8 @@ export const getProfileData = async (req: any, res: any) => {
   const mentorId = parseInt(req.params.id);
 
   try {
-    const mProfile = await prisma.mentorProfile.findUnique({
-      where: { userId: mentorId },
-    });
-    const id = mProfile?.id;
     const mentorProfile = await prisma.mentorProfile.findUnique({
-      where: { id: id },
+      where: { userId:mentorId },
       include: {
         user: {
           select: {
@@ -22,9 +18,7 @@ export const getProfileData = async (req: any, res: any) => {
         ratings: true,
         domains: true,
         services: true,
-        bookings: {
-          where: { status: "COMPLETED" },
-        },
+        bookings: true,
       },
     });
 

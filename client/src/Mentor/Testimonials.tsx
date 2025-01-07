@@ -1,7 +1,26 @@
-import React from "react";
+import { useEffect } from "react";
+import BACKEND_URL from "../endpoint";
 // import TestimonialCard from "../components/ui/TestimonialCard";
 
-const Testimonials: React.FC = () => {
+const Testimonials = () => {
+  const userId = sessionStorage.getItem('userId');
+  const token = sessionStorage.getItem('userToken')??"";
+
+  useEffect(()=>{
+    const fetchRatings = async () =>{
+      const response = await fetch(`${BACKEND_URL}/api/getRating/${userId}`, {
+        method: "GET",
+        headers: {
+          Authorization : token,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response);
+    }
+    fetchRatings();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
+
   return (
     <div className="min-h-screen p-4">
       <h1 className="text-2xl sm:text-3xl font-medium">Your Testimonials</h1>

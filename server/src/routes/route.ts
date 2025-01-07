@@ -27,7 +27,10 @@ import { getBookingAvailablity } from "../controllers/bookings/Availablity";
 import { getBookingFormData } from "../controllers/bookings/BookingForm";
 import { getServiceDetail } from "../controllers/bookings/payment";
 import { updateBooking } from "../controllers/bookings/booking";
-import { submitRating } from "../controllers/bookings/rating";
+import {
+  getRatingsForMentor,
+  submitRating,
+} from "../controllers/bookings/rating";
 
 const router = express.Router();
 
@@ -76,5 +79,6 @@ router.get("/api/bookingform/:menteeId", verifyToken, getBookingFormData);
 router.get("/api/service/:mentorId/:name", getServiceDetail);
 router.post("/api/booking", verifyToken, updateBooking);
 
-router.post("api/rating", verifyToken, submitRating);
+router.post("/api/rating", verifyToken, submitRating);
+router.get("/api/getRating/:mentorId", verifyToken, getRatingsForMentor);
 export default router;

@@ -15,6 +15,7 @@ import {
 } from "../components/ui/dropdown-menu";
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
+import BACKEND_URL from "../endpoint";
 
 interface FeedbackReportMenuProps {
   mentorId: number;
@@ -33,6 +34,7 @@ const FeedbackReportMenu = ({
   const [hoveredRating, setHoveredRating] = useState<number>(0);
   const [feedback, setFeedback] = useState("");
   const [report, setReport] = useState("");
+  const token = sessionStorage.getItem('userToken')??"";
 
   const resetFeedbackForm = () => {
     setRating(0);
@@ -43,10 +45,42 @@ const FeedbackReportMenu = ({
     setReport("");
   };
 
-  const handleFeedbackSubmit = () => {
-    console.log({ mentorId, rating, feedback });
-    resetFeedbackForm();
-    setFeedbackOpen(false);
+  const handleFeedbackSubmit = async () => {
+    // Prepare the feedback data
+    const feedbackData = {
+      mentorId,
+      menteeId: sessionStorage.getItem("userId"), // Replace with actual mentee ID from your context or props
+      score: rating,
+      feedback: feedback,
+    };
+
+    try {
+      // Make a POST request to submit the feedback
+      const response = await fetch(`${BACKEND_URL}/api/rating`, {
+        method: "POST",
+        headers: {
+          Authorization : token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(feedbackData),
+      });
+
+      // Check if the response is successful
+      if (!response.ok) {
+        throw new Error("Failed to submit feedback");
+      }
+
+      // Optionally, handle the response data
+      const result = await response.json();
+      console.log("Feedback submitted successfully:", result);
+
+      // Reset form and close dialog
+      resetFeedbackForm();
+      setFeedbackOpen(false);
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      // Optionally show an error message to the user
+    }
   };
 
   const handleReportSubmit = () => {
