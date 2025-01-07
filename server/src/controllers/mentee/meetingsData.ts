@@ -39,12 +39,7 @@ export const getAllMenteeMeetings = async (req:any, res:any) => {
             include: {
                 mentor: {
                     select: {
-                        user: {
-                            select: {
-                                firstName: true,
-                                lastName: true,
-                            }
-                        }
+                        user: true,
                     }
                 }
             }
@@ -60,6 +55,7 @@ export const getAllMenteeMeetings = async (req:any, res:any) => {
                 amount: booking.payment, // Amount of each booking
                 status : booking.status,
                 duration : booking.duration,
+                mentorId: booking.mentorId,
                 mentorName: `${booking.mentor.user.firstName} ${booking.mentor.user.lastName || ''}` // Concatenate first and last name
             })),
         };

@@ -14,13 +14,20 @@ import {
 import { getMentors } from "../controllers/mentee/menteeDashboard";
 import { getAllMenteeMeetings } from "../controllers/mentee/meetingsData";
 import { getProfileData } from "../controllers/mentors/mentorProfile";
-import { getMentorDetails, updateMentorDetails } from "../controllers/mentors/mentorDetails";
-import { getMenteeDetails, updateMenteeDetails } from "../controllers/mentee/menteeDetails";
+import {
+  getMentorDetails,
+  updateMentorDetails,
+} from "../controllers/mentors/mentorDetails";
+import {
+  getMenteeDetails,
+  updateMenteeDetails,
+} from "../controllers/mentee/menteeDetails";
 import verifyToken from "../middleware/auth";
 import { getBookingAvailablity } from "../controllers/bookings/Availablity";
 import { getBookingFormData } from "../controllers/bookings/BookingForm";
 import { getServiceDetail } from "../controllers/bookings/payment";
 import { updateBooking } from "../controllers/bookings/booking";
+import { submitRating } from "../controllers/bookings/rating";
 
 const router = express.Router();
 
@@ -30,31 +37,44 @@ router.post("/auth/login", login);
 
 router.get("/api/mentor/topMentors", topMentorOfDomain);
 
-router.get("/api/mentor/:id",verifyToken, getMentorData);
-router.get("/api/mentor/:id/meetings",verifyToken, getAllMeetings);
+router.get("/api/mentor/:id", verifyToken, getMentorData);
+router.get("/api/mentor/:id/meetings", verifyToken, getAllMeetings);
 
-router.put("/api/mentor/update/:mentorId",verifyToken, updateService);
-router.get("/api/mentor/services/:mentorId",verifyToken, getServices);
+router.put("/api/mentor/update/:mentorId", verifyToken, updateService);
+router.get("/api/mentor/services/:mentorId", verifyToken, getServices);
 
-router.post("/api/mentor/updateAvailability",verifyToken, updateAvailability);
-router.get("/api/mentor/getAvailability/:mentorId",verifyToken, getAvailability);
+router.post("/api/mentor/updateAvailability", verifyToken, updateAvailability);
+router.get(
+  "/api/mentor/getAvailability/:mentorId",
+  verifyToken,
+  getAvailability
+);
 
-router.get("/api/mentee/getMentors",verifyToken, getMentors);
-router.get("/api/getMentors",getMentors);
-router.get("/api/mentee/:id/meetings",verifyToken, getAllMenteeMeetings);
+router.get("/api/mentee/getMentors", verifyToken, getMentors);
+router.get("/api/getMentors", getMentors);
+router.get("/api/mentee/:id/meetings", verifyToken, getAllMenteeMeetings);
 
 router.get("/api/data/mentor/:id", getProfileData);
 
-router.get("/api/mentorDetails/:mentorId",verifyToken, getMentorDetails);
-router.put("/api/updateMentorDetails/:mentorId",verifyToken, updateMentorDetails);
+router.get("/api/mentorDetails/:mentorId", verifyToken, getMentorDetails);
+router.put(
+  "/api/updateMentorDetails/:mentorId",
+  verifyToken,
+  updateMentorDetails
+);
 
-router.get("/api/menteeDetails/:menteeId",verifyToken, getMenteeDetails);
-router.put("/api/updateMenteeDetails/:menteeId",verifyToken, updateMenteeDetails);
+router.get("/api/menteeDetails/:menteeId", verifyToken, getMenteeDetails);
+router.put(
+  "/api/updateMenteeDetails/:menteeId",
+  verifyToken,
+  updateMenteeDetails
+);
 
-router.get("/api/availability/:mentorId",getBookingAvailablity);
-router.get("/api/bookingform/:menteeId",verifyToken,getBookingFormData);
+router.get("/api/availability/:mentorId", getBookingAvailablity);
+router.get("/api/bookingform/:menteeId", verifyToken, getBookingFormData);
 
-router.get("/api/service/:mentorId/:name",getServiceDetail);
-router.post("/api/booking",verifyToken,updateBooking);
+router.get("/api/service/:mentorId/:name", getServiceDetail);
+router.post("/api/booking", verifyToken, updateBooking);
 
+router.post("api/rating", verifyToken, submitRating);
 export default router;
