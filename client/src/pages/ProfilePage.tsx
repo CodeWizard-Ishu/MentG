@@ -72,7 +72,10 @@ const ProfilePage: React.FC = () => {
         profilePicture: profilePicture
       });
     }
-    navigate(`/availability/${userId}`);
+    if(sessionStorage.getItem("loggedIn"))
+      navigate(`/availability/${userId}`);
+    else
+      navigate(`/login`);
     setLoading(false);
   };
 
