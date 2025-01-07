@@ -86,7 +86,7 @@ const FeedbackReportMenu = () => {
             {/* Star Rating */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Rating</label>
-              <div className="flex gap-1 justify-start">
+              <div className="flex justify-start">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
