@@ -11,6 +11,7 @@ interface Meeting {
   duration: string;
   status: string;
   amount: number;
+  menteeId: number;
 }
 
 const Meetings = () => {
@@ -67,6 +68,7 @@ const Meetings = () => {
             duration: `${meeting.duration} mins`, // Format duration as needed
             status: meeting.status,
             amount: meeting.amount,
+            menteeId: meeting.menteeId,
           }))
         );
         setTotalCount(data.totalBookingsCount); // Adjust based on your API response structure
