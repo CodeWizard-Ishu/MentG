@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { MoreVertical, Star, Flag } from 'lucide-react';
+import { useState } from "react";
+import { MoreVertical, Star, Flag } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -16,91 +16,113 @@ import {
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
 
-const FeedbackReportMenu = () => {
+interface FeedbackReportMenuProps {
+  mentorId: number;
+  mentorName: string;
+  meetingDateTime: string;
+}
+
+const FeedbackReportMenu = ({
+  mentorId,
+  mentorName,
+  meetingDateTime,
+}: FeedbackReportMenuProps) => {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [rating, setRating] = useState<number>(0);
   const [hoveredRating, setHoveredRating] = useState<number>(0);
-  const [feedback, setFeedback] = useState('');
-  const [report, setReport] = useState('');
+  const [feedback, setFeedback] = useState("");
+  const [report, setReport] = useState("");
 
   const resetFeedbackForm = () => {
     setRating(0);
-    setFeedback('');
+    setFeedback("");
   };
 
   const resetReportForm = () => {
-    setReport('');
+    setReport("");
   };
 
   const handleFeedbackSubmit = () => {
-    console.log({ rating, feedback });
+    console.log({ mentorId, rating, feedback });
     resetFeedbackForm();
     setFeedbackOpen(false);
   };
 
   const handleReportSubmit = () => {
-    console.log({ report });
+    console.log({ mentorId, report });
     resetReportForm();
     setReportOpen(false);
   };
 
   return (
     <>
-      {/* Dropdown Menu */}
+      {/* Dropdown Menu - Now with responsive touch targets */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
-            <MoreVertical className="h-4 w-4" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 sm:h-10 sm:w-10 touch-none"
+          >
+            <MoreVertical className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setFeedbackOpen(true)}>
+        <DropdownMenuContent align="end" className="w-48 sm:w-56">
+          <DropdownMenuItem
+            onClick={() => setFeedbackOpen(true)}
+            className="py-2 sm:py-3 cursor-pointer"
+          >
             <Star className="mr-2 h-4 w-4" />
             Leave Feedback
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setReportOpen(true)}>
+          <DropdownMenuItem
+            onClick={() => setReportOpen(true)}
+            className="py-2 sm:py-3 cursor-pointer"
+          >
             <Flag className="mr-2 h-4 w-4" />
             Report
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Feedback Dialog */}
-      <Dialog 
-        open={feedbackOpen} 
+      {/* Feedback Dialog - Responsive sizing and padding */}
+      <Dialog
+        open={feedbackOpen}
         onOpenChange={(newOpen) => {
           setFeedbackOpen(newOpen);
           if (!newOpen) resetFeedbackForm();
         }}
       >
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Share Your Feedback</DialogTitle>
-            <DialogDescription>
-              Help us improve by sharing your experience
+        <DialogContent className="w-[95vw] max-w-md mx-auto sm:w-full p-4 sm:p-6 rounded-xl">
+          <DialogHeader className="space-y-2 sm:space-y-3">
+            <DialogTitle className="text-lg sm:text-xl font-semibold">
+              Share Your Feedback for {mentorName}
+            </DialogTitle>
+            <DialogDescription className="text-sm sm:text-base">
+              Meeting on {new Date(meetingDateTime).toLocaleString()}
             </DialogDescription>
           </DialogHeader>
-          
-          <div className="space-y-6 py-4">
-            {/* Star Rating */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Rating</label>
-              <div className="flex justify-start">
+
+          <div className="space-y-4 sm:space-y-6 py-2 sm:py-4">
+            {/* Star Rating - Responsive sizes */}
+            <div className="space-y-2 sm:space-y-3">
+              <label className="text-sm sm:text-base font-medium">Rating</label>
+              <div className="flex gap-1 sm:gap-2 justify-center">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
                     type="button"
-                    className="focus:outline-none"
+                    className="focus:outline-none touch-none p-1 sm:p-2"
                     onMouseEnter={() => setHoveredRating(star)}
                     onMouseLeave={() => setHoveredRating(0)}
                     onClick={() => setRating(star)}
                   >
                     <Star
-                      className={`w-8 h-8 transition-colors ${
+                      className={`w-6 h-6 sm:w-8 sm:h-8 transition-colors ${
                         star <= (hoveredRating || rating)
-                          ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-gray-300'
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "text-gray-300"
                       }`}
                     />
                   </button>
@@ -108,9 +130,12 @@ const FeedbackReportMenu = () => {
               </div>
             </div>
 
-            {/* Feedback Text */}
-            <div className="space-y-2">
-              <label htmlFor="feedback" className="text-sm font-medium">
+            {/* Feedback Text - Responsive text sizes */}
+            <div className="space-y-2 sm:space-y-3">
+              <label
+                htmlFor="feedback"
+                className="text-sm sm:text-base font-medium"
+              >
                 Your Feedback
               </label>
               <Textarea
@@ -118,20 +143,23 @@ const FeedbackReportMenu = () => {
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 placeholder="Tell us what you think..."
-                className="min-h-[100px]"
+                className="min-h-[80px] sm:min-h-[100px] text-sm sm:text-base resize-y"
               />
             </div>
 
-            <div className="flex justify-end gap-3">
+            {/* Buttons - Responsive spacing and sizing */}
+            <div className="flex justify-end gap-2 sm:gap-3 pt-2 sm:pt-4">
               <Button
                 variant="outline"
                 onClick={() => setFeedbackOpen(false)}
+                className="text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleFeedbackSubmit}
                 disabled={rating === 0}
+                className="text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
               >
                 Submit Feedback
               </Button>
@@ -140,25 +168,30 @@ const FeedbackReportMenu = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Report Dialog */}
-      <Dialog 
-        open={reportOpen} 
+      {/* Report Dialog - Responsive sizing and padding */}
+      <Dialog
+        open={reportOpen}
         onOpenChange={(newOpen) => {
           setReportOpen(newOpen);
           if (!newOpen) resetReportForm();
         }}
       >
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Submit Report</DialogTitle>
-            <DialogDescription>
+        <DialogContent className="w-[95vw] max-w-md mx-auto sm:w-full p-4 sm:p-6">
+          <DialogHeader className="space-y-2 sm:space-y-3">
+            <DialogTitle className="text-lg sm:text-xl font-semibold">
+              Submit Report for Session with {mentorName}
+            </DialogTitle>
+            <DialogDescription className="text-sm sm:text-base">
               Please describe the issue you'd like to report
             </DialogDescription>
           </DialogHeader>
-          
-          <div className="space-y-6 py-4">
-            <div className="space-y-2">
-              <label htmlFor="report" className="text-sm font-medium">
+
+          <div className="space-y-4 sm:space-y-6 py-2 sm:py-4">
+            <div className="space-y-2 sm:space-y-3">
+              <label
+                htmlFor="report"
+                className="text-sm sm:text-base font-medium"
+              >
                 Report Details
               </label>
               <Textarea
@@ -166,20 +199,22 @@ const FeedbackReportMenu = () => {
                 value={report}
                 onChange={(e) => setReport(e.target.value)}
                 placeholder="Describe the issue..."
-                className="min-h-[100px]"
+                className="min-h-[80px] sm:min-h-[100px] text-sm sm:text-base resize-y"
               />
             </div>
 
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-end gap-2 sm:gap-3 pt-2 sm:pt-4">
               <Button
                 variant="outline"
                 onClick={() => setReportOpen(false)}
+                className="text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleReportSubmit}
                 disabled={!report.trim()}
+                className="text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
               >
                 Submit Report
               </Button>
