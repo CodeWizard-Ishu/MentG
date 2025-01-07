@@ -66,7 +66,7 @@ const MenteeMeetings = () => {
             duration: `${meeting.duration} mins`, // Format duration as needed
             status: meeting.status,
             amount: meeting.amount,
-            mentorId : meeting.mentorId,
+            mentorId: meeting.mentorId,
           }))
         );
         setTotalCount(data.totalBookingsCount); // Adjust based on your API response structure
@@ -153,7 +153,11 @@ const MenteeMeetings = () => {
                     </td>
                     <td className="p-3">Rs.{meeting.amount.toFixed(2)}</td>
                     <td>
-                      <FeedbackReportMenu/>
+                      <FeedbackReportMenu
+                        mentorId={meeting.mentorId}
+                        mentorName={meeting.mentorName}
+                        meetingDateTime={meeting.dateTime}
+                      />
                     </td>
                   </tr>
                 ))}

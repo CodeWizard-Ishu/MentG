@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { MoreVertical, Flag } from "lucide-react";
 import {
   Dialog,
@@ -16,7 +16,12 @@ import {
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
 
-const ReportMenu: React.FC = () => {
+interface ReportMenuProps {
+  menteeId: number;
+  menteeName: string;
+}
+
+const ReportMenu = ({ menteeId, menteeName }: ReportMenuProps) => {
   const [reportOpen, setReportOpen] = useState(false);
   const [report, setReport] = useState("");
 
@@ -25,7 +30,7 @@ const ReportMenu: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    console.log({ report });
+    console.log({ menteeId, report });
     resetForm();
     setReportOpen(false);
   };
@@ -62,13 +67,13 @@ const ReportMenu: React.FC = () => {
           if (!newOpen) resetForm();
         }}
       >
-        <DialogContent className="w-[95vw] max-w-md mx-auto sm:w-full p-4 sm:p-6">
+        <DialogContent className="w-[95vw] max-w-md mx-auto sm:w-full p-4 sm:p-6 rounded-xl">
           <DialogHeader className="space-y-2 sm:space-y-3">
             <DialogTitle className="text-lg sm:text-xl font-semibold">
-              Submit Report
+              Submit Report for Session with {menteeName}
             </DialogTitle>
             <DialogDescription className="text-sm sm:text-base">
-              Please provide details about the issue you'd like to report
+              Please describe the issue you'd like to report
             </DialogDescription>
           </DialogHeader>
 
