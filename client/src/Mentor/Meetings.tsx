@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import BACKEND_URL from "../endpoint"; // Adjust this import based on your project structure
 import Spinner from "../components/ui/Spinner";
 import { Bounce, toast } from "react-toastify";
+import ReportMenu from "./ReportMenu";
 
 // Define interfaces for type safety
 interface Meeting {
@@ -124,6 +125,7 @@ const Meetings = () => {
                   <th className="p-3 text-left text-xs sm:text-sm text-gray-500 font-medium">
                     Amount
                   </th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -150,6 +152,9 @@ const Meetings = () => {
                       </span>
                     </td>
                     <td className="p-3">Rs.{meeting.amount.toFixed(2)}</td>
+                    <td>
+                      <ReportMenu/>
+                    </td>
                   </tr>
                 ))}
               </tbody>

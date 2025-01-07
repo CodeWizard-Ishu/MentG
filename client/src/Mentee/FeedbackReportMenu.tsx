@@ -6,15 +6,15 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog";
+} from "../components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
+} from "../components/ui/dropdown-menu";
+import { Button } from "../components/ui/button";
+import { Textarea } from "../components/ui/textarea";
 
 const FeedbackReportMenu = () => {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
