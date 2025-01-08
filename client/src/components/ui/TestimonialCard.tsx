@@ -4,8 +4,6 @@ import { Quote, Star} from 'lucide-react';
 // Testimonial Card Props Interface
 interface TestimonialCardProps {
   name: string;
-  position: string;
-  company: string;
   testimonial: string;
   rating: number;
   avatar?: string;
@@ -14,8 +12,6 @@ interface TestimonialCardProps {
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({
   name,
-  position,
-  company,
   testimonial,
   rating,
   className = ''
@@ -57,9 +53,6 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
           <h3 className="font-semibold text-base md:text-lg text-gray-800">
             {name}
           </h3>
-          <p className="text-xs md:text-sm text-gray-500">
-            {position} at {company}
-          </p>
         </div>
       </div>
     </div>
