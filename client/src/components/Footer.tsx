@@ -39,7 +39,7 @@ const Footer = () => {
                   </li>
                   <li className="mb-2 md:mb-4">
                     <a href="/privacy" className="hover:underline">
-                      Terms and Privacy Policy
+                      Terms & Privacy
                     </a>
                   </li>
                 </ul>
@@ -71,7 +71,7 @@ const Footer = () => {
           <hr className="my-2 md:my-4 lg:my-8 border-gray-200 sm:mx-auto" />
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0">
             <span className="text-xs md:text-sm text-gray-400 text-left">
-              © 2024{" "}
+              © 2025{" "}
               <a href="/" className="hover:underline">
                 MentG™
               </a>
@@ -81,12 +81,14 @@ const Footer = () => {
               <a
                 href="https://www.linkedin.com/company/mentg/"
                 className="text-white hover:text-black transition-colors"
+                target="_blank"
               >
                 <Linkedin size={20} />
               </a>
               <a
                 href="https://www.instagram.com/mentg.in/"
                 className="text-white hover:text-black transition-colors"
+                target="_blank"
               >
                 <Instagram size={20} />
               </a>

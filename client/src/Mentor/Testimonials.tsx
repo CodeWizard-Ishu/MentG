@@ -34,15 +34,25 @@ const Testimonials = () => {
 
   useEffect(() => {
     const fetchRatings = async () => {
-      const response = await fetch(`${BACKEND_URL}/api/getRating/${userId}`, {
-        method: "GET",
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      setTestimonials(data);
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/getRating/${userId}`, {
+          method: "GET",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          setTestimonials([]);
+        } else {
+          setTestimonials(data as Testimonial[]);
+        }
+      } catch (error) {
+        console.error("Error fetching ratings:", error);
+        setTestimonials([]);
+      }
     };
     fetchRatings();
     // eslint-disable-next-line react-hooks/exhaustive-deps

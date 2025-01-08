@@ -132,7 +132,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                 title: "Collaboration",
                 icon: <Users className="w-6 h-6" />,
                 color: "#FF6B6B",
-                desc: "Empowering professionals to seamlessly connect and collaborate with mentees",
+                desc: "Empowering professional mentors to seamlessly connect and collaborate with mentees",
               },
               {
                 title: "Ease Of Use",
@@ -144,7 +144,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                 title: "User-Friendly Design",
                 icon: <UserCheck className="w-6 h-6" />,
                 color: "#2563eb",
-                desc: "A clean, intuitive interface designed for creators and professionals of all experience levels",
+                desc: "A clean, intuitive interface designed for professionals and users of all experience levels",
               },
             ].map((feature, index) => (
               <div key={index} className="group">
