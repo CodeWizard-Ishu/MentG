@@ -28,7 +28,7 @@ const ContactUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
   }
 
   return (
-    <div className="min-h-screen bg-sky-100">
+    <div className="min-h-screen bg-sky-200">
       {/* Sticky Header */}
       <header className="sticky top-0 z-50 bg-[#08286b] flex justify-between items-center p-3 md:p-4 lg:p-6 shadow-md">
         <div>

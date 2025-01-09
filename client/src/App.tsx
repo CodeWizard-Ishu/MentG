@@ -120,7 +120,16 @@ function App() {
             />
           }
         />
-        <Route path="/pricing" element={<Pricing />} />
+        <Route
+          path="/pricing"
+          element={
+            <Pricing
+              loggedIn={loggedIn}
+              mentor={mentor}
+              onLogout={handleLogout}
+            />
+          }
+        />
       </Routes>
     </Router>
   );
