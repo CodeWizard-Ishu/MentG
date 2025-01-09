@@ -13,6 +13,7 @@ import AboutUs from "./pages/AboutUs";
 import SeeAll from "./pages/SeeAll";
 import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Pricing from "./pages/Pricing";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(() => {
@@ -119,6 +120,7 @@ function App() {
             />
           }
         />
+        <Route path="/pricing" element={<Pricing />} />
       </Routes>
     </Router>
   );

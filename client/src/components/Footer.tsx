@@ -27,17 +27,17 @@ const Footer = () => {
                   Company
                 </h2>
                 <ul className="text-white text-sm md:text-base font-medium">
-                  <li className="mb-2 md:mb-4">
+                  <li className="mb-1">
                     <a href="/about" className="hover:underline">
                       About Us
                     </a>
                   </li>
-                  <li className="mb-2 md:mb-4">
+                  <li className="mb-1">
                     <a href="/contact" className="hover:underline">
                       Contact
                     </a>
                   </li>
-                  <li className="mb-2 md:mb-4">
+                  <li className="mb-1">
                     <a href="/privacy" className="hover:underline">
                       Terms & Privacy
                     </a>
@@ -49,17 +49,17 @@ const Footer = () => {
                   Platform
                 </h2>
                 <ul className="text-white text-sm md:text-base font-medium">
-                  <li className="mb-2 md:mb-4">
-                    <a href="#" className="hover:underline">
+                  <li className="mb-1">
+                    <a href="/pricing" className="hover:underline">
                       Pricing
                     </a>
                   </li>
-                  <li className="mb-2 md:mb-4">
+                  <li className="mb-1">
                     <a href="#" className="hover:underline">
                       Blog
                     </a>
                   </li>
-                  <li className="mb-2 md:mb-4">
+                  <li className="mb-1">
                     <a href="#" className="hover:underline">
                       Community
                     </a>
@@ -80,27 +80,27 @@ const Footer = () => {
             <div className="flex space-x-4 md:space-x-6">
               <a
                 href="https://www.linkedin.com/company/mentg/"
-                className="text-white hover:text-black transition-colors"
+                className="text-white hover:text-blue-500 transition-colors"
                 target="_blank"
               >
                 <Linkedin size={20} />
               </a>
               <a
                 href="https://www.instagram.com/mentg.in/"
-                className="text-white hover:text-black transition-colors"
+                className="text-white hover:text-blue-500 transition-colors"
                 target="_blank"
               >
                 <Instagram size={20} />
               </a>
               <a
                 href="#"
-                className="text-white hover:text-black transition-colors"
+                className="text-white hover:text-blue-500 transition-colors"
               >
                 <Facebook size={20} />
               </a>
               <a
                 href="#"
-                className="text-white hover:text-black transition-colors"
+                className="text-white hover:text-blue-500 transition-colors"
               >
                 <Twitter size={20} />
               </a>
