@@ -131,11 +131,13 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
       <div className="md:hidden fixed top-0 left-0 right-0 bg-[#08286b] z-30 shadow-md">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
-            <img
-              src={Logo}
-              alt="Logo"
-              className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
-            />
+            <a href="/">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
+              />
+            </a>
           </div>
           <div className="flex items-center space-x-2">
             <img
@@ -181,19 +183,21 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
         `}
         >
           <div className="space-x-2 top-0 z-50 bg-[#08286b] backdrop-blur-md flex items-center p-6 shadow-sm">
-            <a href="/" className="flex items-center">
+            <div className="flex items-center">
               {isMobileMenuOpen ? (
                 <h2 className="text-white font-semibold text-lg">
                   Navigate to:
                 </h2>
               ) : (
-                <img
-                  src={Logo}
-                  alt="Logo"
-                  className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
-                />
+                <a href="/">
+                  <img
+                    src={Logo}
+                    alt="Logo"
+                    className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
+                  />
+                </a>
               )}
-            </a>
+            </div>
           </div>
           <nav className="p-4">
             {navItems.map((item) => (

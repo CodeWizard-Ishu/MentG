@@ -115,7 +115,7 @@ const ProfilePage: React.FC = () => {
                 <img
                   src={profilePicture}
                   alt="Profile"
-                  className="w-24 h-24 md:w-36 md:h-36 rounded-full border-4 border-white/30 mb-4 md:mb-6 shadow-lg"
+                  className="w-24 h-24 md:w-36 md:h-36 object-cover rounded-full border-4 border-white/30 mb-4 md:mb-6 shadow-lg"
                 />
 
                 <h1 className="text-xl md:text-2xl font-bold mb-2">
