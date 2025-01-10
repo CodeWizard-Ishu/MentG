@@ -1,27 +1,58 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User, Mail, Lock } from "lucide-react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import BACKEND_URL from "../endpoint";
 import Logo from "../assets/logo.png";
 import Spinner from "../components/ui/Spinner";
 import { Bounce, toast } from "react-toastify";
+import { isValid } from "date-fns";
 
 interface SignupPageProps {
   onLoginClick?: () => void;
 }
 
+interface SignupFormValues {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+const validationSchema = Yup.object().shape({
+  firstName: Yup.string()
+    .matches(/^[a-zA-Z\s]*$/, "First name can only contain letters and spaces")
+    .required("First name is required"),
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+});
+
 const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loadingMentor, setLoadingMentor] = useState(false);
   const [loadingMentee, setLoadingMentee] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const navigate = useNavigate();
 
-  const handleJoinAsMentee = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const initialValues: SignupFormValues = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  };
+
+  const handleJoinAsMentee = async (values: SignupFormValues) => {
+    if (!isValid) {
+      toast.error("Please fill all details!", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+      return;
+    }
     if (!acceptTerms) {
       toast.error("Please accept the terms and privacy policy", {
         position: "bottom-right",
@@ -37,7 +68,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ firstName, lastName, email, password }),
+        body: JSON.stringify(values),
       });
 
       if (response.status === 400) {
@@ -68,8 +99,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
     }
   };
 
-  const handleJoinAsMentor = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleJoinAsMentor = async (values: SignupFormValues) => {
     if (!acceptTerms) {
       toast.error("Please accept the terms and privacy policy", {
         position: "bottom-right",
@@ -85,7 +115,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ firstName, lastName, email, password }),
+        body: JSON.stringify(values),
       });
 
       if (response.status === 400) {
@@ -152,100 +182,126 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
             </p>
           </div>
 
-          <form className="space-y-4 sm:space-y-5 md:space-y-6">
-            <div className="flex flex-row gap-4 sm:space-x-4">
-              <div className="relative w-full sm:w-1/2">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="text-gray-400" size={20} />
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={() => {}}
+          >
+            {({ values }) => (
+              <Form className="space-y-4 sm:space-y-5 md:space-y-6">
+                <div className="flex flex-row gap-4 sm:space-x-4">
+                  <div className="relative w-full sm:w-1/2">
+                    <div className="text-sm mb-1 ml-1 font-semibold">
+                      First Name
+                    </div>
+                    <Field
+                      type="text"
+                      name="firstName"
+                      required
+                      placeholder="First Name"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
+                    />
+                    <ErrorMessage
+                      name="firstName"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+
+                  <div className="relative w-full sm:w-1/2">
+                    <div className="text-sm mb-1 ml-1 font-semibold">
+                      Last Name
+                    </div>
+                    <Field
+                      type="text"
+                      name="lastName"
+                      required
+                      placeholder="Last Name"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
+                    />
+                    <ErrorMessage
+                      name="lastName"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
                 </div>
-                <input
-                  type="text"
-                  placeholder="First Name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
-                  required
-                />
-              </div>
-              <div className="relative w-full sm:w-1/2">
-                <input
-                  type="text"
-                  placeholder="Last Name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
-                  required
-                />
-              </div>
-            </div>
 
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="text-gray-400" size={20} />
-              </div>
-              <input
-                type="email"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
-                required
-              />
-            </div>
+                <div className="relative">
+                  <div className="text-sm mb-1 ml-1 font-semibold">Email</div>
+                  <Field
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="Email address"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
+                  />
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
 
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="text-gray-400" size={20} />
-              </div>
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
-                required
-              />
-            </div>
+                <div className="relative">
+                  <div className="text-sm mb-1 ml-1 font-semibold">
+                    Password
+                  </div>
+                  <Field
+                    type="password"
+                    name="password"
+                    required
+                    placeholder="Password"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
+                  />
+                  <ErrorMessage
+                    name="password"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
 
-            {/* Terms and Privacy Policy Checkbox */}
-            <div className="flex items-start sm:items-center space-x-2 px-1">
-              <input
-                type="checkbox"
-                id="terms"
-                checked={acceptTerms}
-                onChange={(e) => setAcceptTerms(e.target.checked)}
-                className="w-4 h-4 mt-1 sm:mt-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                required
-              />
-              <label
-                htmlFor="terms"
-                className="text-sm sm:text-base text-gray-600"
-              >
-                I accept the{" "}
-                <a href="/privacy" className="underline">
-                  terms & privacy policy
-                </a>{" "}
-                of MentG
-              </label>
-            </div>
+                {/* Terms and Privacy Policy Checkbox */}
+                <div className="flex items-start sm:items-center space-x-2 px-1">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    checked={acceptTerms}
+                    onChange={(e) => setAcceptTerms(e.target.checked)}
+                    className="w-4 h-4 mt-1 sm:mt-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    required
+                  />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm sm:text-base text-gray-600"
+                  >
+                    I accept the{" "}
+                    <a href="/privacy" className="underline">
+                      terms & privacy policy
+                    </a>{" "}
+                    of MentG
+                  </label>
+                </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 sm:space-x-4">
-              <button
-                type="button"
-                onClick={handleJoinAsMentee}
-                className="w-full bg-[#08286b] text-white py-3 rounded-lg hover:bg-[#08276bcc] transition-colors font-semibold text-sm sm:text-base"
-              >
-                {loadingMentee ? <Spinner /> : "Join as Mentee"}
-              </button>
-              <button
-                type="button"
-                onClick={handleJoinAsMentor}
-                className="w-full bg-white text-[#08286b] py-3 rounded-lg hover:bg-[#08276b2b] border-2 border-[#08286b]  transition-colors font-bold text-sm sm:text-base"
-              >
-                {loadingMentor ? <Spinner /> : "Join as Mentor"}
-              </button>
-            </div>
-          </form>
+                <div className="flex flex-col sm:flex-row gap-4 sm:space-x-4">
+                  <button
+                    type="button"
+                    onClick={() => handleJoinAsMentee(values)}
+                    className="w-full bg-[#08286b] text-white py-3 rounded-lg hover:bg-[#08276bcc] transition-colors font-semibold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loadingMentee ? <Spinner /> : "Join as Mentee"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleJoinAsMentor(values)}
+                    className="w-full bg-white text-[#08286b] py-3 rounded-lg hover:bg-[#08276b2b] border-2 border-[#08286b] transition-colors font-bold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loadingMentor ? <Spinner /> : "Join as Mentor"}
+                  </button>
+                </div>
+              </Form>
+            )}
+          </Formik>
 
           <div className="text-center mt-6">
             <p className="text-sm sm:text-base text-gray-600">

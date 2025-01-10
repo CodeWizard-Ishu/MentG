@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock } from "lucide-react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import BACKEND_URL from "../endpoint";
 import Logo from "../assets/logo.png";
 import Spinner from "../components/ui/Spinner";
@@ -17,14 +18,30 @@ interface LoginPageProps {
   onSignupClick?: () => void;
 }
 
+interface LoginFormValues {
+  email: string;
+  password: string;
+}
+
+const validationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: Yup.string()
+    .required("Password is required")
+    .min(6, "Password must be at least 6 characters"),
+});
+
 const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const initialValues: LoginFormValues = {
+    email: "",
+    password: "",
+  };
+
+  const handleLogin = async (values: LoginFormValues) => {
     setLoading(true);
     try {
       const response = await fetch(`${BACKEND_URL}/auth/login`, {
@@ -32,7 +49,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(values),
       });
 
       const data = await response.json();
@@ -170,48 +187,61 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
             <div className="flex-grow border-t border-gray-400"></div>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4 sm:space-y-6">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="text-gray-400 w-5 h-5 sm:w-6 sm:h-6" />
-              </div>
-              <input
-                type="email"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
-                required
-              />
-            </div>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="text-gray-400 w-5 h-5 sm:w-6 sm:h-6" />
-              </div>
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
-                required
-              />
-            </div>
-            <div className="text-right">
-              <button
-                type="button"
-                className="text-xs sm:text-sm text-gray-600 hover:underline"
-              >
-                Forgot password?
-              </button>
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-[#08286b] text-white py-3 rounded-lg hover:bg-[#08276bcc] transition-colors font-semibold text-sm sm:text-base"
-            >
-              {loading ? <Spinner /> : "Login"}
-            </button>
-          </form>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleLogin}
+          >
+            {({ isValid, isSubmitting }) => (
+              <Form className="space-y-4 sm:space-y-6">
+                <div className="relative">
+                  <div className="text-sm mb-1 ml-1 font-semibold">Email</div>
+                  <Field
+                    type="email"
+                    name="email"
+                    placeholder="Email address"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
+                  />
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
+                <div className="relative">
+                  <div className="text-sm mb-1 ml-1 font-semibold">
+                    Password
+                  </div>
+                  <Field
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
+                  />
+                  <ErrorMessage
+                    name="password"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
+                <div className="text-right">
+                  <button
+                    type="button"
+                    className="text-xs sm:text-sm text-gray-600 hover:underline"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+                <button
+                  type="submit"
+                  disabled={!isValid || isSubmitting}
+                  className="w-full bg-[#08286b] text-white py-3 rounded-lg hover:bg-[#08276bcc] transition-colors font-semibold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? <Spinner /> : "Login"}
+                </button>
+              </Form>
+            )}
+          </Formik>
 
           <div className="text-center mt-6 sm:mt-8">
             <p className="text-sm sm:text-base text-gray-600">

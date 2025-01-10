@@ -250,7 +250,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
                 <img
                   src={profilePicture}
                   alt="User Image"
-                  className="w-16 h-16 md:w-20 md:h-20 rounded-full"
+                  className="object-cover w-16 h-16 md:w-20 md:h-20 rounded-full"
                 />
                 <div>
                   <h2 className="text-2xl md:text-3xl font-bold p-2">
