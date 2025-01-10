@@ -121,9 +121,6 @@ const ProfilePage: React.FC = () => {
                 <h1 className="text-xl md:text-2xl font-bold mb-2">
                   {profileData.fullName}
                 </h1>
-                <p className="text-xs md:text-sm text-purple-200 mb-4 text-center truncate">
-                  {`${profileData.bio.slice(0, 35)}...`}
-                </p>
               </div>
 
               <div className="grid grid-cols-3 gap-2 md:gap-4 w-full text-center mb-4 md:mb-6">
@@ -310,7 +307,7 @@ const ProfilePage: React.FC = () => {
                   <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">
                     Bio
                   </h2>
-                  <p className="text-sm md:text-base">{profileData.bio}</p>
+                  <p className="text-sm md:text-base">{profileData.bio ?? "No bio available"}</p>
                 </div>
               )}
 
