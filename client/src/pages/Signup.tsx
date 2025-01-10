@@ -219,11 +219,6 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
                       placeholder="Last Name"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
                     />
-                    <ErrorMessage
-                      name="lastName"
-                      component="div"
-                      className="text-red-500 text-sm mt-1"
-                    />
                   </div>
                 </div>
 

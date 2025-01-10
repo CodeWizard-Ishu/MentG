@@ -192,7 +192,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
             validationSchema={validationSchema}
             onSubmit={handleLogin}
           >
-            {({ isValid, isSubmitting }) => (
+            {({ isSubmitting }) => (
               <Form className="space-y-4 sm:space-y-6">
                 <div className="relative">
                   <div className="text-sm mb-1 ml-1 font-semibold">Email</div>
@@ -234,7 +234,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
                 </div>
                 <button
                   type="submit"
-                  disabled={!isValid || isSubmitting}
+                  disabled={isSubmitting}
                   className="w-full bg-[#08286b] text-white py-3 rounded-lg hover:bg-[#08276bcc] transition-colors font-semibold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? <Spinner /> : "Login"}

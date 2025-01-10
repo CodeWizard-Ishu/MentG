@@ -1,6 +1,8 @@
 import "./App.css";
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { inject } from "@vercel/analytics";
+import { injectSpeedInsights } from "@vercel/speed-insights";
 import Landing from "./pages/Landing";
 import LoginPage from "./pages/Login";
 import SignupPage from "./pages/Signup";
@@ -16,6 +18,10 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Pricing from "./pages/Pricing";
 
 function App() {
+  
+  injectSpeedInsights();
+  inject();
+
   const [loggedIn, setLoggedIn] = useState(() => {
     return sessionStorage.getItem("loggedIn") === "true";
   });
