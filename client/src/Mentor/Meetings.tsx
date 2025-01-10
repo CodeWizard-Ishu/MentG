@@ -156,8 +156,8 @@ const Meetings = () => {
                     <td className="p-3">Rs.{meeting.amount.toFixed(2)}</td>
                     <td>
                       <ReportMenu
-                        menteeId= {meeting.menteeId}
-                        menteeName = {meeting.menteeName}
+                        menteeId={meeting.menteeId}
+                        menteeName={meeting.menteeName}
                       />
                     </td>
                   </tr>

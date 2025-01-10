@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import ProfileCard from "../components/ui/ProfileCard";
 import Dropdown from "../components/ui/Dropdown";
 import BACKEND_URL from "../endpoint";
-import Logo from '../assets/logo.png';
+import Logo from "../assets/logo.png";
 import { Bounce, toast } from "react-toastify";
 
 const Home = () => {
@@ -11,7 +11,7 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedDomain, setSelectedDomain] = useState("");
-  const token = sessionStorage.getItem('userToken')??"";
+  const token = sessionStorage.getItem("userToken") ?? "";
 
   const options = [
     { label: "Technology", value: "Technology" },
@@ -28,31 +28,33 @@ const Home = () => {
   const fetchMentors = async (domain: string) => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/mentee/getMentors?domain=${domain}&page=${currentPage}`, {
+        `${BACKEND_URL}/api/mentee/getMentors?domain=${domain}&page=${currentPage}`,
+        {
           method: "GET",
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
           },
-        });
+        }
+      );
       if (!response.ok) {
         // throw new Error("Network response was not ok");
-        toast.error("Network response was not ok",{
+        toast.error("Network response was not ok", {
           position: "bottom-right",
           pauseOnHover: false,
           transition: Bounce,
-        })
+        });
       }
       const data = await response.json();
       setMentors(data.mentors);
       setTotalPages(data.totalPages);
     } catch (error) {
       // console.error("Error fetching mentors:", error);
-      toast.error(`${error}`,{
+      toast.error(`${error}`, {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
-      })
+      });
     }
   };
 
@@ -78,7 +80,9 @@ const Home = () => {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-6 sm:mb-8 lg:mb-12 text-center sm:text-left">Choose your Domain to get Top Mentors</h1>
+      <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-6 sm:mb-8 lg:mb-12 text-center sm:text-left">
+        Choose your Domain to get Top Mentors
+      </h1>
 
       <div className="w-full sm:w-3/4 lg:w-1/2 mx-auto sm:mx-0">
         <Dropdown
@@ -89,12 +93,12 @@ const Home = () => {
           }}
         />
       </div>
-      
+
       <div className="mt-8 sm:mt-10">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            mentors.map((mentor: any,idx:any) => (
+            mentors.map((mentor: any, idx: any) => (
               <Link
                 key={idx}
                 to={`/profile/${mentor.userId}`}
@@ -104,9 +108,7 @@ const Home = () => {
                 <ProfileCard
                   key={idx}
                   name={`${mentor.user.firstName} ${mentor.user.lastName}`}
-                  imageUrl={
-                    mentor.profilePicture || Logo
-                  }
+                  imageUrl={mentor.profilePicture || Logo}
                   desc={mentor.bio || "No description available."}
                 />
               </Link>

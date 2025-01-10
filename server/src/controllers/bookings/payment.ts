@@ -20,7 +20,7 @@ export const getServiceDetail = async (req: any, res: any) => {
     }
 
     // Find the service by name within the mentor's services
-    const service = mProfile.services.find(service => service.name === name);
+    const service = mProfile.services.find((service) => service.name === name);
 
     if (!service) {
       return res.status(404).json({ error: "Service not found." });
@@ -29,6 +29,8 @@ export const getServiceDetail = async (req: any, res: any) => {
     res.status(200).json({ data: service });
   } catch (error) {
     console.error("Error retrieving service details:", error);
-    res.status(500).json({ error: "An error occurred while retrieving service details." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while retrieving service details." });
   }
 };

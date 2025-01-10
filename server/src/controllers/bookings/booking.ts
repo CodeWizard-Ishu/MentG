@@ -31,8 +31,8 @@ export const updateBooking = async (req: any, res: any) => {
     }
     const booking = await prisma.booking.create({
       data: {
-        mentorId : mentorProfile.id,
-        menteeId : menteeProfile.id,
+        mentorId: mentorProfile.id,
+        menteeId: menteeProfile.id,
         dateTime,
         duration,
         payment,

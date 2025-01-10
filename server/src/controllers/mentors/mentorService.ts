@@ -10,7 +10,7 @@ export const updateService = async (req: any, res: any) => {
     // Parse mentorId and check if it's a valid number
     const parsedMentorId = parseInt(mentorId);
     const mProfile = await prisma.mentorProfile.findUnique({
-      where: { userId: parsedMentorId }
+      where: { userId: parsedMentorId },
     });
 
     if (!mProfile) {
@@ -42,7 +42,9 @@ export const updateService = async (req: any, res: any) => {
     );
 
     if (missingServices.length > 0) {
-      return res.status(404).json({ error: `Services not found: ${missingServices.join(", ")}` });
+      return res
+        .status(404)
+        .json({ error: `Services not found: ${missingServices.join(", ")}` });
     }
 
     // Prepare data for update
@@ -54,7 +56,6 @@ export const updateService = async (req: any, res: any) => {
         connect: Array.from(serviceIdsMap.values()).map((id) => ({ id })), // Connect existing service IDs
       },
     };
-    
 
     // Update Mentor Profile
     const updatedMentor = await prisma.mentorProfile.update({
@@ -71,14 +72,17 @@ export const updateService = async (req: any, res: any) => {
     console.error(error);
 
     // Handle specific Prisma errors for better debugging
-    if (error.code === 'P2025') {
-      return res.status(404).json({ error: "Mentor profile not found or already disconnected." });
+    if (error.code === "P2025") {
+      return res
+        .status(404)
+        .json({ error: "Mentor profile not found or already disconnected." });
     }
 
-    res.status(500).json({ error: "An error occurred while updating the mentor profile." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating the mentor profile." });
   }
 };
-
 
 export const getServices = async (req: any, res: any) => {
   const { mentorId } = req.params;
@@ -87,7 +91,8 @@ export const getServices = async (req: any, res: any) => {
     // Parse mentorId and check if it's a valid number
     const parsedMentorId = parseInt(mentorId);
     const mProfile = await prisma.mentorProfile.findUnique({
-      where: { userId: parsedMentorId }});
+      where: { userId: parsedMentorId },
+    });
     const id = mProfile?.id;
 
     if (!mProfile) {

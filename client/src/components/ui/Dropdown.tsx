@@ -21,7 +21,9 @@ const Dropdown: React.FC<DynamicDropdownProps> = ({
   onChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<DropdownOption | null>(null);
+  const [selectedOption, setSelectedOption] = useState<DropdownOption | null>(
+    null
+  );
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 

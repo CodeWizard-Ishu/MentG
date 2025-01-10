@@ -78,16 +78,16 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({
           </h1>
           <div className="prose prose-gray max-w-none">
             <p className="text-gray-600 text-xs mb-6">
-              The user of this Website/Platform (“<b>User</b>”) agrees to be bound by
-              the terms and conditions of this privacy policy (“<b>Policy</b>”). In the
-              event the terms and conditions of the Policy are not agreeable to
-              the User, the User is requested to refrain from using this
-              Website/Application.
+              The user of this Website/Platform (“<b>User</b>”) agrees to be
+              bound by the terms and conditions of this privacy policy (“
+              <b>Policy</b>”). In the event the terms and conditions of the
+              Policy are not agreeable to the User, the User is requested to
+              refrain from using this Website/Application.
             </p>
             <p className="text-gray-600 text-xs mb-6">
-              This website www.mentg.in (“<b>Website</b>”) is owned and operated by the
-              management of MentG which expression shall mean and include its
-              affiliates, successors and permitted assign. MentG provides
+              This website www.mentg.in (“<b>Website</b>”) is owned and operated
+              by the management of MentG which expression shall mean and include
+              its affiliates, successors and permitted assign. MentG provides
               services to the Users through the Website and is committed to
               protecting and respecting the privacy of the Users.
             </p>
@@ -150,8 +150,8 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({
               transactions and payments made to the User’s account(s).
             </p>
             <p className="text-gray-600 text-xs mb-6">
-              “<b>User(s)</b>” shall mean and include all individuals, companies and
-              private organisations that visit the Website and provide
+              “<b>User(s)</b>” shall mean and include all individuals, companies
+              and private organisations that visit the Website and provide
               information to MentG through any of the modes referred to in the
               clause on “Collection of Information” below.
             </p>

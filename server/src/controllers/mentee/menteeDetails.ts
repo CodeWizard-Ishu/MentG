@@ -37,8 +37,7 @@ export const getMenteeDetails = async (req: any, res: any) => {
   }
 };
 
-
-export const updateMenteeDetails = async (req:any, res:any) => {
+export const updateMenteeDetails = async (req: any, res: any) => {
   const { menteeId } = req.params;
   const {
     firstName,
@@ -48,7 +47,7 @@ export const updateMenteeDetails = async (req:any, res:any) => {
     profilePicture,
     linkedin,
     twitter,
-    instagram
+    instagram,
   } = req.body;
 
   try {
@@ -73,14 +72,14 @@ export const updateMenteeDetails = async (req:any, res:any) => {
             lastName,
           },
         },
-        
       },
     });
 
     res.json({ message: "Mentee profile updated successfully", menteeProfile });
-  } catch (error:any) {
+  } catch (error: any) {
     console.error(error);
-    if (error.code === "P2025") { // Record not found error code in Prisma
+    if (error.code === "P2025") {
+      // Record not found error code in Prisma
       return res.status(404).json({ message: "Mentee profile not found" });
     }
     res.status(500).json({ message: "Internal server error" });

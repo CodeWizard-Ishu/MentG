@@ -1,7 +1,7 @@
-import express from 'express';
+import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import router from './routes/route';
+import router from "./routes/route";
 
 dotenv.config();
 
@@ -10,15 +10,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/',(req,res) => {
-    res.json({
-        health : "100%",
-        state : "running"
-    });
-})
+app.get("/", (req, res) => {
+  res.json({
+    health: "100%",
+    state: "running",
+  });
+});
 
-app.use('/',router);
+app.use("/", router);
 
-app.listen(3000, ()=>{
-    console.log(`Server Running on Port 3000`);
-})
+app.listen(3000, () => {
+  console.log(`Server Running on Port 3000`);
+});

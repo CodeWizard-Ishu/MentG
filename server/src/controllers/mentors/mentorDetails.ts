@@ -38,7 +38,7 @@ export const getMentorDetails = async (req: any, res: any) => {
   }
 };
 
-export const updateMentorDetails = async (req:any, res:any) => {
+export const updateMentorDetails = async (req: any, res: any) => {
   const { mentorId } = req.params;
   const {
     firstName,
@@ -48,7 +48,7 @@ export const updateMentorDetails = async (req:any, res:any) => {
     profilePicture,
     linkedin,
     twitter,
-    instagram
+    instagram,
   } = req.body;
 
   try {
@@ -73,14 +73,14 @@ export const updateMentorDetails = async (req:any, res:any) => {
             lastName,
           },
         },
-        
       },
     });
 
     res.json({ message: "Mentor profile updated successfully", mentorProfile });
-  } catch (error:any) {
+  } catch (error: any) {
     console.error(error);
-    if (error.code === "P2025") { // Record not found error code in Prisma
+    if (error.code === "P2025") {
+      // Record not found error code in Prisma
       return res.status(404).json({ message: "Mentor profile not found" });
     }
     res.status(500).json({ message: "Internal server error" });

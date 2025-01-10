@@ -40,7 +40,7 @@ const ProfilePage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (sessionStorage.getItem("mentor")==="true") {
+    if (sessionStorage.getItem("mentor") === "true") {
       toast.error("Login as Mentee to book", {
         position: "bottom-right",
         pauseOnHover: false,
@@ -63,28 +63,26 @@ const ProfilePage: React.FC = () => {
     };
 
     fetchProfileData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleBook = () => {
-    const selectedServiceData = services.find(s => s.name === serviceTab);
+    const selectedServiceData = services.find((s) => s.name === serviceTab);
     if (selectedServiceData) {
       setSelectedService({
         name: selectedServiceData.name,
         price: selectedServiceData.price,
-        description: selectedServiceData.description
+        description: selectedServiceData.description,
       });
-      
+
       setMentorDetails({
         id: userId!,
         name: profileData.fullName,
-        profilePicture: profilePicture
+        profilePicture: profilePicture,
       });
     }
-    if(sessionStorage.getItem("loggedIn"))
-      navigate(`/availability/${userId}`);
-    else
-      navigate(`/login`);
+    if (sessionStorage.getItem("loggedIn")) navigate(`/availability/${userId}`);
+    else navigate(`/login`);
     setLoading(false);
   };
 
@@ -292,7 +290,11 @@ const ProfilePage: React.FC = () => {
                   {/* Book Session Button */}
                   <div className="p-4 md:p-8">
                     <button
-                      disabled={!serviceTab || loading || sessionStorage.getItem("mentor")==="true"}
+                      disabled={
+                        !serviceTab ||
+                        loading ||
+                        sessionStorage.getItem("mentor") === "true"
+                      }
                       className="w-full bg-[#08286b] text-white font-semibold text-base md:text-lg py-3 md:py-4 rounded-xl flex items-center justify-center space-x-3 hover:bg-[#08276bcc] disabled:opacity-50"
                       onClick={handleBook}
                     >
@@ -307,7 +309,9 @@ const ProfilePage: React.FC = () => {
                   <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">
                     Bio
                   </h2>
-                  <p className="text-sm md:text-base">{profileData.bio ?? "No bio available"}</p>
+                  <p className="text-sm md:text-base">
+                    {profileData.bio ?? "No bio available"}
+                  </p>
                 </div>
               )}
 

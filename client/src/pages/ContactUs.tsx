@@ -5,7 +5,7 @@ import Logo from "../assets/logo.png";
 import Footer from "../components/Footer";
 import Spinner from "../components/ui/Spinner";
 import { Bounce, toast } from "react-toastify";
-import contactImage from "../assets/contact-bg-image.png"
+import contactImage from "../assets/contact-bg-image.png";
 
 interface AboutUsProps {
   loggedIn: boolean;
@@ -23,9 +23,9 @@ const ContactUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
       position: "bottom-right",
       pauseOnHover: false,
       transition: Bounce,
-    })
-    setLoading(false)
-  }
+    });
+    setLoading(false);
+  };
 
   return (
     <div className="min-h-screen bg-sky-200">
@@ -158,7 +158,7 @@ const ContactUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                       data-original="#000000"
                     />
                   </svg>
-                  {loading ? <Spinner/> : "Send Message"}
+                  {loading ? <Spinner /> : "Send Message"}
                 </button>
               </div>
             </form>

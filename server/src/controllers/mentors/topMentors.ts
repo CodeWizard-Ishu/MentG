@@ -26,11 +26,11 @@ const getTopMentors = async (domainNames: any) => {
       },
       take: 10, // Limit to top 10
       include: {
-        user: true//{
-          // select: {
-          //   firstName: true,
-          //   lastName: true,
-          // },
+        user: true, //{
+        // select: {
+        //   firstName: true,
+        //   lastName: true,
+        // },
         //},
       },
     });

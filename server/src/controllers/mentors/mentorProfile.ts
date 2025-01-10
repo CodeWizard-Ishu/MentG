@@ -7,7 +7,7 @@ export const getProfileData = async (req: any, res: any) => {
 
   try {
     const mentorProfile = await prisma.mentorProfile.findUnique({
-      where: { userId:mentorId },
+      where: { userId: mentorId },
       include: {
         user: {
           select: {

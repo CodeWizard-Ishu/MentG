@@ -40,7 +40,9 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
   maxBookingDays = 30,
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | null>(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | null>(
+    null
+  );
   const [error, setError] = useState<string>("");
   const [availability, setAvailability] = useState<AvailabilitySlot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -67,9 +69,10 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
         setAvailability(result.data);
       } catch (error) {
         console.error("Error fetching availability:", error);
-        setError("Failed to load mentor's availability. Please try again later.");
-      }
-      finally{
+        setError(
+          "Failed to load mentor's availability. Please try again later."
+        );
+      } finally {
         setIsLoading(false);
       }
     };
@@ -91,20 +94,24 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
 
   // Function to check if a date should be disabled
   const isDateDisabled = (date: Date) => {
-    const dayName = date.toLocaleString('en-US', { weekday: 'long' }).toUpperCase();
-    return !availability.some(slot => slot.dayOfWeek === dayName);
+    const dayName = date
+      .toLocaleString("en-US", { weekday: "long" })
+      .toUpperCase();
+    return !availability.some((slot) => slot.dayOfWeek === dayName);
   };
 
   // Generate time slots for the selected date
   const timeSlots = useMemo(() => {
     const slots: TimeSlot[] = [];
-    
+
     if (!selectedDate) return slots;
 
     // Find if the selected day has availability
-    const selectedDayName = selectedDate.toLocaleString('en-US', { weekday: 'long' }).toUpperCase();
+    const selectedDayName = selectedDate
+      .toLocaleString("en-US", { weekday: "long" })
+      .toUpperCase();
     const availableDay = availability.find(
-      slot => slot.dayOfWeek === selectedDayName
+      (slot) => slot.dayOfWeek === selectedDayName
     );
 
     if (!availableDay) return slots;
@@ -122,7 +129,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
         id: `slot-${hour}`,
         startTime,
         endTime,
-        available: true
+        available: true,
       });
     }
 
@@ -155,7 +162,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
     setSelectedSlot({
       date: selectedDate,
       startTime: selectedTimeSlot.startTime,
-      endTime: selectedTimeSlot.endTime
+      endTime: selectedTimeSlot.endTime,
     });
 
     setSubmitting(false);
@@ -212,7 +219,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
                     const isUnavailable = isDateDisabled(date);
                     return isBefore || isAfter || isUnavailable;
                   }}
-                  className='rounded-md border'
+                  className="rounded-md border"
                 />
               </div>
 
@@ -292,7 +299,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
                 disabled={!selectedDate || !selectedTimeSlot || isSubmitting}
                 className="w-full md:w-auto bg-[#08286b] hover:bg-[#08276bcc]"
               >
-                {isSubmitting ? <Spinner/> : "Confirm Slot"}
+                {isSubmitting ? <Spinner /> : "Confirm Slot"}
               </Button>
             </div>
           </CardContent>

@@ -1,5 +1,5 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface BookingState {
   selectedService: {
@@ -23,10 +23,14 @@ interface BookingState {
     phone: string;
     sessionDetails: string;
   } | null;
-  setSelectedService: (service: BookingState['selectedService']) => void;
-  setSelectedSlot: (slot: Omit<NonNullable<BookingState['selectedSlot']>, 'date'> & { date: Date }) => void;
-  setMentorDetails: (mentor: BookingState['mentorDetails']) => void;
-  setBookingDetails: (details: BookingState['bookingDetails']) => void;
+  setSelectedService: (service: BookingState["selectedService"]) => void;
+  setSelectedSlot: (
+    slot: Omit<NonNullable<BookingState["selectedSlot"]>, "date"> & {
+      date: Date;
+    }
+  ) => void;
+  setMentorDetails: (mentor: BookingState["mentorDetails"]) => void;
+  setBookingDetails: (details: BookingState["bookingDetails"]) => void;
   clearBooking: () => void;
 }
 
@@ -38,25 +42,27 @@ const useBookingStore = create<BookingState>()(
       mentorDetails: null,
       bookingDetails: null,
       setSelectedService: (service) => set({ selectedService: service }),
-      setSelectedSlot: (slot) => set({ 
-        selectedSlot: {
-          ...slot,
-          date: slot.date.toISOString()
-        }
-      }),
+      setSelectedSlot: (slot) =>
+        set({
+          selectedSlot: {
+            ...slot,
+            date: slot.date.toISOString(),
+          },
+        }),
       setMentorDetails: (mentor) => set({ mentorDetails: mentor }),
       setBookingDetails: (details) => set({ bookingDetails: details }),
-      clearBooking: () => set({
-        selectedService: null,
-        selectedSlot: null,
-        mentorDetails: null,
-        bookingDetails: null,
-      }),
+      clearBooking: () =>
+        set({
+          selectedService: null,
+          selectedSlot: null,
+          mentorDetails: null,
+          bookingDetails: null,
+        }),
     }),
     {
-      name: 'booking-store',
+      name: "booking-store",
     }
   )
-)
+);
 
 export default useBookingStore;

@@ -9,7 +9,8 @@ export const updateAvailability = async (req: any, res: any) => {
     const parsedMentorId = parseInt(mentorId);
 
     const mProfile = await prisma.mentorProfile.findUnique({
-      where: { userId: parsedMentorId }});
+      where: { userId: parsedMentorId },
+    });
     const id = mProfile?.id;
     // Delete existing availability for the mentor
     await prisma.availability.deleteMany({
@@ -43,7 +44,8 @@ export const getAvailability = async (req: any, res: any) => {
   try {
     const parsedMentorId = parseInt(mentorId);
     const mProfile = await prisma.mentorProfile.findUnique({
-      where: { userId: parsedMentorId }});
+      where: { userId: parsedMentorId },
+    });
     const id = mProfile?.id;
 
     const availability = await prisma.availability.findMany({

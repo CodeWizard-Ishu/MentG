@@ -34,7 +34,7 @@ const FeedbackReportMenu = ({
   const [hoveredRating, setHoveredRating] = useState<number>(0);
   const [feedback, setFeedback] = useState("");
   const [report, setReport] = useState("");
-  const token = sessionStorage.getItem('userToken')??"";
+  const token = sessionStorage.getItem("userToken") ?? "";
 
   const resetFeedbackForm = () => {
     setRating(0);
@@ -59,7 +59,7 @@ const FeedbackReportMenu = ({
       const response = await fetch(`${BACKEND_URL}/api/rating`, {
         method: "POST",
         headers: {
-          Authorization : token,
+          Authorization: token,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(feedbackData),

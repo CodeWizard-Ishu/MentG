@@ -1,9 +1,9 @@
-import Logo from '../assets/logo.png';
+import Logo from "../assets/logo.png";
 
 const Header = () => {
   return (
     <>
-    <header className="sticky top-0 z-50 bg-[#08286b] flex justify-between items-center p-3 md:p-4 lg:p-6 shadow-md">
+      <header className="sticky top-0 z-50 bg-[#08286b] flex justify-between items-center p-3 md:p-4 lg:p-6 shadow-md">
         <div>
           <a href="/" className="flex items-center">
             <img
@@ -15,7 +15,7 @@ const Header = () => {
         </div>
       </header>
     </>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

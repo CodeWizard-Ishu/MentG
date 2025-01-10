@@ -1,10 +1,10 @@
 import React from "react";
 
-interface SpinnerProps{
-    clasName?: string;
+interface SpinnerProps {
+  clasName?: string;
 }
 
-const Spinner: React.FC<SpinnerProps> = ({clasName=""}) => {
+const Spinner: React.FC<SpinnerProps> = ({ clasName = "" }) => {
   return (
     <div className={`text-center ${clasName}`}>
       <div role="status">

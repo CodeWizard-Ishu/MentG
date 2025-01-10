@@ -61,7 +61,7 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
         }
 
         const data = await response.json();
-        getProfilePicture(data.profilePicture);
+        if (data.profilePicture) getProfilePicture(data.profilePicture);
         setStats([
           {
             icon: <IndianRupee className="text-green-500" />,

@@ -15,7 +15,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 }) => {
   return (
     <div
-      className={`max-w-xs bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 ${className}`}>
+      className={`max-w-xs bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 ${className}`}
+    >
       <div className="aspect-square w-full relative p-4">
         <img
           src={imageUrl}

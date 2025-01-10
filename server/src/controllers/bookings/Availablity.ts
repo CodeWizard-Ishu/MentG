@@ -8,7 +8,8 @@ export const getBookingAvailablity = async (req: any, res: any) => {
   try {
     const parsedMentorId = parseInt(mentorId);
     const mProfile = await prisma.mentorProfile.findUnique({
-      where: { userId: parsedMentorId }});
+      where: { userId: parsedMentorId },
+    });
     const id = mProfile?.id;
 
     const availability = await prisma.availability.findMany({
