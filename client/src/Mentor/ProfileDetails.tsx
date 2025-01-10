@@ -3,7 +3,7 @@ import { User } from "lucide-react";
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import BACKEND_URL from "../endpoint";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import Pica from "pica";
 import Spinner from "../components/ui/Spinner";
 import { Bounce, toast } from "react-toastify";
@@ -392,7 +392,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                 </div>
               </div>
 
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 <label htmlFor="mentgLink" className="block font-medium mb-2">
                   Your MentG page link
                 </label>
@@ -416,7 +416,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                     </button>
                   </Link>
                 </div>
-              </div>
+              </div> */}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
