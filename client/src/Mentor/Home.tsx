@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ReactNode } from "react";
-import { Calendar, User, DollarSign } from "lucide-react";
+import { Calendar, User, IndianRupee } from "lucide-react";
 import BACKEND_URL from "../endpoint";
 import Spinner from "../components/ui/Spinner";
 import { Bounce, toast } from "react-toastify";
@@ -64,7 +64,7 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
         getProfilePicture(data.profilePicture);
         setStats([
           {
-            icon: <DollarSign className="text-green-500" />,
+            icon: <IndianRupee className="text-green-500" />,
             title: "Total Earnings",
             value: `Rs.${data.totalEarnings.toFixed(2)}`, // Format to 2 decimal places
           },
