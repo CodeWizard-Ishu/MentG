@@ -14,6 +14,7 @@ import Meetings from "./Meetings";
 import Messages from "./Messages";
 import Settings from "./ProfileSettings";
 import Logo from "../assets/logo.png";
+import defaultImage from "../assets/defautProfilePic.jpg";
 import BACKEND_URL from "../endpoint";
 
 interface NavItem {
@@ -27,9 +28,7 @@ interface MenteeDashboardProps {
 }
 const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
-  const [profilePicture, setProfilePicture] = useState<string>(
-    "https://shorturl.at/Pfj9i"
-  );
+  const [profilePicture, setProfilePicture] = useState<string>(defaultImage);
   const [fullName, setFullName] = useState<string>(
     sessionStorage.getItem("fullName") || "Mentee"
   );

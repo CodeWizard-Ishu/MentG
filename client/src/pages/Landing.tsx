@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import BACKEND_URL from "../endpoint";
 import Logo from "../assets/logo.png";
 import jobImage from "../assets/job-image.jpg";
+import defaultImage from "../assets/defautProfilePic.jpg"
 import {
   Building2,
   Users,
@@ -241,7 +242,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
                             name={`${mentor.user.firstName} ${mentor.user.lastName}`}
                             imageUrl={
                               mentor.profilePicture ||
-                              "https://via.placeholder.com/150"
+                              defaultImage
                             }
                             desc={mentor.bio || "No bio available."}
                           />

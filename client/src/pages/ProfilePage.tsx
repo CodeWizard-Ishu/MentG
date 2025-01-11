@@ -8,6 +8,7 @@ import Spinner from "../components/ui/Spinner";
 import Instagram from "../assets/instagram.png";
 import LinkedIn from "../assets/linkedin.png";
 import Twitter from "../assets/twitter.png";
+import defaultImage from "../assets/defautProfilePic.jpg";
 import { Bounce, toast } from "react-toastify";
 
 interface Services {
@@ -27,9 +28,7 @@ const ProfilePage: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [profileData, setProfileData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [profilePicture, setProfilePicture] = useState<string>(
-    "https://shorturl.at/XCudT"
-  );
+  const [profilePicture, setProfilePicture] = useState<string>(defaultImage);
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -288,6 +287,7 @@ const ProfilePage: React.FC = () => {
                     ))}
 
                   {/* Book Session Button */}
+                  {/* --------BOOKING BUTTON DISABLED-------- */}
                   <div className="p-4 md:p-8">
                     <button
                       disabled={
@@ -296,7 +296,17 @@ const ProfilePage: React.FC = () => {
                         sessionStorage.getItem("mentor") === "true"
                       }
                       className="w-full bg-[#08286b] text-white font-semibold text-base md:text-lg py-3 md:py-4 rounded-xl flex items-center justify-center space-x-3 hover:bg-[#08276bcc] disabled:opacity-50"
-                      onClick={handleBook}
+                      onClick={() => {
+                        if (true) {
+                          toast("Coming Soon!", {
+                            position: "bottom-right",
+                            pauseOnHover: false,
+                            transition: Bounce,
+                          });
+                        } else {
+                          handleBook();
+                        }
+                      }}
                     >
                       {loading ? <Spinner /> : "Book Service"}
                     </button>

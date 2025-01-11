@@ -1,6 +1,7 @@
 import React, { useState, ReactNode, useEffect } from "react";
 import { Link } from "react-router-dom";
 import BACKEND_URL from "../endpoint";
+import defaultImage from "../assets/defautProfilePic.jpg";
 import {
   Calendar,
   MessageCircle,
@@ -40,9 +41,7 @@ interface MentorDashboardProps {
 
 const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
-  const [profilePicture, setProfilePicture] = useState<string>(
-    "https://img.freepik.com/premium-photo/fun-unique-cartoon-profile-picture-that-represents-your-style-personality_1283595-14000.jpg"
-  );
+  const [profilePicture, setProfilePicture] = useState<string>(defaultImage);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userId = sessionStorage.getItem("userId");
   const [fullName, setFullName] = useState<string>(() => {
