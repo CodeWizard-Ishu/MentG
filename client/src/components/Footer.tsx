@@ -1,5 +1,5 @@
 import Logo from "../assets/logo.png";
-import { Facebook, Instagram, Linkedin, MapPin, Twitter } from "lucide-react";
+import { Instagram, Linkedin, MapPin, Twitter, Youtube } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -93,16 +93,16 @@ const Footer = () => {
                 <Instagram size={20} />
               </a>
               <a
-                href="#"
-                className="text-white hover:text-blue-500 transition-colors"
-              >
-                <Facebook size={20} />
-              </a>
-              <a
-                href="#"
+                href="https://x.com/mentg_in"
                 className="text-white hover:text-blue-500 transition-colors"
               >
                 <Twitter size={20} />
+              </a>
+              <a
+                href="https://www.youtube.com/@MentG_in"
+                className="text-white hover:text-blue-500 transition-colors"
+              >
+                <Youtube size={20} />
               </a>
             </div>
           </div>
