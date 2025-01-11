@@ -16,6 +16,7 @@ import SeeAll from "./pages/SeeAll";
 import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Pricing from "./pages/Pricing";
+import AllMentors from "./pages/allMentors";
 
 function App() {
   
@@ -73,6 +74,7 @@ function App() {
             />
           }
         />
+        <Route path="/all-mentors" element={<AllMentors/>}/>
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route
