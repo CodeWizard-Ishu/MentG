@@ -1,10 +1,11 @@
 import nodemailer from "nodemailer";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
+import Imap from "node-imap";
 
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_HOST,
+  host: process.env.MAIL_SMTPHOST,
   port: 465,
   secure: true,
   auth: {
@@ -13,7 +14,11 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendSignupMail = (userEmail: string, fullName: string) => {
+const mailId = process.env.MAIL_ID ?? "";
+const pass = process.env.MAIL_PASS ?? "";
+const imaphost = process.env.MAIL_IMAPHOST ?? "";
+
+export const sendSignupMail = async (userEmail: string, fullName: string) => {
   const mailOptions = {
     from: "Mentg - Mentoring Simplified <info@mentg.in>",
     to: userEmail,
@@ -47,10 +52,47 @@ export const sendSignupMail = (userEmail: string, fullName: string) => {
     `,
   };
 
-  transporter.sendMail(mailOptions, (error: any, info: any) => {
-    if (error) {
-      return console.log("Error occurred:", error);
-    }
-    console.log("Email sent:", info.response);
-  });
+  try {
+    // Send mail with defined transport object.
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent:", info.messageId);
+
+    // Now save a copy to Sent folder using IMAP.
+    const imap = new Imap({
+      user: mailId,
+      password: pass,
+      host: imaphost, // Replace with your IMAP server host.
+      port: 993,
+      tls: true,
+    });
+
+    imap.once("ready", () => {
+      const emailToAppend = [
+        `From: ${mailOptions.from}\r\n`,
+        `To: ${mailOptions.to}\r\n`,
+        `Subject: ${mailOptions.subject}\r\n`,
+        `Date: ${new Date().toUTCString()}\r\n`,
+        `Content-Type: text/html; charset=UTF-8\r\n`,
+        "\r\n",
+        mailOptions.html,
+      ].join("");
+
+      imap.append(
+        emailToAppend,
+        {
+          mailbox: "Sent",
+          flags: ["\\Seen"],
+        },
+        (err) => {
+          if (err) throw err;
+          console.log("Email saved to Sent folder");
+          imap.end();
+        }
+      );
+    });
+
+    imap.connect();
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
 };
