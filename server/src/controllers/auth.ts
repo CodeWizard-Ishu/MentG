@@ -1,8 +1,14 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { getPrismaClient } from "../prisma";
+import { sendSignupMail } from "./mailer";
 
 const prisma = getPrismaClient();
+
+const capitalize = (string: string) => {
+  if (!string) return "";
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+};
 
 export const signupMentor = async (req: any, res: any) => {
   try {
@@ -49,7 +55,8 @@ export const signupMentor = async (req: any, res: any) => {
         availability: { create: [] }, // Initialize with an empty array for availability
       },
     });
-
+    const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
+    sendSignupMail(email, formattedName);
     res.status(201).json({ msg: "Signup Success", user, mentorProfile });
     console.log(`User signed up as mentor: ${email}`);
   } catch (e) {
@@ -83,7 +90,7 @@ export const signupMentee = async (req: any, res: any) => {
         isActive: true,
       },
     });
-
+  
     const menteeProfile = await prisma.menteeProfile.create({
       data: {
         userId: user.id, // Link to the newly created user
@@ -93,7 +100,8 @@ export const signupMentee = async (req: any, res: any) => {
         ratings: { create: [] }, // Relationship to ratings
       },
     });
-
+    const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
+    sendSignupMail(email, formattedName);
     res.status(201).json({ msg: "Signup Success", user, menteeProfile });
     console.log(`User signed up: ${email}`);
   } catch (e) {
