@@ -53,7 +53,7 @@ const getMentorsOfDomain = async (domain: any, page: any, limit: any) => {
 
 // API Endpoint to fetch mentors by domain with pagination
 export const getMentors = async (req: any, res: any) => {
-  const { domain, page = 1, limit = 20 } = req.query;
+  const { domain, page = 1, limit = 18 } = req.query;
   try {
     const result = await getMentorsOfDomain(domain, page, limit);
     res.json(result);

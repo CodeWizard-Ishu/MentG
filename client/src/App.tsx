@@ -19,7 +19,6 @@ import Pricing from "./pages/Pricing";
 import AllMentors from "./pages/AllMentors";
 
 function App() {
-  
   injectSpeedInsights();
   inject();
 
@@ -74,7 +73,16 @@ function App() {
             />
           }
         />
-        <Route path="/all-mentors" element={<AllMentors/>}/>
+        <Route
+          path="/all-mentors"
+          element={
+            <AllMentors
+              loggedIn={loggedIn}
+              mentor={mentor}
+              onLogout={handleLogout}
+            />
+          }
+        />
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route

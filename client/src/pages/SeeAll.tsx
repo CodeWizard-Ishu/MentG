@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ProfileCard from "../components/ui/ProfileCard";
 import Logo from "../assets/logo.png";
+import DefaultImage from "../assets/defautProfilePic.jpg";
 import BACKEND_URL from "../endpoint";
 import { Bounce, toast } from "react-toastify";
 import Footer from "../components/Footer";
@@ -135,7 +136,7 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                       <ProfileCard
                         key={idx}
                         name={`${mentor.user.firstName} ${mentor.user.lastName}`}
-                        imageUrl={mentor.profilePicture || Logo}
+                        imageUrl={mentor.profilePicture || DefaultImage}
                         desc={mentor.bio || "No description available."}
                       />
                     </Link>

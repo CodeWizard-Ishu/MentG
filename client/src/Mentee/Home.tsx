@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import ProfileCard from "../components/ui/ProfileCard";
 import Dropdown from "../components/ui/Dropdown";
 import BACKEND_URL from "../endpoint";
-import Logo from "../assets/logo.png";
+import DefaultImage from "../assets/defautProfilePic.jpg";
 import { Bounce, toast } from "react-toastify";
 
 const Home = () => {
@@ -108,7 +108,7 @@ const Home = () => {
                 <ProfileCard
                   key={idx}
                   name={`${mentor.user.firstName} ${mentor.user.lastName}`}
-                  imageUrl={mentor.profilePicture || Logo}
+                  imageUrl={mentor.profilePicture || DefaultImage}
                   desc={mentor.bio || "No description available."}
                 />
               </Link>

@@ -31,6 +31,7 @@ import {
   getRatingsForMentor,
   submitRating,
 } from "../controllers/bookings/rating";
+import { getAllMentors } from "../controllers/mentors/allMentors";
 
 const router = express.Router();
 
@@ -54,6 +55,7 @@ router.get(
 );
 
 router.get("/api/mentee/getMentors", verifyToken, getMentors);
+router.get("/api/allMentors", getAllMentors);
 router.get("/api/getMentors", getMentors);
 router.get("/api/mentee/:id/meetings", verifyToken, getAllMenteeMeetings);
 
