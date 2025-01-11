@@ -16,7 +16,7 @@ import SeeAll from "./pages/SeeAll";
 import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Pricing from "./pages/Pricing";
-import AllMentors from "./pages/allMentors";
+import AllMentors from "./pages/AllMentors";
 
 function App() {
   
