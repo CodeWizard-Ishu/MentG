@@ -60,11 +60,9 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     touched: any
   ) => {
-    // Check if any required field is untouched 
+    // Check if any required field is untouched
     const isAnyFieldUntouched =
-      !touched.firstName ||
-      !touched.email ||
-      !touched.password;
+      !touched.firstName || !touched.email || !touched.password;
 
     if (isAnyFieldUntouched) {
       toast.error("The * marked fields are required!", {
