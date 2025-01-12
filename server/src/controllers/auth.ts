@@ -10,9 +10,29 @@ const capitalize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 };
 
+// Validation function
+const validateSignupData = (firstName: string, email: string, password: string) => {
+  if (!firstName || !email || !password) {
+    return "First name, email, and password are required.";
+  }
+  if (password.length < 6) {
+    return "Password must be at least 6 characters long.";
+  }
+  if (!email.includes("@")) {
+    return "Invalid email format.";
+  }
+  return null;
+};
+
 export const signupMentor = async (req: any, res: any) => {
   try {
     const { firstName, lastName, email, password } = req.body;
+
+    // Validate input data
+    const validationError = validateSignupData(firstName, email, password);
+    if (validationError) {
+      return res.status(400).json({ msg: validationError });
+    }
 
     // Check if the user already exists
     const existingUser = await prisma.user.findUnique({
@@ -42,21 +62,23 @@ export const signupMentor = async (req: any, res: any) => {
     // Create the MentorProfile with default values
     const mentorProfile = await prisma.mentorProfile.create({
       data: {
-        userId: user.id, // Link to the newly created user
-        bio: null, // Default value for bio
-        profilePicture: null, // Default value for profile picture
-        services: { create: [] }, // Initialize with an empty array
-        experience: null, // Default value for experience
-        rating: 0, // Default rating
-        totalEarnings: 0, // Default total earnings
-        totalBookings: 0, // Default total bookings
-        uniqueMentees: 0, // Default unique mentees count
-        domains: { create: [] }, // Initialize with an empty array for domains
-        availability: { create: [] }, // Initialize with an empty array for availability
+        userId: user.id,
+        bio: null,
+        profilePicture: null,
+        services: { create: [] },
+        experience: null,
+        rating: 0,
+        totalEarnings: 0,
+        totalBookings: 0,
+        uniqueMentees: 0,
+        domains: { create: [] },
+        availability: { create: [] },
       },
     });
+
     const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
     sendSignupMail(email, formattedName);
+    
     res.status(201).json({ msg: "Signup Success", user, mentorProfile });
     console.log(`User signed up as mentor: ${email}`);
   } catch (e) {
@@ -68,6 +90,12 @@ export const signupMentor = async (req: any, res: any) => {
 export const signupMentee = async (req: any, res: any) => {
   try {
     const { firstName, lastName, email, password } = req.body;
+
+    // Validate input data
+    const validationError = validateSignupData(firstName, email, password);
+    if (validationError) {
+      return res.status(400).json({ msg: validationError });
+    }
 
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -90,20 +118,22 @@ export const signupMentee = async (req: any, res: any) => {
         isActive: true,
       },
     });
-  
+
     const menteeProfile = await prisma.menteeProfile.create({
       data: {
-        userId: user.id, // Link to the newly created user
-        profilePicture: null, // Default value for profile picture
-        goals: null, // Goals of the mentee
-        bookings: { create: [] }, // Relationship to bookings
-        ratings: { create: [] }, // Relationship to ratings
+        userId: user.id,
+        profilePicture: null,
+        goals: null,
+        bookings: { create: [] },
+        ratings: { create: [] },
       },
     });
+
     const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
     sendSignupMail(email, formattedName);
+    
     res.status(201).json({ msg: "Signup Success", user, menteeProfile });
-    console.log(`User signed up: ${email}`);
+    console.log(`User signed up as mentee: ${email}`);
   } catch (e) {
     console.error(e);
     res.status(500).json({ msg: "Signup Failed" });
@@ -114,6 +144,15 @@ export const login = async (req: any, res: any) => {
   try {
     const { email, password } = req.body;
 
+    // Validate input data
+    if (!email || !password) {
+      return res.status(400).json({ msg: "Email and password are required." });
+    }
+    
+    if (!email.includes("@")) {
+      return res.status(400).json({ msg: "Invalid email format." });
+    }
+
     const user = await prisma.user.findUnique({
       where: { email },
     });
@@ -123,18 +162,20 @@ export const login = async (req: any, res: any) => {
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+    
     if (!isMatch) {
       return res.status(401).json({ msg: "Invalid credentials" });
     }
 
-    const secret: any = process.env.JWT_SECRET;
+    const secret:any = process.env.JWT_SECRET;
+    
     const token = jwt.sign({ id: user.id }, secret, {
-      expiresIn: "3h", // Token expiration time
+      expiresIn: "3h",
     });
 
-    res.status(200).json({ msg: "Login Success", token, user });
+   res.status(200).json({ msg: "Login Success", token, user });
   } catch (e) {
-    console.error(e);
-    res.status(500).json({ msg: "Login Failed" });
+   console.error(e);
+   res.status(500).json({ msg: "Login Failed" });
   }
 };

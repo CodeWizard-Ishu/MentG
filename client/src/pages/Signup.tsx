@@ -6,7 +6,6 @@ import BACKEND_URL from "../endpoint";
 import Logo from "../assets/logo.png";
 import Spinner from "../components/ui/Spinner";
 import { Bounce, toast } from "react-toastify";
-import { isValid } from "date-fns";
 
 interface SignupPageProps {
   onLoginClick?: () => void;
@@ -45,14 +44,6 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
   };
 
   const handleJoinAsMentee = async (values: SignupFormValues) => {
-    if (!isValid) {
-      toast.error("Please fill all details!", {
-        position: "bottom-right",
-        pauseOnHover: false,
-        transition: Bounce,
-      });
-      return;
-    }
     if (!acceptTerms) {
       toast.error("Please accept the terms and privacy policy", {
         position: "bottom-right",
@@ -71,15 +62,6 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
         body: JSON.stringify(values),
       });
 
-      if (response.status === 400) {
-        toast.error("Something went wrong!", {
-          position: "bottom-right",
-          pauseOnHover: false,
-          transition: Bounce,
-        });
-        setLoadingMentee(false);
-      }
-
       if (response.ok) {
         toast.success("SignUp Successful!", {
           position: "bottom-right",
@@ -87,6 +69,12 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
           transition: Bounce,
         });
         navigate("/login");
+      } else {
+        toast.error("Something went wrong!", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
       }
     } catch (error) {
       console.error(error);
@@ -95,6 +83,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
         pauseOnHover: false,
         transition: Bounce,
       });
+    } finally {
       setLoadingMentee(false);
     }
   };
@@ -118,15 +107,6 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
         body: JSON.stringify(values),
       });
 
-      if (response.status === 400) {
-        toast.error("Something went wrong!", {
-          position: "bottom-right",
-          pauseOnHover: false,
-          transition: Bounce,
-        });
-        setLoadingMentor(false);
-      }
-
       if (response.ok) {
         toast.success("SignUp Successful!", {
           position: "bottom-right",
@@ -134,6 +114,12 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
           transition: Bounce,
         });
         navigate("/login");
+      } else {
+        toast.error("Something went wrong!", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
       }
     } catch (error) {
       console.error(error);
@@ -142,22 +128,18 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
         pauseOnHover: false,
         transition: Bounce,
       });
+    } finally {
       setLoadingMentor(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-sky-200">
-      {/* Header */}
       <header className="sticky top-0 z-50 bg-[#08286b] p-3 md:p-4 lg:p-6 shadow-md">
         <div className="flex justify-between items-center">
           <div>
             <a href="/" className="flex items-center">
-              <img
-                src={Logo}
-                alt="Logo"
-                className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
-              />
+              <img src={Logo} alt="Logo" className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36" />
             </a>
           </div>
           <nav>
@@ -170,16 +152,11 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
         </div>
       </header>
 
-      {/* Signup Form */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-[calc(100vh-72px)] py-8 sm:py-12">
         <div className="w-full max-w-md sm:max-w-lg md:max-w-xl bg-white/80 backdrop-blur-sm p-6 sm:p-8 md:p-10 rounded-xl shadow-lg">
           <div className="text-center mb-6 sm:mb-8 md:mb-10">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900">
-              Create Account
-            </h1>
-            <p className="text-sm sm:text-base md:text-lg text-gray-600 mt-2 sm:mt-3">
-              Start your journey
-            </p>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900">Create Account</h1>
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 mt-2 sm:mt-3">Start your journey</p>
           </div>
 
           <Formik
@@ -191,9 +168,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
               <Form className="space-y-4 sm:space-y-5 md:space-y-6">
                 <div className="flex flex-row gap-4 sm:space-x-4">
                   <div className="relative w-full sm:w-1/2">
-                    <div className="text-sm mb-1 ml-1 font-semibold">
-                      First Name
-                    </div>
+                    <div className="text-sm mb-1 ml-1 font-semibold">First Name</div>
                     <Field
                       type="text"
                       name="firstName"
@@ -201,17 +176,11 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
                       placeholder="First Name"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
                     />
-                    <ErrorMessage
-                      name="firstName"
-                      component="div"
-                      className="text-red-500 text-sm mt-1"
-                    />
+                    <ErrorMessage name="firstName" component="div" className="text-red-500 text-sm mt-1" />
                   </div>
 
                   <div className="relative w-full sm:w-1/2">
-                    <div className="text-sm mb-1 ml-1 font-semibold">
-                      Last Name
-                    </div>
+                    <div className="text-sm mb-1 ml-1 font-semibold">Last Name</div>
                     <Field
                       type="text"
                       name="lastName"
@@ -219,6 +188,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
                       placeholder="Last Name"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
                     />
+                    <ErrorMessage name="lastName" component="div" className="text-red-500 text-sm mt-1" />
                   </div>
                 </div>
 
@@ -231,17 +201,11 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
                     placeholder="Email address"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
                   />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
+                  <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
 
                 <div className="relative">
-                  <div className="text-sm mb-1 ml-1 font-semibold">
-                    Password
-                  </div>
+                  <div className="text-sm mb-1 ml-1 font-semibold">Password</div>
                   <Field
                     type="password"
                     name="password"
@@ -249,47 +213,39 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
                     placeholder="Password"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
                   />
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
+                  <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
 
                 {/* Terms and Privacy Policy Checkbox */}
-                <div className="flex items-start sm:items-center space-x-2 px-1">
+                <div className="flex items-start sm:items-center space-x-2 px-[5px]">
                   <input
                     type="checkbox"
                     id="terms"
                     checked={acceptTerms}
                     onChange={(e) => setAcceptTerms(e.target.checked)}
-                    className="w-4 h-4 mt-1 sm:mt-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    required
+                    className={`w-[20px] h-[20px] mt-[5px] ${acceptTerms ? 'bg-blue' : ''} border-gray rounded`}
                   />
-                  <label
-                    htmlFor="terms"
-                    className="text-sm sm:text-base text-gray-600"
-                  >
+                  <label htmlFor="terms" className={`text-sm sm:text-base text-gray`}>
                     I accept the{" "}
-                    <a href="/privacy" className="underline">
-                      terms & privacy policy
-                    </a>{" "}
-                    of MentG
+                    <Link to="/privacy" className='underline'>terms & privacy policy</Link> of MentG
                   </label>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 sm:space-x-4">
+                {/* Submit Buttons */}
+                <div className={`flex flex-col sm:flex-row gap-[10px]`}>
                   <button
-                    type="button"
+                    type='button'
                     onClick={() => handleJoinAsMentee(values)}
-                    className="w-full bg-[#08286b] text-white py-3 rounded-lg hover:bg-[#08276bcc] transition-colors font-semibold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={loadingMentee}
+                    className={`w-full bg-[#08286b] text-white py-[15px] rounded-lg hover:bg-[#08276bcc] transition-colors font-semibold text-sm sm:text-base ${loadingMentee ? 'opacity-[0.5]' : ''}`}
                   >
                     {loadingMentee ? <Spinner /> : "Join as Mentee"}
                   </button>
                   <button
-                    type="button"
+                    type='button'
                     onClick={() => handleJoinAsMentor(values)}
-                    className="w-full bg-white text-[#08286b] py-3 rounded-lg hover:bg-[#08276b2b] border-2 border-[#08286b] transition-colors font-bold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={loadingMentor}
+                    className={`w-full bg-white text-[#08286b] py-[15px] rounded-lg hover:bg-[#08276b2b] border border-[#08286b] transition-colors font-bold text-sm sm:text-base ${loadingMentor ? 'opacity-[0.5]' : ''}`}
                   >
                     {loadingMentor ? <Spinner /> : "Join as Mentor"}
                   </button>
@@ -298,14 +254,12 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
             )}
           </Formik>
 
-          <div className="text-center mt-6">
-            <p className="text-sm sm:text-base text-gray-600">
+          {/* Login Redirect */}
+          <div className='text-center mt-[20px]'>
+            <p className='text-sm sm:text-base text-gray=600'>
               Already have an account?
               <Link to="/login">
-                <button
-                  onClick={onLoginClick}
-                  className="text-black hover:underline ml-1 font-semibold"
-                >
+                <button onClick={onLoginClick} className='text-black hover:bg-gray hover:bg-opacity-[0.15] ml-[5px] font-semibold'>
                   Login
                 </button>
               </Link>

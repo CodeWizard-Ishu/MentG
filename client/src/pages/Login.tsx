@@ -132,6 +132,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
           <div className="flex flex-col sm:flex-row gap-4 sm:space-x-4 mb-6">
             <button
               onClick={handleGoogleSignup}
+              disabled
               className="flex-1 flex items-center justify-center bg-white border border-gray-300 py-2 sm:py-3 px-4 rounded-lg hover:bg-gray-300 transition-colors text-sm sm:text-base"
             >
               <svg
@@ -162,6 +163,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
             </button>
             <button
               onClick={handleLinkedInSignup}
+              disabled
               className="flex-1 flex items-center justify-center bg-white border border-gray-300 py-2 sm:py-3 px-4 rounded-lg hover:bg-gray-300 transition-colors text-sm sm:text-base"
             >
               <svg
