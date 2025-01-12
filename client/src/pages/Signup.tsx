@@ -184,7 +184,6 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
                     <Field
                       type="text"
                       name="lastName"
-                      required
                       placeholder="Last Name"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base"
                     />
