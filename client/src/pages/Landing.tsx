@@ -71,6 +71,10 @@ const LandingPage: React.FC<LandingPageProps> = ({
     "Health",
     "Fitness",
     "Mental Fitness",
+    "Fintech",
+    "Operations",
+    "Compliance",
+    "Legal",
   ];
 
   const features = [

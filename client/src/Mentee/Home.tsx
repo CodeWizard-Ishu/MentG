@@ -23,6 +23,10 @@ const Home = () => {
     { label: "Health", value: "Health" },
     { label: "Fitness", value: "Fitness" },
     { label: "Mental Fitness", value: "Mental Fitness" },
+    { label: "Fintech", value: "Fintech" },
+    { label: "Operations", value: "Operations" },
+    { label: "Compliance", value: "Compliance" },
+    { label: "Legal", value: "Legal" },
   ];
 
   const fetchMentors = async (domain: string) => {
