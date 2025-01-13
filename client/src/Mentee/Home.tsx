@@ -50,7 +50,14 @@ const Home = () => {
         });
       }
       const data = await response.json();
-      setMentors(data.mentors);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const sortedMentors = data.mentors.sort((a: any, b: any) => {
+        const aHasPicture = a.profilePicture !== null;
+        const bHasPicture = b.profilePicture !== null;
+        return aHasPicture === bHasPicture ? 0 : aHasPicture ? -1 : 1;
+      });
+
+      setMentors(sortedMentors);
       setTotalPages(data.totalPages);
     } catch (error) {
       // console.error("Error fetching mentors:", error);

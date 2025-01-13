@@ -297,6 +297,7 @@ const ProfilePage: React.FC = () => {
                       }
                       className="w-full bg-[#08286b] text-white font-semibold text-base md:text-lg py-3 md:py-4 rounded-xl flex items-center justify-center space-x-3 hover:bg-[#08276bcc] disabled:opacity-50"
                       onClick={() => {
+                        // eslint-disable-next-line no-constant-condition
                         if (true) {
                           toast("Coming Soon!", {
                             position: "bottom-right",
@@ -319,9 +320,19 @@ const ProfilePage: React.FC = () => {
                   <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">
                     Bio
                   </h2>
-                  <p className="text-sm md:text-base">
-                    {profileData.bio ?? "No bio available"}
-                  </p>
+                  <ul className="list-disc pl-5">
+                    {profileData.bio ? (
+                      profileData.bio.split(".").map(
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        (sentence: any, index: any) =>
+                          sentence.trim() && (
+                            <li key={index}>{sentence.trim()}.</li>
+                          )
+                      )
+                    ) : (
+                      <li>No bio available</li>
+                    )}
+                  </ul>
                 </div>
               )}
 

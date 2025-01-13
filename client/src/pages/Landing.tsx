@@ -51,8 +51,16 @@ const LandingPage: React.FC<LandingPageProps> = ({
       );
       if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const sortedMentors = data[0].mentors.sort((a: any, b: any) => {
+        const aHasPicture = a.profilePicture !== null;
+        const bHasPicture = b.profilePicture !== null;
+        return aHasPicture === bHasPicture ? 0 : aHasPicture ? -1 : 1;
+      });
+
       if (Array.isArray(data) && data.length > 0 && data[0].mentors) {
-        setMentorsData(data[0].mentors); // Set mentors if available
+        setMentorsData(sortedMentors);
+        // setMentorsData(data[0].mentors); // Set mentors if available
       } else {
         setMentorsData([]);
       }
