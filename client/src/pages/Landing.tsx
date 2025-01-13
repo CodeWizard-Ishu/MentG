@@ -30,7 +30,10 @@ const LandingPage: React.FC<LandingPageProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("Technology");
   const [mentorsData, setMentorsData] = useState([]);
-
+  const capitalize = (string: string) => {
+    if (!string) return "";
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
   useEffect(() => {}, [loggedIn, mentor]);
 
   useEffect(() => {
@@ -251,7 +254,9 @@ const LandingPage: React.FC<LandingPageProps> = ({
                         >
                           <ProfileCard
                             key={mentor.id}
-                            name={`${mentor.user.firstName} ${mentor.user.lastName}`}
+                            name={`${capitalize(
+                              mentor.user.firstName
+                            )} ${capitalize(mentor.user.lastName)}`}
                             imageUrl={mentor.profilePicture || defaultImage}
                             desc={mentor.bio || "No bio available."}
                           />

@@ -13,6 +13,11 @@ const Home = () => {
   const [selectedDomain, setSelectedDomain] = useState("");
   const token = sessionStorage.getItem("userToken") ?? "";
 
+  const capitalize = (string: string) => {
+    if (!string) return "";
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
+
   const options = [
     { label: "Technology", value: "Technology" },
     { label: "Business", value: "Business" },
@@ -118,7 +123,9 @@ const Home = () => {
               >
                 <ProfileCard
                   key={idx}
-                  name={`${mentor.user.firstName} ${mentor.user.lastName}`}
+                  name={`${capitalize(mentor.user.firstName)} ${capitalize(
+                    mentor.user.lastName
+                  )}`}
                   imageUrl={mentor.profilePicture || DefaultImage}
                   desc={mentor.bio || "No description available."}
                 />

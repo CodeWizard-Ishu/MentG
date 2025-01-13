@@ -17,7 +17,10 @@ const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
   const [mentors, setMentors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-
+  const capitalize = (string: string) => {
+    if (!string) return "";
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
   useEffect(() => {
     fetchMentors();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -140,7 +143,9 @@ const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                     >
                       <ProfileCard
                         key={idx}
-                        name={`${mentor.user.firstName} ${mentor.user.lastName}`}
+                        name={`${capitalize(
+                          mentor.user.firstName
+                        )} ${capitalize(mentor.user.lastName)}`}
                         imageUrl={mentor.profilePicture || DefaultImage}
                         desc={mentor.bio || "No description available."}
                       />
