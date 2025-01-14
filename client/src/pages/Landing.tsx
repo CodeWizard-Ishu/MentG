@@ -30,7 +30,10 @@ const LandingPage: React.FC<LandingPageProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("Technology");
   const [mentorsData, setMentorsData] = useState([]);
-
+  const capitalize = (string: string) => {
+    if (!string) return "";
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
   useEffect(() => {}, [loggedIn, mentor]);
 
   useEffect(() => {
@@ -51,8 +54,16 @@ const LandingPage: React.FC<LandingPageProps> = ({
       );
       if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const sortedMentors = data[0].mentors.sort((a: any, b: any) => {
+        const aHasPicture = a.profilePicture !== null;
+        const bHasPicture = b.profilePicture !== null;
+        return aHasPicture === bHasPicture ? 0 : aHasPicture ? -1 : 1;
+      });
+
       if (Array.isArray(data) && data.length > 0 && data[0].mentors) {
-        setMentorsData(data[0].mentors); // Set mentors if available
+        setMentorsData(sortedMentors);
+        // setMentorsData(data[0].mentors); // Set mentors if available
       } else {
         setMentorsData([]);
       }
@@ -243,7 +254,9 @@ const LandingPage: React.FC<LandingPageProps> = ({
                         >
                           <ProfileCard
                             key={mentor.id}
-                            name={`${mentor.user.firstName} ${mentor.user.lastName}`}
+                            name={`${capitalize(
+                              mentor.user.firstName
+                            )} ${capitalize(mentor.user.lastName)}`}
                             imageUrl={mentor.profilePicture || defaultImage}
                             desc={mentor.bio || "No bio available."}
                           />

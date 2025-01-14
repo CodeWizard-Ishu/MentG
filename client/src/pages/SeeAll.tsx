@@ -19,7 +19,10 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
   const [mentors, setMentors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-
+  const capitalize = (string: string) => {
+    if (!string) return "";
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
   useEffect(() => {
     fetchMentors(domainName);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,7 +42,14 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
         });
       }
       const data = await response.json();
-      setMentors(data.mentors);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const sortedMentors = data.mentors.sort((a: any, b: any) => {
+        const aHasPicture = a.profilePicture !== null;
+        const bHasPicture = b.profilePicture !== null;
+        return aHasPicture === bHasPicture ? 0 : aHasPicture ? -1 : 1;
+      });
+
+      setMentors(sortedMentors);
       setTotalPages(data.totalPages);
     } catch (error) {
       // console.error("Error fetching mentors:", error);
@@ -135,7 +145,9 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                     >
                       <ProfileCard
                         key={idx}
-                        name={`${mentor.user.firstName} ${mentor.user.lastName}`}
+                        name={`${capitalize(
+                          mentor.user.firstName
+                        )} ${capitalize(mentor.user.lastName)}`}
                         imageUrl={mentor.profilePicture || DefaultImage}
                         desc={mentor.bio || "No description available."}
                       />
