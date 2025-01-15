@@ -6,6 +6,7 @@ import BACKEND_URL from "../endpoint";
 import Logo from "../assets/logo.png";
 import Spinner from "../components/ui/Spinner";
 import { Bounce, toast } from "react-toastify";
+import ForgotPasswordModal from "./ForgotPasswordModal";
 
 interface LoginPageProps {
   onLogin?: (
@@ -34,6 +35,7 @@ const validationSchema = Yup.object().shape({
 
 const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
   const [loading, setLoading] = useState(false);
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const navigate = useNavigate();
 
   const initialValues: LoginFormValues = {
@@ -229,6 +231,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
                 <div className="text-right">
                   <button
                     type="button"
+                    onClick={() => setIsForgotPasswordOpen(true)}
                     className="text-xs sm:text-sm text-gray-600 hover:underline"
                   >
                     Forgot password?
@@ -257,6 +260,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
           </div>
         </div>
       </div>
+      <ForgotPasswordModal
+        isOpen={isForgotPasswordOpen}
+        onClose={() => setIsForgotPasswordOpen(false)}
+      />
     </div>
   );
 };

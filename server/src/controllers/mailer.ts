@@ -96,3 +96,20 @@ export const sendSignupMail = async (userEmail: string, fullName: string) => {
     console.error("Error sending email:", error);
   }
 };
+
+export const sendforgotpasswordmail = async(email: string, resetUrl: string) => {
+  const mailOptions = {
+    from: "MentG - Mentoring Simplified <info@mentg.in>",
+    to: email,
+    subject: "Password Reset Request",
+    html: `
+      <h1>Password Reset Request</h1>
+      <p>You requested a password reset. Click the link below to reset your password:</p>
+      <a href="${resetUrl}">Reset Password</a>
+      <p>This link will expire in 1 hour.</p>
+      <p>If you didn't request this, please inform to support@mentg.in.</p>
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+}

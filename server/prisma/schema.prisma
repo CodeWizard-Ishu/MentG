@@ -20,6 +20,21 @@ model User {
   // Relationships
   mentorProfile MentorProfile? @relation("UserMentorProfile")
   menteeProfile MenteeProfile? @relation("UserMenteeProfile")
+  resetTokens ResetToken[] @relation("UserResetToken")
+}
+
+// Reset Token model
+model ResetToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int      // Foreign key linking to User
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relationship
+  user User @relation("UserResetToken", fields: [userId], references: [id])
+
+  @@index([token]) // Index for faster token lookups
 }
 
 model MentorProfile {

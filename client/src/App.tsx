@@ -17,6 +17,8 @@ import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Pricing from "./pages/Pricing";
 import AllMentors from "./pages/AllMentors";
+import ResetPasswordPage from "./pages/ResetPassword";
+
 
 function App() {
   injectSpeedInsights();
@@ -84,6 +86,7 @@ function App() {
           }
         />
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route
           path="/dashboard"
