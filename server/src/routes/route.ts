@@ -43,7 +43,7 @@ router.post("/auth/signup/mentee", signupMentee);
 router.post("/auth/login", login);
 router.post('/auth/forgot-password', forgotPassword);
 router.post('/auth/reset-password', resetPassword);
-cron.schedule('* * 1 * *', cleanupExpiredTokens);
+cron.schedule('0 0 * * *', cleanupExpiredTokens);
 
 router.get("/api/mentor/topMentors", topMentorOfDomain);
 
