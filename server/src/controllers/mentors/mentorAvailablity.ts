@@ -28,6 +28,7 @@ export const updateAvailability = async (req: any, res: any) => {
           // Frontend now sends ISO strings in UTC, so we can directly use them
           startTime: new Date(option.startTime),
           endTime: new Date(option.endTime),
+          enabled: true, 
         })),
     });
 
