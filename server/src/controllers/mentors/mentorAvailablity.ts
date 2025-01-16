@@ -53,18 +53,12 @@ export const getAvailability = async (req: any, res: any) => {
 
     const availability = await prisma.availability.findMany({
       where: { mentorId: id },
-      select: {
-        dayOfWeek: true,
-        startTime: true,
-        endTime: true,
-        enabled: true,
-      },
     });
 
     // Transform the data for frontend
     const transformedAvailability = availability.map(slot => ({
       dayOfWeek: slot.dayOfWeek,
-      enabled: true,
+      enabled: Boolean(slot.enabled),
       // Send ISO strings in UTC format
       startTime: slot.startTime.toISOString(),
       endTime: slot.endTime.toISOString()
