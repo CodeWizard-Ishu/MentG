@@ -166,10 +166,10 @@ const Calendar = () => {
 
       const newSchedule = { ...initialSchedule };
 
-      data.forEach(({ dayOfWeek, startTime, endTime }) => {
+      data.forEach(({ dayOfWeek, startTime, endTime, enabled }) => {
         const day = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1).toLowerCase();
         newSchedule[day] = {
-          enabled: true,
+          enabled: enabled,
           timeSlot: {
             startTime: new Date(startTime), // API returns UTC timestamp
             endTime: new Date(endTime)      // API returns UTC timestamp
