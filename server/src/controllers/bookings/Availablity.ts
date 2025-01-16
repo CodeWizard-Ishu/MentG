@@ -16,7 +16,20 @@ export const getBookingAvailablity = async (req: any, res: any) => {
       where: { mentorId: id },
     });
 
-    res.status(200).json({ data: availability });
+    // Transform times to Date objects
+    const transformedAvailability = availability.map(slot => {
+      // Create new Date objects from the UTC times
+      const startTime = new Date(slot.startTime);
+      const endTime = new Date(slot.endTime);
+
+      return {
+        ...slot,
+        startTime,
+        endTime
+      };
+    });
+
+    res.status(200).json({ data: transformedAvailability });
   } catch (error) {
     console.error("Error retrieving availability:", error);
     res

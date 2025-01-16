@@ -12,6 +12,7 @@ export const updateAvailability = async (req: any, res: any) => {
       where: { userId: parsedMentorId },
     });
     const id = mProfile?.id;
+
     // Delete existing availability for the mentor
     await prisma.availability.deleteMany({
       where: { mentorId: id },
@@ -24,8 +25,9 @@ export const updateAvailability = async (req: any, res: any) => {
         .map((option: any) => ({
           mentorId: id,
           dayOfWeek: option.dayOfWeek,
-          startTime: new Date(`1970-01-01T${option.timeSlot.startTime}:00Z`),
-          endTime: new Date(`1970-01-01T${option.timeSlot.endTime}:00Z`),
+          // Frontend now sends ISO strings in UTC, so we can directly use them
+          startTime: new Date(option.startTime),
+          endTime: new Date(option.endTime),
         })),
     });
 
@@ -50,9 +52,24 @@ export const getAvailability = async (req: any, res: any) => {
 
     const availability = await prisma.availability.findMany({
       where: { mentorId: id },
+      select: {
+        dayOfWeek: true,
+        startTime: true,
+        endTime: true,
+        enabled: true,
+      },
     });
 
-    res.status(200).json({ data: availability });
+    // Transform the data for frontend
+    const transformedAvailability = availability.map(slot => ({
+      dayOfWeek: slot.dayOfWeek,
+      enabled: true,
+      // Send ISO strings in UTC format
+      startTime: slot.startTime.toISOString(),
+      endTime: slot.endTime.toISOString()
+    }));
+
+    res.status(200).json({ data: transformedAvailability });
   } catch (error) {
     console.error("Error retrieving availability:", error);
     res

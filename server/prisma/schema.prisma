@@ -95,7 +95,7 @@ model Booking {
   mentorId Int // Foreign key linking to MentorProfile
   menteeId Int // Foreign key linking to MenteeProfile
 
-  dateTime DateTime // Date and time of the booking
+  dateTime DateTime @db.Timestamptz // Date and time of the booking
   duration Int // Duration in minutes
   payment  Float // Payment amount
   status   BookingStatus // Status of the booking
@@ -138,17 +138,14 @@ model Rating {
 
 // New Availability model to store mentor availability details
 model Availability {
-  id Int @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
+  mentorId  Int       // Foreign key to MentorProfile
+  dayOfWeek DayOfWeek // Enum for days of the week
+  startTime DateTime  @db.Timestamptz // Store as UTC timestamp
+  endTime   DateTime  @db.Timestamptz // Store as UTC timestamp
+  enabled   Boolean   @default(true)  // Added enabled field
 
-  mentorId Int // Foreign key to MentorProfile
-
-  dayOfWeek DayOfWeek // Enum for days of the week (e.g., MONDAY, TUESDAY, etc.)
-
-  startTime DateTime // Start time of availability (e.g., "2024-12-14T09:00:00Z")
-
-  endTime DateTime // End time of availability (e.g., "2024-12-14T17:00:00Z")
-
-  mentor MentorProfile @relation(fields: [mentorId], references: [id])
+  mentor    MentorProfile @relation(fields: [mentorId], references: [id])
 }
 
 // Enum for days of the week

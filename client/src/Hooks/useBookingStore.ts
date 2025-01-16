@@ -8,9 +8,9 @@ interface BookingState {
     description: string;
   } | null;
   selectedSlot: {
-    date: string;
-    startTime: string;
-    endTime: string;
+    date: Date;
+    startTime: Date;
+    endTime: Date;
   } | null;
   mentorDetails: {
     id: string;
@@ -24,11 +24,7 @@ interface BookingState {
     sessionDetails: string;
   } | null;
   setSelectedService: (service: BookingState["selectedService"]) => void;
-  setSelectedSlot: (
-    slot: Omit<NonNullable<BookingState["selectedSlot"]>, "date"> & {
-      date: Date;
-    }
-  ) => void;
+  setSelectedSlot: (slot: NonNullable<BookingState["selectedSlot"]>) => void;
   setMentorDetails: (mentor: BookingState["mentorDetails"]) => void;
   setBookingDetails: (details: BookingState["bookingDetails"]) => void;
   clearBooking: () => void;
@@ -45,8 +41,9 @@ const useBookingStore = create<BookingState>()(
       setSelectedSlot: (slot) =>
         set({
           selectedSlot: {
-            ...slot,
-            date: slot.date.toISOString(),
+            date: slot.date,
+            startTime: slot.startTime,
+            endTime: slot.endTime,
           },
         }),
       setMentorDetails: (mentor) => set({ mentorDetails: mentor }),
@@ -61,6 +58,24 @@ const useBookingStore = create<BookingState>()(
     }),
     {
       name: "booking-store",
+      // Add custom serialization/deserialization for Date objects
+      storage: {
+        getItem: (name) => {
+          const str = localStorage.getItem(name);
+          if (!str) return null;
+          const data = JSON.parse(str);
+          if (data.state.selectedSlot) {
+            data.state.selectedSlot.date = new Date(data.state.selectedSlot.date);
+            data.state.selectedSlot.startTime = new Date(data.state.selectedSlot.startTime);
+            data.state.selectedSlot.endTime = new Date(data.state.selectedSlot.endTime);
+          }
+          return data;
+        },
+        setItem: (name, value) => {
+          localStorage.setItem(name, JSON.stringify(value));
+        },
+        removeItem: (name) => localStorage.removeItem(name),
+      },
     }
   )
 );

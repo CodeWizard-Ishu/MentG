@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
 import {
@@ -13,8 +14,8 @@ import { Bounce, toast } from "react-toastify";
 import Spinner from "../components/ui/Spinner";
 
 interface TimeSlot {
-  startTime: string;
-  endTime: string;
+  startTime: Date;
+  endTime: Date;
 }
 
 interface DaySchedule {
@@ -26,26 +27,82 @@ interface WeeklySchedule {
   [key: string]: DaySchedule;
 }
 
+interface ApiTimeSlot {
+  dayOfWeek: string;
+  enabled: boolean;
+  startTime: string;  // ISO string in UTC
+  endTime: string;    // ISO string in UTC
+}
+
 const DEFAULT_START_TIME = "09:00";
 const DEFAULT_END_TIME = "20:00";
 const EMPTY_TIME = "--:--";
+const IST_OFFSET = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
+
+// Helper functions for date-time conversion
+const toUTCDate = (timeString: string, dayOfWeek: string): Date => {
+  const now = new Date();
+  const [hours, minutes] = timeString.split(':').map(Number);
+  
+  // Get the date of the next occurrence of this day
+  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const targetDay = daysOfWeek.indexOf(dayOfWeek);
+  const currentDay = now.getUTCDay();
+  const daysToAdd = (targetDay + 7 - currentDay) % 7;
+  
+  // Create UTC date
+  const date = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() + daysToAdd,
+    hours,
+    minutes
+  ));
+  
+  // Convert IST input to UTC for storage
+  return new Date(date.getTime() - IST_OFFSET);
+};
+
+const fromUTCDate = (date: Date): string => {
+  if (!date || date.getTime() === 0) return EMPTY_TIME;
+  
+  // Convert UTC to IST for display
+  const istDate = new Date(date.getTime() + IST_OFFSET);
+  const hours = istDate.getUTCHours().toString().padStart(2, '0');
+  const minutes = istDate.getUTCMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+};
+
+const generateTimeOptions = (): string[] => {
+  const times = [];
+  for (let hour = 0; hour < 24; hour++) {
+    for (let minute = 0; minute < 60; minute += 30) {
+      const timeString = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+      times.push(timeString);
+    }
+  }
+  return times;
+};
 
 const TimeSelect: React.FC<{
-  value: string;
-  onChange: (value: string) => void;
+  value: Date;
+  onChange: (value: Date) => void;
   disabled?: boolean;
 }> = ({ value, onChange, disabled }) => {
-  const times = [];
-
-  for (let hour = 9; hour < 24; hour++) {
-    const timeString = `${hour.toString().padStart(2, "0")}:00`;
-    times.push(timeString);
-  }
+  const times = generateTimeOptions();
 
   return (
     <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
+      value={fromUTCDate(value)}
+      onChange={(e) => {
+        const timeString = e.target.value;
+        if (timeString === EMPTY_TIME) {
+          onChange(new Date(0));
+        } else {
+          const newDate = toUTCDate(timeString, "Monday");
+          onChange(newDate);
+        }
+      }}
       disabled={disabled}
       className="p-2 rounded border bg-white dark:bg-gray-800 dark:border-gray-700 disabled:opacity-50"
     >
@@ -59,41 +116,22 @@ const TimeSelect: React.FC<{
   );
 };
 
-const Calender = () => {
-  const [schedule, setSchedule] = useState<WeeklySchedule>({
-    Monday: {
-      enabled: false,
-      timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
-    },
-    Tuesday: {
-      enabled: false,
-      timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
-    },
-    Wednesday: {
-      enabled: false,
-      timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
-    },
-    Thursday: {
-      enabled: false,
-      timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
-    },
-    Friday: {
-      enabled: false,
-      timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
-    },
-    Saturday: {
-      enabled: false,
-      timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
-    },
-    Sunday: {
-      enabled: false,
-      timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
-    },
-  });
+const Calendar = () => {
+  const initialSchedule: WeeklySchedule = {
+    Monday: { enabled: false, timeSlot: { startTime: new Date(0), endTime: new Date(0) } },
+    Tuesday: { enabled: false, timeSlot: { startTime: new Date(0), endTime: new Date(0) } },
+    Wednesday: { enabled: false, timeSlot: { startTime: new Date(0), endTime: new Date(0) } },
+    Thursday: { enabled: false, timeSlot: { startTime: new Date(0), endTime: new Date(0) } },
+    Friday: { enabled: false, timeSlot: { startTime: new Date(0), endTime: new Date(0) } },
+    Saturday: { enabled: false, timeSlot: { startTime: new Date(0), endTime: new Date(0) } },
+    Sunday: { enabled: false, timeSlot: { startTime: new Date(0), endTime: new Date(0) } },
+  };
 
+  const [schedule, setSchedule] = useState<WeeklySchedule>(initialSchedule);
   const [, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setSubmitting] = useState(false);
+  
   const userId = sessionStorage.getItem("userId");
   const token = sessionStorage.getItem("userToken") ?? "";
 
@@ -109,73 +147,38 @@ const Calender = () => {
           },
         }
       );
+
       if (!response.ok) {
-        // throw new Error("Failed to fetch availability");
         toast.error("Failed to fetch availability", {
           position: "bottom-right",
           pauseOnHover: false,
           transition: Bounce,
         });
+        return;
       }
 
       const responseData = await response.json();
-      // console.log("Raw response data:", responseData);
-
-      const data = responseData.data; // Adjust based on the actual structure of responseData
-      // console.log("Processed data array:", data);
+      const data: ApiTimeSlot[] = responseData.data;
 
       if (!Array.isArray(data)) {
-        throw new Error(
-          "Expected an array in the 'data' field of the response."
-        );
+        throw new Error("Expected an array in the 'data' field of the response.");
       }
 
-      const newSchedule: WeeklySchedule = {
-        Monday: {
-          enabled: false,
-          timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
-        },
-        Tuesday: {
-          enabled: false,
-          timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
-        },
-        Wednesday: {
-          enabled: false,
-          timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
-        },
-        Thursday: {
-          enabled: false,
-          timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
-        },
-        Friday: {
-          enabled: false,
-          timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
-        },
-        Saturday: {
-          enabled: false,
-          timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
-        },
-        Sunday: {
-          enabled: false,
-          timeSlot: { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
-        },
-      };
+      const newSchedule = { ...initialSchedule };
 
       data.forEach(({ dayOfWeek, startTime, endTime }) => {
-        const day =
-          dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1).toLowerCase();
+        const day = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1).toLowerCase();
         newSchedule[day] = {
           enabled: true,
           timeSlot: {
-            startTime: startTime.split("T")[1].slice(0, 5),
-            endTime: endTime.split("T")[1].slice(0, 5),
-          },
+            startTime: new Date(startTime), // API returns UTC timestamp
+            endTime: new Date(endTime)      // API returns UTC timestamp
+          }
         };
       });
 
       setSchedule(newSchedule);
     } catch (err) {
-      // console.error("Error fetching availability:", err);
       toast.error(`${err}`, {
         position: "bottom-right",
         pauseOnHover: false,
@@ -188,7 +191,7 @@ const Calender = () => {
 
   useEffect(() => {
     fetchAvailability();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleDay = (day: string) => {
@@ -198,8 +201,14 @@ const Calender = () => {
         ...prev[day],
         enabled: !prev[day].enabled,
         timeSlot: !prev[day].enabled
-          ? { startTime: DEFAULT_START_TIME, endTime: DEFAULT_END_TIME }
-          : { startTime: EMPTY_TIME, endTime: EMPTY_TIME },
+          ? {
+              startTime: toUTCDate(DEFAULT_START_TIME, day),
+              endTime: toUTCDate(DEFAULT_END_TIME, day)
+            }
+          : {
+              startTime: new Date(0),
+              endTime: new Date(0)
+            }
       },
     }));
     setSaved(false);
@@ -208,7 +217,7 @@ const Calender = () => {
   const updateTime = (
     day: string,
     type: "startTime" | "endTime",
-    value: string
+    value: Date
   ) => {
     setSchedule((prev) => {
       const currentDaySchedule = prev[day];
@@ -216,32 +225,31 @@ const Calender = () => {
       // Validate end time is after start time
       if (
         type === "endTime" &&
-        value !== EMPTY_TIME &&
-        currentDaySchedule.timeSlot.startTime !== EMPTY_TIME &&
+        value.getTime() !== 0 &&
+        currentDaySchedule.timeSlot.startTime.getTime() !== 0 &&
         value <= currentDaySchedule.timeSlot.startTime
       ) {
-        // alert("End time must be after start time.");
         toast.warning("End time must be after start time.", {
           position: "bottom-right",
           pauseOnHover: false,
           transition: Bounce,
         });
-        return prev; // Return previous state if validation fails
+        return prev;
       }
+
       // Validate start time is before end time
       if (
         type === "startTime" &&
-        value !== EMPTY_TIME &&
-        currentDaySchedule.timeSlot.endTime !== EMPTY_TIME &&
+        value.getTime() !== 0 &&
+        currentDaySchedule.timeSlot.endTime.getTime() !== 0 &&
         value >= currentDaySchedule.timeSlot.endTime
       ) {
-        // alert("End time must be after start time.");
         toast.warning("Start time must be before end time.", {
           position: "bottom-right",
           pauseOnHover: false,
           transition: Bounce,
         });
-        return prev; // Return previous state if validation fails
+        return prev;
       }
 
       return {
@@ -259,23 +267,19 @@ const Calender = () => {
   };
 
   const applyToAll = () => {
-    // Get all enabled days' schedules
     const enabledSchedules = Object.entries(schedule)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .filter(([_, daySchedule]) => daySchedule.enabled)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .map(([_, daySchedule]) => daySchedule.timeSlot);
 
     if (enabledSchedules.length === 0) return;
 
-    // Apply to all unchecked days
     setSchedule((prev) => {
       const newSchedule = { ...prev };
       Object.keys(newSchedule).forEach((day) => {
         if (!newSchedule[day].enabled) {
           newSchedule[day] = {
             ...newSchedule[day],
-            timeSlot: { ...enabledSchedules[0] }, // Apply the first enabled schedule
+            timeSlot: { ...enabledSchedules[0] },
           };
         }
       });
@@ -287,53 +291,46 @@ const Calender = () => {
   const handleSave = async () => {
     setSubmitting(true);
     try {
-      const response = await fetch(
-        `${BACKEND_URL}/api/mentor/updateAvailability`,
-        {
-          // Adjust the URL as needed
-          method: "POST",
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            mentorId: userId, // Replace with actual mentor ID
-            availability: Object.entries(schedule).map(
-              ([day, { enabled, timeSlot }]) => ({
-                dayOfWeek: day.toUpperCase(), // Convert day to uppercase to match enum
-                enabled,
-                timeSlot,
-              })
-            ),
-          }),
-        }
+      const availabilityData = Object.entries(schedule).map(
+        ([day, { enabled, timeSlot }]) => ({
+          dayOfWeek: day.toUpperCase(),
+          enabled,
+          startTime: timeSlot.startTime.toISOString(), // Sends UTC timestamp to API
+          endTime: timeSlot.endTime.toISOString()      // Sends UTC timestamp to API
+        })
       );
 
+      const response = await fetch(`${BACKEND_URL}/api/mentor/updateAvailability`, {
+        method: "POST",
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mentorId: userId,
+          availability: availabilityData,
+        }),
+      });
+
       if (!response.ok) {
-        toast.error("Network response was not ok", {
-          position: "bottom-right",
-          pauseOnHover: false,
-          transition: Bounce,
-        });
+        throw new Error("Network response was not ok");
       }
 
-      // const result = await response.json();
-      // console.log("Schedule saved successfully:", result);
       toast.success("Your changes have been saved successfully!", {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
       });
-      setSubmitting(false);
       setSaved(true);
-      setTimeout(() => setSaved(false), 3000); // Reset saved state after a short delay
+      setTimeout(() => setSaved(false), 3000);
     } catch (error) {
-      // console.error("Error saving schedule:", error);
-      toast.error(`Failed to save schedule, ${error}`, {
+      toast.error(`Failed to save schedule: ${error}`, {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
       });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -381,7 +378,7 @@ const Calender = () => {
         </div>
       </CardContent>
       <CardFooter className="flex justify-between items-center">
-        <button
+        <Button
           className="bg-black text-white px-4 py-2 w-40 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
           onClick={() => {
             if (true) {
@@ -397,7 +394,7 @@ const Calender = () => {
           disabled={isSubmitting}
         >
           {isSubmitting ? <Spinner /> : "Save Changes"}
-        </button>
+        </Button>
         <Button
           variant="ghost"
           className="text-green-500 hover:text-green-600 hover:bg-green-50"
@@ -410,4 +407,4 @@ const Calender = () => {
   );
 };
 
-export default Calender;
+export default Calendar;

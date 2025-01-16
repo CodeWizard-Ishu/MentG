@@ -20,14 +20,14 @@ type AvailabilitySlot = {
   id: number;
   mentorId: number;
   dayOfWeek: string;
-  startTime: string;
-  endTime: string;
+  startTime: Date;
+  endTime: Date;
 };
 
 type TimeSlot = {
   id: string;
-  startTime: string;
-  endTime: string;
+  startTime: Date;
+  endTime: Date;
   available: boolean;
 };
 
@@ -116,21 +116,24 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
 
     if (!availableDay) return slots;
 
-    // Parse the start and end times
-    const startHour = new Date(availableDay.startTime).getUTCHours();
-    const endHour = new Date(availableDay.endTime).getUTCHours();
+    // Create Date objects for start and end times
+    const startTime = new Date(availableDay.startTime);
+    const endTime = new Date(availableDay.endTime);
 
     // Generate hourly slots between start and end time
-    for (let hour = startHour; hour < endHour; hour++) {
-      const startTime = `${hour.toString().padStart(2, "0")}:00`;
-      const endTime = `${(hour + 1).toString().padStart(2, "0")}:00`;
+    const currentTime = new Date(startTime);
+    while (currentTime < endTime) {
+      const slotEndTime = new Date(currentTime);
+      slotEndTime.setHours(currentTime.getHours() + 1);
 
       slots.push({
-        id: `slot-${hour}`,
-        startTime,
-        endTime,
+        id: `slot-${currentTime.getHours()}`,
+        startTime: new Date(currentTime),
+        endTime: new Date(slotEndTime),
         available: true,
       });
+
+      currentTime.setHours(currentTime.getHours() + 1);
     }
 
     return slots;
@@ -170,8 +173,8 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
   };
 
   // Helper function to format time
-  const formatTime = (time: string) => {
-    return new Date(`2024-01-01T${time}:00+05:30`).toLocaleTimeString("en-IN", {
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString("en-IN", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,

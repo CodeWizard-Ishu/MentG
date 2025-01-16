@@ -159,25 +159,27 @@ const BookingPage: React.FC = () => {
         sessionDetails: values.sessionDetails,
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const calculateDuration = (start: any, end: any): number => {
-        const startDate = new Date(`2025-01-07T${start}:00Z`); // Combine with a date
-        const endDate = new Date(`2025-01-07T${end}:00Z`); // Combine with a date
-        const durationInMinutes: number =
-          (endDate.getTime() - startDate.getTime()) / (1000 * 60); // Convert milliseconds to minutes
-        return durationInMinutes;
+      const calculateDuration = (start: Date, end: Date): number => {
+        return (end.getTime() - start.getTime()) / (1000 * 60); // Convert milliseconds to minutes
       };
+
+      const convertISTtoUTC = (date: Date, time: Date) => {
+        const combinedDate = new Date(date);
+        combinedDate.setHours(time.getHours(), time.getMinutes(), 0, 0);
+        return combinedDate;
+      };
+  
+      if (!selectedSlot?.date || !selectedSlot?.startTime || !selectedSlot?.endTime) {
+        throw new Error("Invalid slot selection");
+      }
+  
+      const bookingDateTime = convertISTtoUTC(selectedSlot.date, selectedSlot.startTime);
 
       const bookingData = {
         mentorId: mentorId, // Replace with actual mentor ID
         menteeId: menteeId, // Replace with actual mentee ID
-        dateTime: new Date(
-          `${selectedSlot?.date.split("T")[0]}T${selectedSlot?.startTime}:00Z`
-        ).toLocaleString(),
-        duration: calculateDuration(
-          selectedSlot?.startTime,
-          selectedSlot?.endTime
-        ),
+        dateTime: bookingDateTime,
+        duration: calculateDuration(selectedSlot.startTime, selectedSlot.endTime),
         payment: paymentInfo?.total, // Payment amount (can be adjusted based on your logic)
         serviceName: selectedService?.name,
         serviceDescription: values.sessionDetails,
@@ -217,9 +219,24 @@ const BookingPage: React.FC = () => {
   };
 
   const BookingSummary = () => {
-    const formatDate = (dateString: string | undefined) => {
-      if (!dateString) return "";
-      return new Date(dateString).toLocaleDateString();
+    const formatDate = (date: Date | undefined) => {
+      if (!date) return "";
+      return date.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        timeZone: "Asia/Kolkata",
+      });
+    };
+
+    const formatTime = (date: Date | undefined) => {
+      if (!date) return "";
+      return date.toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: "Asia/Kolkata",
+      });
     };
 
     return (
@@ -244,7 +261,9 @@ const BookingPage: React.FC = () => {
 
           <div>
             <p className="font-medium">Time</p>
-            <p>{`${selectedSlot?.startTime} - ${selectedSlot?.endTime}`}</p>
+            <p>{`${formatTime(selectedSlot?.startTime)} - ${formatTime(
+              selectedSlot?.endTime
+            )}`}</p>
           </div>
 
           <div>

@@ -14,6 +14,24 @@ interface Meeting {
   mentorId: number;
 }
 
+// Utility function to format UTC datetime to IST
+const formatToIST = (utcDateStr: string): string => {
+  const date = new Date(utcDateStr);
+
+  // Convert to IST (UTC+5:30)
+  const istOptions: Intl.DateTimeFormatOptions = {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  };
+
+  return new Intl.DateTimeFormat("en-IN", istOptions).format(date);
+};
+
 const MenteeMeetings = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [pagination, setPagination] = useState({
@@ -62,7 +80,7 @@ const MenteeMeetings = () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           data.bookings.map((meeting: any) => ({
             mentorName: meeting.mentorName,
-            dateTime: new Date(meeting.dateTime).toLocaleString(), // Format date as needed
+            dateTime: formatToIST(meeting.dateTime), // Format UTC to IST
             duration: `${meeting.duration} mins`, // Format duration as needed
             status: meeting.status,
             amount: meeting.amount,

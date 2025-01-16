@@ -6,8 +6,7 @@ const prisma = getPrismaClient();
 export const updateBooking = async (req: any, res: any) => {
   const mentorId = parseInt(req.body.mentorId, 10); // Convert mentorId to an integer
   const menteeId = parseInt(req.body.menteeId, 10); // Convert menteeId to an integer
-
-  const dateTime = new Date(req.body.dateTime); // Ensure dateTime is in correct format
+  const dateTime = new Date(req.body.dateTime); // DateTime will already be in UTC from the frontend
   const duration = req.body.duration; // Duration should already be a number
   const payment = req.body.payment; // Payment should already be a number
   const serviceName = req.body.serviceName; // Service name as string
