@@ -25,13 +25,12 @@ const Home = () => {
     { label: "Marketing", value: "Marketing" },
     { label: "Finance", value: "Finance" },
     { label: "Engineering", value: "Engineering" },
-    { label: "Health", value: "Health" },
-    { label: "Fitness", value: "Fitness" },
     { label: "Mental Fitness", value: "Mental Fitness" },
     { label: "Fintech", value: "Fintech" },
     { label: "Operations", value: "Operations" },
     { label: "Compliance", value: "Compliance" },
     { label: "Legal", value: "Legal" },
+    { label: "Tax", value: "Tax" },
   ];
 
   const fetchMentors = async (domain: string) => {

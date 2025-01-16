@@ -10,13 +10,12 @@ const domainOptions = [
   "Marketing",
   "Finance",
   "Engineering",
-  "Health",
-  "Fitness",
   "Mental Fitness",
   "Fintech",
   "Operations",
   "Compliance",
   "Legal",
+  "Tax",
 ];
 
 const serviceOptions = [
