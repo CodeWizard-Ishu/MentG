@@ -203,7 +203,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           <div className="flex justify-center space-x-4">
             <a href="/all-mentors">
               <button className="bg-[#08286b] text-white px-6 py-3 rounded-lg hover:bg-[#08276bcc] transition">
-                Start Exploring
+                All Mentors
               </button>
             </a>
             <a href="#benefits">
