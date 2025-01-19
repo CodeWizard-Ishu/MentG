@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { User } from "lucide-react";
+import { Mail, PhoneCall, User } from "lucide-react";
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import BACKEND_URL from "../endpoint";
@@ -7,6 +7,9 @@ import BACKEND_URL from "../endpoint";
 import Pica from "pica";
 import Spinner from "../components/ui/Spinner";
 import { Bounce, toast } from "react-toastify";
+import LinkedinImage from "../assets/linkedin.png";
+import InstagramImage from "../assets/instagram.png";
+import TwitterImage from "../assets/twitter.png";
 
 interface FormValues {
   profilePicture: string | null;
@@ -461,6 +464,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                 </label>
                 <Field
                   as="textarea"
+                  rows={6}
                   id="bio"
                   name="bio"
                   className="block w-full border rounded p-2"
@@ -476,39 +480,60 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                   Social Accounts
                 </label>
                 <div className="space-y-2">
-                  <Field
-                    type="text"
-                    name="linkedin"
-                    className="block w-full border rounded p-2"
-                    placeholder="LinkedIn URL"
-                  />
-                  {errors.linkedin && touched.linkedin && (
-                    <div className="text-red-500 text-sm mt-1">
-                      {errors.linkedin}
-                    </div>
-                  )}
-                  <Field
-                    type="text"
-                    name="instagram"
-                    className="block w-full border rounded p-2"
-                    placeholder="Instagram URL"
-                  />
-                  {errors.instagram && touched.instagram && (
-                    <div className="text-red-500 text-sm mt-1">
-                      {errors.instagram}
-                    </div>
-                  )}
-                  <Field
-                    type="text"
-                    name="twitter"
-                    className="block w-full border rounded p-2"
-                    placeholder="Twitter URL"
-                  />
-                  {errors.twitter && touched.twitter && (
-                    <div className="text-red-500 text-sm mt-1">
-                      {errors.twitter}
-                    </div>
-                  )}
+                  <div className="flex gap-2">
+                    <img
+                      src={LinkedinImage}
+                      alt="LinkedIn"
+                      className="w-8 h-8 m-1"
+                    />
+                    <Field
+                      type="text"
+                      name="linkedin"
+                      className="block w-full border rounded p-2"
+                      placeholder="LinkedIn URL"
+                    />
+                    {errors.linkedin && touched.linkedin && (
+                      <div className="text-red-500 text-sm mt-1">
+                        {errors.linkedin}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <img
+                      src={InstagramImage}
+                      alt="Instagram"
+                      className="w-8 h-8 m-1"
+                    />
+                    <Field
+                      type="text"
+                      name="instagram"
+                      className="block w-full border rounded p-2"
+                      placeholder="Instagram URL"
+                    />
+                    {errors.instagram && touched.instagram && (
+                      <div className="text-red-500 text-sm mt-1">
+                        {errors.instagram}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <img
+                      src={TwitterImage}
+                      alt="Twitter/X"
+                      className="w-8 h-8 m-1"
+                    />
+                    <Field
+                      type="text"
+                      name="twitter"
+                      className="block w-full border rounded p-2"
+                      placeholder="Twitter URL"
+                    />
+                    {errors.twitter && touched.twitter && (
+                      <div className="text-red-500 text-sm mt-1">
+                        {errors.twitter}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -516,32 +541,38 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                 <label htmlFor="phoneNumber" className="block font-medium mb-2">
                   Phone Number
                 </label>
-                <Field
-                  type="tel"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  className="block w-full border rounded p-2"
-                  placeholder="Enter your phone number"
-                />
-                {errors.phoneNumber && touched.phoneNumber && (
-                  <div className="text-red-500 text-sm mt-1">
-                    {errors.phoneNumber}
-                  </div>
-                )}
+                <div className="flex gap-3">
+                  <PhoneCall className="w-8 h-8 m-1" />
+                  <Field
+                    type="tel"
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    className="block w-full border rounded p-2"
+                    placeholder="Enter your phone number"
+                  />
+                  {errors.phoneNumber && touched.phoneNumber && (
+                    <div className="text-red-500 text-sm mt-1">
+                      {errors.phoneNumber}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="mb-4">
                 <label htmlFor="email" className="block font-medium mb-2">
                   Email
                 </label>
-                <Field
-                  type="email"
-                  id="email"
-                  name="email"
-                  className="block w-full border rounded p-2"
-                  placeholder="Enter your email"
-                  disabled
-                />
+                <div className="flex gap-3">
+                  <Mail className="w-8 h-8 m-1" />
+                  <Field
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="block w-full border rounded p-2"
+                    placeholder="Enter your email"
+                    disabled
+                  />
+                </div>
               </div>
 
               {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

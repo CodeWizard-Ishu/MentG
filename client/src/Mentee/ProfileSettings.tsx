@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { User } from "lucide-react";
+import { Mail, PhoneCall, User } from "lucide-react";
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import BACKEND_URL from "../endpoint";
 import Pica from "pica";
 import Spinner from "../components/ui/Spinner";
 import { Bounce, toast } from "react-toastify";
+import LinkedinImage from "../assets/linkedin.png";
+import InstagramImage from "../assets/instagram.png";
+import TwitterImage from "../assets/twitter.png";
 
 interface FormValues {
   profilePicture: string | null;
@@ -392,8 +395,9 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                     About Yourself
                   </label>
                   <Field
-                    name="goals"
                     as="textarea"
+                    name="goals"
+                    rows={6}
                     className="block w-full border rounded p-2"
                     placeholder="Tell us about yourself"
                   />
@@ -403,6 +407,69 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                     </div>
                   )}
                 </div>
+
+                <div className="mb-4">
+                  <label className="block font-medium mb-2">
+                    Social Accounts
+                  </label>
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <img
+                        src={LinkedinImage}
+                        alt="Linkedin"
+                        className="w-8 h-8 m-1"
+                      />
+                      <Field
+                        name="linkedin"
+                        type="text"
+                        className="block w-full border rounded p-2"
+                        placeholder="LinkedIn URL"
+                      />
+                      {errors.linkedin && touched.linkedin && (
+                        <div className="text-red-500 text-sm mt-1">
+                          {errors.linkedin}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <img
+                        src={InstagramImage}
+                        alt="Instagram"
+                        className="w-8 h-8 m-1"
+                      />
+                      <Field
+                        name="instagram"
+                        type="text"
+                        className="block w-full border rounded p-2"
+                        placeholder="Instagram URL"
+                      />
+                      {errors.instagram && touched.instagram && (
+                        <div className="text-red-500 text-sm mt-1">
+                          {errors.instagram}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex gpa-2">
+                      <img
+                        src={TwitterImage}
+                        alt="Twitter/X"
+                        className="w-8 h-8 m-1"
+                      />
+                      <Field
+                        name="twitter"
+                        type="text"
+                        className="block w-full border rounded p-2"
+                        placeholder="Twitter URL"
+                      />
+                      {errors.twitter && touched.twitter && (
+                        <div className="text-red-500 text-sm mt-1">
+                          {errors.twitter}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
                 <div className="mb-4">
                   <label
                     htmlFor="phoneNumber"
@@ -410,56 +477,18 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                   >
                     Phone Number
                   </label>
-                  <Field
-                    type="tel"
-                    id="phoneNumber"
-                    name="phoneNumber"
-                    className="block w-full border rounded p-2"
-                    placeholder="Enter your phone number"
-                  />
-                  {errors.phoneNumber && touched.phoneNumber && (
-                    <div className="text-red-500 text-sm mt-1">
-                      {errors.phoneNumber}
-                    </div>
-                  )}
-                </div>
-
-                <div className="mb-4">
-                  <label className="block font-medium mb-2">
-                    Social Accounts
-                  </label>
-                  <div className="space-y-2">
+                  <div className="flex gap-3">
+                    <PhoneCall className="w-8 h-8 m-1" />
                     <Field
-                      name="linkedin"
-                      type="text"
+                      type="tel"
+                      id="phoneNumber"
+                      name="phoneNumber"
                       className="block w-full border rounded p-2"
-                      placeholder="LinkedIn URL"
+                      placeholder="Enter your phone number"
                     />
-                    {errors.linkedin && touched.linkedin && (
+                    {errors.phoneNumber && touched.phoneNumber && (
                       <div className="text-red-500 text-sm mt-1">
-                        {errors.linkedin}
-                      </div>
-                    )}
-                    <Field
-                      name="instagram"
-                      type="text"
-                      className="block w-full border rounded p-2"
-                      placeholder="Instagram URL"
-                    />
-                    {errors.instagram && touched.instagram && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {errors.instagram}
-                      </div>
-                    )}
-                    <Field
-                      name="twitter"
-                      type="text"
-                      className="block w-full border rounded p-2"
-                      placeholder="Twitter URL"
-                    />
-                    {errors.twitter && touched.twitter && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {errors.twitter}
+                        {errors.phoneNumber}
                       </div>
                     )}
                   </div>
@@ -467,13 +496,16 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
 
                 <div className="mb-4">
                   <label className="block font-medium mb-2">Email</label>
-                  <Field
-                    name="email"
-                    type="email"
-                    className="block w-full border rounded p-2"
-                    placeholder="Enter your email"
-                    disabled
-                  />
+                  <div className="flex gap-3">
+                    <Mail className="w-8 h-8 m-1" />
+                    <Field
+                      name="email"
+                      type="email"
+                      className="block w-full border rounded p-2"
+                      placeholder="Enter your email"
+                      disabled
+                    />
+                  </div>
                 </div>
 
                 {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

@@ -81,7 +81,7 @@ const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
                 <span className="block text-[#08286b]">Together</span>
               </h1>
               <p className="text-lg sm:text-xl text-gray-800 mb-12 leading-relaxed">
-                We connects individuals with experts for personalized guidance,
+                We connect individuals with experts for personalized guidance,
                 fostering growth and success through mentorship.
               </p>
               <div className="flex gap-6">
