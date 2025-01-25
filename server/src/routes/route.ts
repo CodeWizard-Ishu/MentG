@@ -10,6 +10,12 @@ import {
   getServices,
   updateService,
 } from "../controllers/mentors/mentorService";
+import { 
+  initiateGoogleConnection, 
+  handleGoogleCallback, 
+  getCalendarConnections,
+  disconnectCalendar 
+} from '../controllers/mentors/connectCalendar';
 import {
   getAvailability,
   updateAvailability,
@@ -27,9 +33,11 @@ import {
 } from "../controllers/mentee/menteeDetails";
 import verifyToken from "../middleware/auth";
 import { getBookingAvailablity } from "../controllers/bookings/Availablity";
+import { getMentorEmail } from "../controllers/bookings/mentorEmail";
 import { getBookingFormData } from "../controllers/bookings/BookingForm";
 import { getServiceDetail } from "../controllers/bookings/payment";
 import { updateBooking } from "../controllers/bookings/booking";
+import { createCalendarEvent } from "../controllers/bookings/CreateEvent";
 import {
   getRatingsForMentor,
   submitRating,
@@ -53,6 +61,10 @@ router.get("/api/mentor/:id/meetings", verifyToken, getAllMeetings);
 router.put("/api/mentor/update/:mentorId", verifyToken, updateService);
 router.get("/api/mentor/services/:mentorId", verifyToken, getServices);
 
+router.get('/api/auth/google/connect', initiateGoogleConnection);
+router.get('/api/auth/google/callback', handleGoogleCallback);
+router.get('/api/calendar/connections/:userId', verifyToken, getCalendarConnections);
+router.post('/api/calendar/disconnect/:userId', verifyToken, disconnectCalendar);
 router.post("/api/mentor/updateAvailability", verifyToken, updateAvailability);
 router.get(
   "/api/mentor/getAvailability/:mentorId",
@@ -82,10 +94,12 @@ router.put(
 );
 
 router.get("/api/availability/:mentorId", getBookingAvailablity);
+router.get("/api/mentorEmail/:mentorId", verifyToken, getMentorEmail);
 router.get("/api/bookingform/:menteeId", verifyToken, getBookingFormData);
 
 router.get("/api/service/:mentorId/:name", getServiceDetail);
 router.post("/api/booking", verifyToken, updateBooking);
+router.post("/api/calendar/create-event", verifyToken, createCalendarEvent);
 
 router.post("/api/rating", verifyToken, submitRating);
 router.get("/api/getRating/:mentorId", verifyToken, getRatingsForMentor);

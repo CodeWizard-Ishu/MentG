@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { getPrismaClient } from "../prisma";
-import { sendSignupMail } from "./mailer";
+import { sendMentorSignupMail, sendMenteeSignupMail } from "./mailer";
 
 const prisma = getPrismaClient();
 
@@ -77,7 +77,7 @@ export const signupMentor = async (req: any, res: any) => {
     });
 
     const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
-    sendSignupMail(email, formattedName);
+    sendMentorSignupMail(email, formattedName);
     
     res.status(201).json({ msg: "Signup Success", user, mentorProfile });
     console.log(`User signed up as mentor: ${email}`);
@@ -130,7 +130,7 @@ export const signupMentee = async (req: any, res: any) => {
     });
 
     const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
-    sendSignupMail(email, formattedName);
+    sendMenteeSignupMail(email, formattedName);
     
     res.status(201).json({ msg: "Signup Success", user, menteeProfile });
     console.log(`User signed up as mentee: ${email}`);

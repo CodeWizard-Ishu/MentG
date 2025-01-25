@@ -12,6 +12,7 @@ import { Button } from "../components/ui/button";
 import BACKEND_URL from "../endpoint";
 import { Bounce, toast } from "react-toastify";
 import Spinner from "../components/ui/Spinner";
+import CalendarIntegration from "./CalenderConnection";
 
 interface TimeSlot {
   startTime: Date;
@@ -30,8 +31,12 @@ interface WeeklySchedule {
 interface ApiTimeSlot {
   dayOfWeek: string;
   enabled: boolean;
-  startTime: string;  // ISO string in UTC
-  endTime: string;    // ISO string in UTC
+  startTime: string; // ISO string in UTC
+  endTime: string; // ISO string in UTC
+}
+
+interface CalendarProps {
+  onCalendarConnectionChange?: (isConnected: boolean) => void;
 }
 
 const DEFAULT_START_TIME = "09:00";
@@ -42,34 +47,44 @@ const IST_OFFSET = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
 // Helper functions for date-time conversion
 const toUTCDate = (timeString: string, dayOfWeek: string): Date => {
   const now = new Date();
-  const [hours, minutes] = timeString.split(':').map(Number);
-  
+  const [hours, minutes] = timeString.split(":").map(Number);
+
   // Get the date of the next occurrence of this day
-  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const targetDay = daysOfWeek.indexOf(dayOfWeek);
   const currentDay = now.getUTCDay();
   const daysToAdd = (targetDay + 7 - currentDay) % 7;
-  
+
   // Create UTC date
-  const date = new Date(Date.UTC(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate() + daysToAdd,
-    hours,
-    minutes
-  ));
-  
+  const date = new Date(
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate() + daysToAdd,
+      hours,
+      minutes
+    )
+  );
+
   // Convert IST input to UTC for storage
   return new Date(date.getTime() - IST_OFFSET);
 };
 
 const fromUTCDate = (date: Date): string => {
   if (!date || date.getTime() === 0) return EMPTY_TIME;
-  
+
   // Convert UTC to IST for display
   const istDate = new Date(date.getTime() + IST_OFFSET);
-  const hours = istDate.getUTCHours().toString().padStart(2, '0');
-  const minutes = istDate.getUTCMinutes().toString().padStart(2, '0');
+  const hours = istDate.getUTCHours().toString().padStart(2, "0");
+  const minutes = istDate.getUTCMinutes().toString().padStart(2, "0");
   return `${hours}:${minutes}`;
 };
 
@@ -77,7 +92,9 @@ const generateTimeOptions = (): string[] => {
   const times = [];
   for (let hour = 0; hour < 24; hour++) {
     for (let minute = 0; minute < 60; minute += 30) {
-      const timeString = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+      const timeString = `${hour.toString().padStart(2, "0")}:${minute
+        .toString()
+        .padStart(2, "0")}`;
       times.push(timeString);
     }
   }
@@ -116,22 +133,44 @@ const TimeSelect: React.FC<{
   );
 };
 
-const Calendar = () => {
+const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
   const initialSchedule: WeeklySchedule = {
-    Monday: { enabled: false, timeSlot: { startTime: new Date(0), endTime: new Date(0) } },
-    Tuesday: { enabled: false, timeSlot: { startTime: new Date(0), endTime: new Date(0) } },
-    Wednesday: { enabled: false, timeSlot: { startTime: new Date(0), endTime: new Date(0) } },
-    Thursday: { enabled: false, timeSlot: { startTime: new Date(0), endTime: new Date(0) } },
-    Friday: { enabled: false, timeSlot: { startTime: new Date(0), endTime: new Date(0) } },
-    Saturday: { enabled: false, timeSlot: { startTime: new Date(0), endTime: new Date(0) } },
-    Sunday: { enabled: false, timeSlot: { startTime: new Date(0), endTime: new Date(0) } },
+    Monday: {
+      enabled: false,
+      timeSlot: { startTime: new Date(0), endTime: new Date(0) },
+    },
+    Tuesday: {
+      enabled: false,
+      timeSlot: { startTime: new Date(0), endTime: new Date(0) },
+    },
+    Wednesday: {
+      enabled: false,
+      timeSlot: { startTime: new Date(0), endTime: new Date(0) },
+    },
+    Thursday: {
+      enabled: false,
+      timeSlot: { startTime: new Date(0), endTime: new Date(0) },
+    },
+    Friday: {
+      enabled: false,
+      timeSlot: { startTime: new Date(0), endTime: new Date(0) },
+    },
+    Saturday: {
+      enabled: false,
+      timeSlot: { startTime: new Date(0), endTime: new Date(0) },
+    },
+    Sunday: {
+      enabled: false,
+      timeSlot: { startTime: new Date(0), endTime: new Date(0) },
+    },
   };
 
   const [schedule, setSchedule] = useState<WeeklySchedule>(initialSchedule);
   const [, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setSubmitting] = useState(false);
-  
+  const [isCalendarConnected, setIsCalendarConnected] = useState(false);
+
   const userId = sessionStorage.getItem("userId");
   const token = sessionStorage.getItem("userToken") ?? "";
 
@@ -161,19 +200,22 @@ const Calendar = () => {
       const data: ApiTimeSlot[] = responseData.data;
 
       if (!Array.isArray(data)) {
-        throw new Error("Expected an array in the 'data' field of the response.");
+        throw new Error(
+          "Expected an array in the 'data' field of the response."
+        );
       }
 
       const newSchedule = { ...initialSchedule };
 
       data.forEach(({ dayOfWeek, startTime, endTime, enabled }) => {
-        const day = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1).toLowerCase();
+        const day =
+          dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1).toLowerCase();
         newSchedule[day] = {
           enabled: enabled,
           timeSlot: {
             startTime: new Date(startTime), // API returns UTC timestamp
-            endTime: new Date(endTime)      // API returns UTC timestamp
-          }
+            endTime: new Date(endTime), // API returns UTC timestamp
+          },
         };
       });
 
@@ -191,7 +233,7 @@ const Calendar = () => {
 
   useEffect(() => {
     fetchAvailability();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleDay = (day: string) => {
@@ -203,12 +245,12 @@ const Calendar = () => {
         timeSlot: !prev[day].enabled
           ? {
               startTime: toUTCDate(DEFAULT_START_TIME, day),
-              endTime: toUTCDate(DEFAULT_END_TIME, day)
+              endTime: toUTCDate(DEFAULT_END_TIME, day),
             }
           : {
               startTime: new Date(0),
-              endTime: new Date(0)
-            }
+              endTime: new Date(0),
+            },
       },
     }));
     setSaved(false);
@@ -289,6 +331,16 @@ const Calendar = () => {
   };
 
   const handleSave = async () => {
+
+    if (!isCalendarConnected) {
+      toast.error("Please connect your calendar account before saving availability.", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+      return;
+    }
+
     setSubmitting(true);
     try {
       const availabilityData = Object.entries(schedule).map(
@@ -296,21 +348,24 @@ const Calendar = () => {
           dayOfWeek: day.toUpperCase(),
           enabled,
           startTime: timeSlot.startTime.toISOString(), // Sends UTC timestamp to API
-          endTime: timeSlot.endTime.toISOString()      // Sends UTC timestamp to API
+          endTime: timeSlot.endTime.toISOString(), // Sends UTC timestamp to API
         })
       );
 
-      const response = await fetch(`${BACKEND_URL}/api/mentor/updateAvailability`, {
-        method: "POST",
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          mentorId: userId,
-          availability: availabilityData,
-        }),
-      });
+      const response = await fetch(
+        `${BACKEND_URL}/api/mentor/updateAvailability`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mentorId: userId,
+            availability: availabilityData,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -337,73 +392,71 @@ const Calendar = () => {
   if (loading) return <Spinner />;
 
   return (
-    <Card className="w-full max-w-2xl">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl font-bold">
-          <Clock className="w-6 h-6" />
-          Set Your Availability
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {Object.entries(schedule).map(([day, { enabled, timeSlot }]) => (
-            <div
-              key={day}
-              className="flex items-center space-x-4 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800"
-            >
-              <label className="flex items-center space-x-2 min-w-[120px]">
-                <input
-                  type="checkbox"
-                  checked={enabled}
-                  onChange={() => toggleDay(day)}
-                  className="w-4 h-4 rounded border-gray-300"
-                />
-                <span className="font-medium">{day}</span>
-              </label>
-              <div className="flex items-center space-x-2 flex-1">
-                <TimeSelect
-                  value={timeSlot.startTime}
-                  onChange={(value) => updateTime(day, "startTime", value)}
-                  disabled={!enabled}
-                />
-                <span className="text-gray-500">-</span>
-                <TimeSelect
-                  value={timeSlot.endTime}
-                  onChange={(value) => updateTime(day, "endTime", value)}
-                  disabled={!enabled}
-                />
+    <div>
+      <CalendarIntegration
+        onConnectionChange={(isConnected) => {
+          setIsCalendarConnected(isConnected);
+          onCalendarConnectionChange?.(isConnected);
+        }}
+      />
+      <Card className="w-full max-w-2xl">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl font-bold">
+            <Clock className="w-6 h-6" />
+            Set Your Availability
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {Object.entries(schedule).map(([day, { enabled, timeSlot }]) => (
+              <div
+                key={day}
+                className="flex items-center space-x-4 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800"
+              >
+                <label className="flex items-center space-x-2 min-w-[120px]">
+                  <input
+                    type="checkbox"
+                    checked={enabled}
+                    onChange={() => toggleDay(day)}
+                    className="w-4 h-4 rounded border-gray-300"
+                  />
+                  <span className="font-medium">{day}</span>
+                </label>
+                <div className="flex items-center space-x-2 flex-1">
+                  <TimeSelect
+                    value={timeSlot.startTime}
+                    onChange={(value) => updateTime(day, "startTime", value)}
+                    disabled={!enabled}
+                  />
+                  <span className="text-gray-500">-</span>
+                  <TimeSelect
+                    value={timeSlot.endTime}
+                    onChange={(value) => updateTime(day, "endTime", value)}
+                    disabled={!enabled}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-between items-center">
-        <Button
-          className="bg-black text-white px-4 py-2 w-40 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
-          onClick={() => {
-            if (true) {
-              toast("Coming Soon!", {
-                position: "bottom-right",
-                pauseOnHover: false,
-                transition: Bounce,
-              });
-            } else {
-              handleSave();
-            }
-          }}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? <Spinner /> : "Save Changes"}
-        </Button>
-        <Button
-          variant="ghost"
-          className="text-green-500 hover:text-green-600 hover:bg-green-50"
-          onClick={applyToAll}
-        >
-          Apply To All
-        </Button>
-      </CardFooter>
-    </Card>
+            ))}
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-between items-center">
+          <Button
+            className="bg-black text-white px-4 py-2 w-40 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
+            onClick={handleSave}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? <Spinner /> : "Save Changes"}
+          </Button>
+          <Button
+            variant="ghost"
+            className="text-green-500 hover:text-green-600 hover:bg-green-50"
+            onClick={applyToAll}
+          >
+            Apply To All
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
   );
 };
 

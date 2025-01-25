@@ -12,6 +12,7 @@ export const updateBooking = async (req: any, res: any) => {
   const serviceName = req.body.serviceName; // Service name as string
   const serviceDescription = req.body.serviceDescription; // Service description as string
   const servicePrice = req.body.servicePrice; // Service price as number
+  const meetLink = req.body.meetLink;  //google meet link as string
 
   try {
     const mentorProfile = await prisma.mentorProfile.findUnique({
@@ -35,10 +36,11 @@ export const updateBooking = async (req: any, res: any) => {
         dateTime,
         duration,
         payment,
-        status: BookingStatus.PENDING, // Initial status can be PENDING
+        status: BookingStatus.CONFIRMED, // Initial status can be PENDING
         serviceName,
         serviceDescription,
         servicePrice,
+        meetLink: meetLink
       },
     });
 

@@ -16,7 +16,10 @@ import { Separator } from "../components/ui/separator";
 import Header from "../components/Header";
 import BACKEND_URL from "../endpoint";
 import useBookingStore from "../Hooks/useBookingStore";
+import useGoogleCalendarBooking from "../Hooks/GoogleCalendarBooking";
 import { useNavigate, useParams } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
+import Spinner from "../components/ui/Spinner";
 
 interface PaymentInfo {
   sessionFees: number;
@@ -92,6 +95,7 @@ const BookingPage: React.FC = () => {
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [mentee, setMentee] = useState<Mentee | null>();
+  const [mentorEmail, setMentorEmail] = useState("");
   const token = sessionStorage.getItem("userToken") ?? "";
   const menteeId = sessionStorage.getItem("userId");
   const { mentorId } = useParams();
@@ -100,17 +104,31 @@ const BookingPage: React.FC = () => {
     selectedSlot,
     mentorDetails,
     setBookingDetails,
-    clearBooking,
   } = useBookingStore();
   const navigate = useNavigate();
+  const { createCalendarEvent } = useGoogleCalendarBooking();
 
   useEffect(() => {
     if (!selectedService || !selectedSlot || !mentorDetails) {
-      navigate("/");
+      navigate(`/profile/${mentorId}`);
     }
-  }, [selectedService, selectedSlot, mentorDetails, navigate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedService, selectedSlot, mentorDetails]);
 
   useEffect(() => {
+    const getMentorEmail = async () => {
+      const response = await fetch(`${BACKEND_URL}/api/mentorEmail/${mentorId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const email = await response.json();
+      setMentorEmail(email);
+    };
     const getFormData = async () => {
       const response = await fetch(
         `${BACKEND_URL}/api/bookingform/${menteeId}`,
@@ -135,6 +153,7 @@ const BookingPage: React.FC = () => {
         setIsLoading(false);
       }
     };
+    getMentorEmail();
     getFormData();
     getPaymentInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -168,22 +187,48 @@ const BookingPage: React.FC = () => {
         combinedDate.setHours(time.getHours(), time.getMinutes(), 0, 0);
         return combinedDate;
       };
-  
-      if (!selectedSlot?.date || !selectedSlot?.startTime || !selectedSlot?.endTime) {
+
+      if (
+        !selectedSlot?.date ||
+        !selectedSlot?.startTime ||
+        !selectedSlot?.endTime
+      ) {
         throw new Error("Invalid slot selection");
       }
-  
-      const bookingDateTime = convertISTtoUTC(selectedSlot.date, selectedSlot.startTime);
+
+      const bookingDateTime = convertISTtoUTC(
+        selectedSlot.date,
+        selectedSlot.startTime
+      );
+      const duration = calculateDuration(
+        selectedSlot.startTime,
+        selectedSlot.endTime
+      );
+
+      // Create calendar event
+      const meetLink = await createCalendarEvent({
+        mentorId: mentorId!,
+        menteeId: menteeId!,
+        dateTime: bookingDateTime,
+        duration: duration,
+        serviceName: selectedService?.name ?? "",
+        serviceDescription: values.sessionDetails,
+        mentorEmail: mentorEmail,
+        menteeEmail: values.email,
+        mentorName: mentorDetails?.name ?? "",
+        menteeName: values.name,
+      });
 
       const bookingData = {
         mentorId: mentorId, // Replace with actual mentor ID
         menteeId: menteeId, // Replace with actual mentee ID
         dateTime: bookingDateTime,
-        duration: calculateDuration(selectedSlot.startTime, selectedSlot.endTime),
+        duration: duration,
         payment: paymentInfo?.total, // Payment amount (can be adjusted based on your logic)
         serviceName: selectedService?.name,
         serviceDescription: values.sessionDetails,
         servicePrice: selectedService?.price,
+        meetLink: meetLink,
       };
 
       const response = await fetch(`${BACKEND_URL}/api/booking`, {
@@ -194,15 +239,18 @@ const BookingPage: React.FC = () => {
         },
         body: JSON.stringify(bookingData),
       });
+
       if (!response.ok) {
         throw new Error("Booking failed");
       }
-      alert("Form submitted successfully!");
-      clearBooking();
-      navigate(`/profile/${mentorId}`);
+      navigate('/booking/successfull', { state: { bookingSuccess: true } })
     } catch (error) {
       console.error("error creating booking:", error);
-      alert("failed to create booking!");
+      toast.error("Failed to create booking!", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
     } finally {
       setSubmitting(false);
       resetForm();
@@ -444,7 +492,7 @@ const BookingPage: React.FC = () => {
                             className="bg-[#08286b] hover:bg-[#08276bcc] text-sm sm:text-base w-full sm:w-auto px-4 py-2 sm:px-6 sm:py-3"
                             disabled={isSubmitting || isLoading}
                           >
-                            {isSubmitting ? "Submitting..." : `Pay and Book`}
+                            {isSubmitting ? <Spinner/> : `Pay and Book`}
                           </Button>
                         </div>
                       </CardFooter>

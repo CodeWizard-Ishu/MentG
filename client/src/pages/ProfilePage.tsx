@@ -296,18 +296,7 @@ const ProfilePage: React.FC = () => {
                         sessionStorage.getItem("mentor") === "true"
                       }
                       className="w-full bg-[#08286b] text-white font-semibold text-base md:text-lg py-3 md:py-4 rounded-xl flex items-center justify-center space-x-3 hover:bg-[#08276bcc] disabled:opacity-50"
-                      onClick={() => {
-                        // eslint-disable-next-line no-constant-condition
-                        if (true) {
-                          toast("Coming Soon!", {
-                            position: "bottom-right",
-                            pauseOnHover: false,
-                            transition: Bounce,
-                          });
-                        } else {
-                          handleBook();
-                        }
-                      }}
+                      onClick={handleBook}
                     >
                       {loading ? <Spinner /> : "Book Service"}
                     </button>

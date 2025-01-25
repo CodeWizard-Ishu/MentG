@@ -18,7 +18,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Pricing from "./pages/Pricing";
 import AllMentors from "./pages/AllMentors";
 import ResetPasswordPage from "./pages/ResetPassword";
-
+import BookingSuccessPage from "./pages/BookingSuccessful";
+import ProtectedRoutes from "./pages/ProtectedRoutes";
 
 function App() {
   injectSpeedInsights();
@@ -65,92 +66,36 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Landing
-              loggedIn={loggedIn}
-              mentor={mentor}
-              onLogout={handleLogout}
-            />
-          }
-        />
-        <Route
-          path="/all-mentors"
-          element={
-            <AllMentors
-              loggedIn={loggedIn}
-              mentor={mentor}
-              onLogout={handleLogout}
-            />
-          }
-        />
+        {/* Public Routes */}
+        <Route path="/" element={<Landing loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout} />} />
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route
-          path="/dashboard"
-          element={<MentorDashboard onLogout={handleLogout} />}
-        />
-        <Route
-          path="/dashboard/mentee"
-          element={<MenteeDashboard onLogout={handleLogout} />}
-        />
-        <Route path="/profile/:userId" element={<ProfilePage />} />
-        <Route
-          path="/see-all/:domain"
-          element={
-            <SeeAll
-              loggedIn={loggedIn}
-              mentor={mentor}
-              onLogout={handleLogout}
-            />
-          }
-        />
-        <Route path="/availability/:mentorId" element={<CheckAvailability />} />
-        <Route path="/booking/:mentorId" element={<BookingPage />} />
-        <Route
-          path="/about"
-          element={
-            <AboutUs
-              loggedIn={loggedIn}
-              mentor={mentor}
-              onLogout={handleLogout}
-            />
-          }
-        />
-        <Route
-          path="/contact"
-          element={
-            <ContactUs
-              loggedIn={loggedIn}
-              mentor={mentor}
-              onLogout={handleLogout}
-            />
-          }
-        />
-        <Route
-          path="/privacy"
-          element={
-            <PrivacyPolicy
-              loggedIn={loggedIn}
-              mentor={mentor}
-              onLogout={handleLogout}
-            />
-          }
-        />
-        <Route
-          path="/pricing"
-          element={
-            <Pricing
-              loggedIn={loggedIn}
-              mentor={mentor}
-              onLogout={handleLogout}
-            />
-          }
-        />
+        <Route path="/about" element={<AboutUs loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout} />} />
+        <Route path="/contact" element={<ContactUs loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout} />} />
+        <Route path="/privacy" element={<PrivacyPolicy loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout} />} />
+        <Route path="/pricing" element={<Pricing loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout} />} />
+        <Route path="/all-mentors" element={<AllMentors loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout} />} />
+
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoutes allowedUserType="mentor" />}>
+          <Route path="/dashboard" element={<MentorDashboard onLogout={handleLogout} />} />
+        </Route>
+
+        <Route element={<ProtectedRoutes allowedUserType="mentee" />}>
+          <Route path="/dashboard/mentee" element={<MenteeDashboard onLogout={handleLogout} />} />
+          <Route path="/booking/successfull" element={<BookingSuccessPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoutes allowedUserType="both" />}>
+          <Route path="/profile/:userId" element={<ProfilePage />} />
+          <Route path="/see-all/:domain" element={<SeeAll loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout} />} />
+          <Route path="/availability/:mentorId" element={<CheckAvailability />} />
+          <Route path="/booking/:mentorId" element={<BookingPage />} />
+        </Route>
       </Routes>
     </Router>
+
   );
 }
 export default App;

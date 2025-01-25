@@ -61,6 +61,8 @@ model MentorProfile {
   user User @relation("UserMentorProfile", fields: [userId], references: [id])
 
   availability Availability[] // Relationship to availability slots for bookings
+
+  calendarConnections CalendarConnection[]  // Relationship to Calendar Connection
 }
 
 model MenteeProfile {
@@ -104,10 +106,27 @@ model Booking {
   serviceName String // Name of the service offered
   serviceDescription String? // Description of the service
   servicePrice Float // Price for the service
+  meetLink String? // Added field for Google Meet link
 
   // Relationships
   mentor MentorProfile @relation(fields: [mentorId], references: [id])
   mentee MenteeProfile @relation(fields: [menteeId], references: [id])
+}
+
+model CalendarConnection {
+  id            Int          @id @default(autoincrement())
+  mentorId      Int
+  provider      String       // 'google' or 'outlook'
+  accessToken   String
+  refreshToken  String?
+  expiresAt     DateTime
+  email         String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  mentor        MentorProfile @relation(fields: [mentorId], references: [userId])
+
+  @@unique([mentorId, provider])
+  @@index([mentorId])
 }
 
 model Domain {

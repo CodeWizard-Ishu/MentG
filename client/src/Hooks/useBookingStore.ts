@@ -5,7 +5,6 @@ interface BookingState {
   selectedService: {
     name: string;
     price: number;
-    description: string;
   } | null;
   selectedSlot: {
     date: Date;
@@ -13,9 +12,7 @@ interface BookingState {
     endTime: Date;
   } | null;
   mentorDetails: {
-    id: string;
     name: string;
-    profilePicture: string;
   } | null;
   bookingDetails: {
     name: string;
