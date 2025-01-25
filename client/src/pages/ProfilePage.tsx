@@ -71,13 +71,10 @@ const ProfilePage: React.FC = () => {
       setSelectedService({
         name: selectedServiceData.name,
         price: selectedServiceData.price,
-        description: selectedServiceData.description,
       });
 
       setMentorDetails({
-        id: userId!,
         name: profileData.fullName,
-        profilePicture: profilePicture,
       });
     }
     if (sessionStorage.getItem("loggedIn")) navigate(`/availability/${userId}`);
