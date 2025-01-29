@@ -8,7 +8,7 @@ const createOAuth2Client = () => {
   return new OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    `${process.env.BACKEND_URL}/api/auth/google/callback`
+    `${process.env.BACKEND_URL}/api/auth/google/callback/`
   );
 };
 
