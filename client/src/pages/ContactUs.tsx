@@ -88,7 +88,7 @@ const ContactUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
               <img src={contactImage} />
             </div>
 
-            <form className="mx-auto" onClick={handleSubmit}>
+            <form className="mx-auto">
               <div className="mb-6">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black capitalize mb-4">
                   Contact us
@@ -141,6 +141,7 @@ const ContactUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
 
                 <button
                   type="submit"
+                  onClick={handleSubmit}
                   className="text-white w-full bg-black hover:bg-gray-700 rounded-md text-sm sm:text-base px-4 sm:px-6 py-2.5 sm:py-3 transition-colors flex items-center justify-center"
                 >
                   <svg

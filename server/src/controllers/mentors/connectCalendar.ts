@@ -8,7 +8,7 @@ const createOAuth2Client = () => {
   return new OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    process.env.GOOGLE_REDIRECT_URI
+    `${process.env.BACKEND_URL}/api/auth/google/callback/`
   );
 };
 
@@ -89,7 +89,7 @@ const getAuthenticatedGoogleClient = async (mentorId: number) => {
 };
 
 export const initiateGoogleConnection = async (req: any, res: any) => {
-  const { userId } = req.query;
+  const { userId, redirectUrl } = req.query;
 
   const scopes = [
     "https://www.googleapis.com/auth/calendar",
@@ -97,13 +97,18 @@ export const initiateGoogleConnection = async (req: any, res: any) => {
     "https://www.googleapis.com/auth/userinfo.email",
   ];
 
+  const state = JSON.stringify({ 
+    userId,
+    redirectUrl: redirectUrl || `${process.env.FRONTEND_URL}/dashboard`
+  });
+
   const oauth2Client = createOAuth2Client();
 
   const url = oauth2Client.generateAuthUrl({
-    access_type: "offline",
+    access_type: 'offline',
     scope: scopes,
-    state: JSON.stringify({ userId }),
-    prompt: "select_account",
+    state: state,
+    prompt: 'consent'
   });
 
   res.redirect(url);
@@ -120,7 +125,7 @@ export const handleGoogleCallback = async (req: any, res: any) => {
     const oauth2 = google.oauth2({ version: "v2", auth: oauth2Client });
     const userInfo = await oauth2.userinfo.get();
 
-    const { userId } = JSON.parse(state as string);
+    const { userId, redirectUrl } = JSON.parse(state as string);
     const parsedUserId = parseInt(userId as string);
 
     const mProfile = await prisma.mentorProfile.findUnique({
@@ -128,7 +133,7 @@ export const handleGoogleCallback = async (req: any, res: any) => {
     });
 
     if (!mProfile) {
-      return res.redirect("/dashboard?connected=error");
+      return res.redirect(`${redirectUrl}?connected=error`);
     }
 
     // Store or update calendar connection
@@ -156,10 +161,11 @@ export const handleGoogleCallback = async (req: any, res: any) => {
     });
 
     // Redirect back with success
-    res.redirect(`${process.env.FRONTEND_URL}/dashboard?connected=success`);
+    res.redirect(`${redirectUrl}?connected=success`);
   } catch (error) {
     console.error("Google Connection Error:", error);
-    res.redirect(`${process.env.FRONTEND_URL}/dashboard?connected=failed`);
+    const { redirectUrl } = JSON.parse(state as string);
+    res.redirect(`${redirectUrl}?connected=error`);
   }
 };
 

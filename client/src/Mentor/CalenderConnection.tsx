@@ -72,8 +72,11 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
 
   const initiateGoogleOAuth = async () => {
     try {
-      // Redirect to backend OAuth URL
-      window.location.href = `${BACKEND_URL}/api/auth/google/connect?userId=${userId}`;
+      // Get the current URL for redirect after OAuth
+      const currentUrl = window.location.href;
+      
+      // Redirect to backend OAuth URL with current URL as redirect parameter
+      window.location.href = `${BACKEND_URL}/api/auth/google/connect?userId=${userId}&redirectUrl=${encodeURIComponent(currentUrl)}`;
     } catch (error) {
       toast.error(`Failed to initiate Google Calendar connection : ${error}`, {
         position: "bottom-right",
@@ -117,21 +120,28 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
   // Check if we're returning from OAuth connection
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const connectionStatus = urlParams.get("connected");
-
-    if (connectionStatus === "success") {
-      toast.success("Google Calendar Connected Successfully!", {
-        position: "bottom-right",
-        pauseOnHover: false,
-        transition: Bounce,
+    const connectionStatus = urlParams.get('connected');
+    
+    if (connectionStatus === 'success') {
+      toast.success('Google Calendar Connected Successfully!', {
+        position: 'bottom-right'
       });
       fetchCalendarConnections();
-
-      // Remove the query parameter
-      window.history.replaceState({}, document.title, window.location.pathname);
+      
+      // Clean up the URL
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    } else if (connectionStatus === 'error') {
+      toast.error('Failed to connect Google Calendar', {
+        position: 'bottom-right'
+      });
+      // Clean up the URL
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]);
+
 
   return (
     <div className="mb-10 ml-2">
