@@ -26,7 +26,6 @@ export const sendMentorSignupMail = async (
     from: "Mentg - Mentoring Simplified <info@mentg.in>",
     to: userEmail,
     subject: "Welcome to Mentg!",
-    text: `Hi there,\n\nThank you for signing up at Mentg! We are thrilled to have you on board.\n\nBest Regards,\nThe MentG Team`,
     html: `
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml">
@@ -53,27 +52,25 @@ export const sendMentorSignupMail = async (
                             <tr>
                                 <td style="padding: 0 20px;">
                                     <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Hi,</p>
-                                    <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Thank you for signing up at <strong style="font-weight: bold;">MentG</strong>! We are excited to welcome you as a mentor. Your expertise and guidance will play a pivotal role in empowering our mentees to grow and achieve their goals.</p>
+                                    <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Thank you for signing up with <strong style="font-weight: bold;">MentG</strong>!<br/> <br/>Excited to have you into our mentors club. Your expertise and guidance will play a pivotal role in empowering our mentees to grow and achieve their goals.</p>
                                     
-                                    <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Your next step is to <a href="https://mentg.in/login" style="color: #4CAF50; text-decoration: none;">login</a> and set up your profile:</p>
+                                    <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Your next step is to <a href="https://mentg.in/login" style="color: #4CAF50; text-decoration: none;">login</a> and follow the below points for setting up your profile and start mentoring journey:</p>
                                     
                                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 15px;">
                                         <tr>
                                             <td style="padding-left: 20px; font-family: Arial, sans-serif;">
                                                 <ol style="margin: 0; padding-left: 20px;">
-                                                    <li style="margin-bottom: 10px;">Choose your Domain & Service</li>
-                                                    <li style="margin-bottom: 10px;">Upload your Profile Picture</li>
-                                                    <li style="margin-bottom: 10px;">Create a bio</li>
-                                                    <li style="margin-bottom: 10px;">Connect your Google Calendar</li>
-                                                    <li style="margin-bottom: 10px;">Set your Availability</li>
+                                                    <li style="margin-bottom: 10px;">Go to Service Icon & add domain with mentoring type.</li>
+                                                    <li style="margin-bottom: 10px;">Setup weekly availability from Google Calendar.</li>
+                                                    <li style="margin-bottom: 10px;">Update Profile details with Photo, bio with social accounts.</li>
                                                 </ol>
                                             </td>
                                         </tr>
                                     </table>
                                     
-                                    <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">That's it. You're good to go!</p>
+                                    <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Hurray ! You're all set for mentoring.</p>
                                     
-                                    <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Best Regards,<br style="margin: 0;">The Mentg Team</p>
+                                    <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Regards,<br style="margin: 0;">Mentg Team</p>
                                 </td>
                             </tr>
                             <tr>
@@ -94,11 +91,13 @@ export const sendMentorSignupMail = async (
                                 <td align="center" style="padding: 20px; font-size: 0.9em; color: #777; font-family: Arial, sans-serif;">
                                     <p style="margin: 0 0 10px 0;">&copy; ${new Date().getFullYear()} Mentg. All rights reserved.</p>
                                     <div style="margin-top: 10px;">
-                                        <a href="https://x.com/mentg_in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">X (Twitter)</a>
+                                        <a href="https://www.linkedin.com/company/mentg" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">LinkedIn</a>
                                         <span style="color: #ddd; margin: 0 5px;">|</span>
                                         <a href="https://www.instagram.com/mentg.in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Instagram</a>
                                         <span style="color: #ddd; margin: 0 5px;">|</span>
-                                        <a href="https://www.linkedin.com/company/mentg" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">LinkedIn</a>
+                                        <a href="https://www.youtube.com/@MentG_in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Youtube</a>
+                                        <span style="color: #ddd; margin: 0 5px;">|</span>
+                                        <a href="https://x.com/mentg_in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">X (Twitter)</a>
                                     </div>
                                 </td>
                             </tr>
@@ -163,8 +162,7 @@ export const sendMenteeSignupMail = async (
   const mailOptions = {
     from: "Mentg - Mentoring Simplified <info@mentg.in>",
     to: userEmail,
-    subject: "Welcome to Mentg!",
-    text: `Hi there,\n\nThank you for signing up at Mentg! We are thrilled to have you on board.\n\nBest Regards,\nThe MentG Team`,
+    subject: "Welcome to MentG – Your Mentoring Journey Begins!",
     html: `
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
       <html xmlns="http://www.w3.org/1999/xhtml">
@@ -190,13 +188,17 @@ export const sendMenteeSignupMail = async (
                           </tr>
                           <tr>
                               <td style="padding: 0 20px;">
-                                  <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Hi,</p>
-                                  <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Thank you for signing up at <strong style="font-weight: bold;">MentG</strong>! We are excited to have you onboard as a mentee.</p>
+                                  <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Dear ${fullName},</p>
+                                  <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Thank you for joining<strong style="font-weight: bold;">MentG</strong>!<br/><br/>We’re excited to welcome you to our mentee community, where you’ll have the opportunity to connect with top industry experts and gain personalized guidance to advance your professional career.</p>
+                                  <br/>
+                                  <p>What’s next?<br/>You’re all set to explore and find the mentor best suited to your needs. Once you’ve chosen, book a 1:1 virtual session to kickstart your journey.</p>
+                                  <br/>
+                                  <p>Let’s get started!</p>
                               </td>
                           </tr>
                           <tr>
                               <td style="padding: 20px;">
-                                  <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Best Regards,<br style="margin: 0;">The Mentg Team</p>
+                                  <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Best Regards,<br style="margin: 0;">Mentg Team</p>
                               </td>
                           </tr>
                           <tr>
@@ -217,12 +219,14 @@ export const sendMenteeSignupMail = async (
                               <td align="center" style="padding: 20px; font-size: 0.9em; color: #777; font-family: Arial, sans-serif;">
                                   <p style="margin: 0 0 10px 0;">&copy; ${new Date().getFullYear()} Mentg. All rights reserved.</p>
                                   <div style="margin-top: 10px;">
-                                      <a href="https://x.com/mentg_in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">X (Twitter)</a>
-                                      <span style="color: #ddd; margin: 0 5px;">|</span>
-                                      <a href="https://www.instagram.com/mentg.in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Instagram</a>
-                                      <span style="color: #ddd; margin: 0 5px;">|</span>
-                                      <a href="https://www.linkedin.com/company/mentg" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">LinkedIn</a>
-                                  </div>
+                                        <a href="https://www.linkedin.com/company/mentg" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">LinkedIn</a>
+                                        <span style="color: #ddd; margin: 0 5px;">|</span>
+                                        <a href="https://www.instagram.com/mentg.in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Instagram</a>
+                                        <span style="color: #ddd; margin: 0 5px;">|</span>
+                                        <a href="https://www.youtube.com/@MentG_in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Youtube</a>
+                                        <span style="color: #ddd; margin: 0 5px;">|</span>
+                                        <a href="https://x.com/mentg_in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">X (Twitter)</a>
+                                    </div>
                               </td>
                           </tr>
                       </table>
