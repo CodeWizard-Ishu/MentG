@@ -60,9 +60,9 @@ export const sendMentorSignupMail = async (
                                         <tr>
                                             <td style="padding-left: 20px; font-family: Arial, sans-serif;">
                                                 <ol style="margin: 0; padding-left: 20px;">
-                                                    <li style="margin-bottom: 10px;">Go to Service Icon & add domain with mentoring type.</li>
-                                                    <li style="margin-bottom: 10px;">Setup weekly availability from Google Calendar.</li>
-                                                    <li style="margin-bottom: 10px;">Update Profile details with Photo, bio with social accounts.</li>
+                                                    <li style="margin-bottom: 10px;">Go to Service tab of your dashboard & add domain with mentoring type.</li>
+                                                    <li style="margin-bottom: 10px;">Setup weekly availability and add Google Calendar under Calendar Tab.</li>
+                                                    <li style="margin-bottom: 10px;">Update your Profile details with Photo, bio and social accounts.</li>
                                                 </ol>
                                             </td>
                                         </tr>
@@ -92,11 +92,11 @@ export const sendMentorSignupMail = async (
                                     <p style="margin: 0 0 10px 0;">&copy; ${new Date().getFullYear()} Mentg. All rights reserved.</p>
                                     <div style="margin-top: 10px;">
                                         <a href="https://www.linkedin.com/company/mentg" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">LinkedIn</a>
-                                        <span style="color: #ddd; margin: 0 5px;">|</span>
+                                        <span style="color: #ddd; margin: 0;">|</span>
                                         <a href="https://www.instagram.com/mentg.in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Instagram</a>
-                                        <span style="color: #ddd; margin: 0 5px;">|</span>
+                                        <span style="color: #ddd; margin: 0;">|</span>
                                         <a href="https://www.youtube.com/@MentG_in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Youtube</a>
-                                        <span style="color: #ddd; margin: 0 5px;">|</span>
+                                        <span style="color: #ddd; margin: 0;">|</span>
                                         <a href="https://x.com/mentg_in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">X (Twitter)</a>
                                     </div>
                                 </td>
@@ -189,11 +189,9 @@ export const sendMenteeSignupMail = async (
                           <tr>
                               <td style="padding: 0 20px;">
                                   <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Dear ${fullName},</p>
-                                  <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Thank you for joining<strong style="font-weight: bold;">MentG</strong>!<br/><br/>We’re excited to welcome you to our mentee community, where you’ll have the opportunity to connect with top industry experts and gain personalized guidance to advance your professional career.</p>
-                                  <br/>
-                                  <p>What’s next?<br/>You’re all set to explore and find the mentor best suited to your needs. Once you’ve chosen, book a 1:1 virtual session to kickstart your journey.</p>
-                                  <br/>
-                                  <p>Let’s get started!</p>
+                                  <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Thank you for joining <strong style="font-weight: bold;">MentG</strong>!<br/><br/>We’re excited to welcome you to our mentee community, where you’ll have the opportunity to connect with top industry experts and gain personalized guidance to advance your professional career.</p>
+                                  <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">What’s next?<br/>You’re all set to explore and find the mentor best suited to your needs. Once you’ve chosen, book a 1:1 virtual session to kickstart your journey.</p>
+                                  <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Let’s get started!</p>
                               </td>
                           </tr>
                           <tr>
@@ -220,11 +218,11 @@ export const sendMenteeSignupMail = async (
                                   <p style="margin: 0 0 10px 0;">&copy; ${new Date().getFullYear()} Mentg. All rights reserved.</p>
                                   <div style="margin-top: 10px;">
                                         <a href="https://www.linkedin.com/company/mentg" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">LinkedIn</a>
-                                        <span style="color: #ddd; margin: 0 5px;">|</span>
+                                        <span style="color: #ddd; margin: 0;">|</span>
                                         <a href="https://www.instagram.com/mentg.in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Instagram</a>
-                                        <span style="color: #ddd; margin: 0 5px;">|</span>
+                                        <span style="color: #ddd; margin: 0;">|</span>
                                         <a href="https://www.youtube.com/@MentG_in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Youtube</a>
-                                        <span style="color: #ddd; margin: 0 5px;">|</span>
+                                        <span style="color: #ddd; margin: 0;">|</span>
                                         <a href="https://x.com/mentg_in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">X (Twitter)</a>
                                     </div>
                               </td>
