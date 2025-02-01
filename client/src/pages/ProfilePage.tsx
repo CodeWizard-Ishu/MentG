@@ -39,13 +39,6 @@ const ProfilePage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (sessionStorage.getItem("mentor") === "true") {
-      toast.error("Login as Mentee to book", {
-        position: "bottom-right",
-        pauseOnHover: false,
-        transition: Bounce,
-      });
-    }
     const fetchProfileData = async () => {
       try {
         const response = await fetch(
@@ -66,6 +59,15 @@ const ProfilePage: React.FC = () => {
   }, []);
 
   const handleBook = () => {
+    if (sessionStorage.getItem("mentor") === "true" || sessionStorage.getItem("loggedIn") === "false") {
+      toast.error("Login as Mentee to book", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+      return;
+    }
+
     const selectedServiceData = services.find((s) => s.name === serviceTab);
     if (selectedServiceData) {
       setSelectedService({
@@ -284,14 +286,9 @@ const ProfilePage: React.FC = () => {
                     ))}
 
                   {/* Book Session Button */}
-                  {/* --------BOOKING BUTTON DISABLED-------- */}
                   <div className="p-4 md:p-8">
                     <button
-                      disabled={
-                        !serviceTab ||
-                        loading ||
-                        sessionStorage.getItem("mentor") === "true"
-                      }
+                      disabled={!serviceTab || loading}
                       className="w-full bg-[#08286b] text-white font-semibold text-base md:text-lg py-3 md:py-4 rounded-xl flex items-center justify-center space-x-3 hover:bg-[#08276bcc] disabled:opacity-50"
                       onClick={handleBook}
                     >

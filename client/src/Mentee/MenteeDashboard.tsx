@@ -29,10 +29,9 @@ interface MenteeDashboardProps {
 const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
   const [profilePicture, setProfilePicture] = useState<string>(defaultImage);
-  const [fullName, setFullName] = useState<string>(
-    sessionStorage.getItem("fullName") || "Mentee"
-  );
+  const [fullName, setFullName] = useState<string>(sessionStorage.getItem("fullName") || "Mentee");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
   const userId = sessionStorage.getItem("userId");
   const token = sessionStorage.getItem("userToken") ?? "";
 
@@ -45,7 +44,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
       },
     });
     const data = await response.json();
-    setProfilePicture(data.profilePicture);
+    if (data.profilePicture) setProfilePicture(data.profilePicture);
     const capitalize = (string: string) => {
       if (!string) return "";
       return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -53,8 +52,8 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
     const formattedName = `${capitalize(data.user.firstName)} ${capitalize(
       data.user.lastName
     )}`;
-    setFullName(formattedName);
     sessionStorage.setItem("fullName", formattedName);
+    setFullName(formattedName);
     return data;
   }, [userId, token]);
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -42,6 +42,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
     email: "",
     password: "",
   };
+
+  useEffect(() => {
+    if (sessionStorage.getItem("loggedIn") === "true") {
+      navigate("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogin = async (values: LoginFormValues) => {
     setLoading(true);

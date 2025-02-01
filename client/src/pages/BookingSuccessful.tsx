@@ -12,7 +12,12 @@ const BookingSuccessPage: React.FC = () => {
   const { clearBooking } = useBookingStore();
 
   useEffect(() => {
-    clearBooking();
+    if (isBookingSuccessful) {
+      // Set booking completion status
+      sessionStorage.setItem('bookingComplete', 'true');
+      // Clear booking store state
+      clearBooking();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -20,6 +25,7 @@ const BookingSuccessPage: React.FC = () => {
   if (!isBookingSuccessful) {
     return <Navigate to="/" replace />;
   }
+  
   return (
     <div className="bg-sky-200">
       <Header />

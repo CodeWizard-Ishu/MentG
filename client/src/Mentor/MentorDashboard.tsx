@@ -42,15 +42,12 @@ interface MentorDashboardProps {
 const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
   const [profilePicture, setProfilePicture] = useState<string>(defaultImage);
+  const [fullName, setFullName] = useState<string>(sessionStorage.getItem("fullName") || "Mentor")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
   const userId = sessionStorage.getItem("userId");
-  const [fullName, setFullName] = useState<string>(() => {
-    const savedName = sessionStorage.getItem("fullName");
-    if (savedName) return savedName;
-    return "Mentor";
-  });
   const token = sessionStorage.getItem("userToken") ?? "";
-
+  
   const refreshDashboardData = async () => {
     // Fetch updated user data
     try {
