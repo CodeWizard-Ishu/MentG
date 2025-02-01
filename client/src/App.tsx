@@ -76,6 +76,7 @@ function App() {
         <Route path="/privacy" element={<PrivacyPolicy loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout} />} />
         <Route path="/pricing" element={<Pricing loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout} />} />
         <Route path="/all-mentors" element={<AllMentors loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout} />} />
+        <Route path="/profile/:userId" element={<ProfilePage />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoutes allowedUserType="mentor" />}>
@@ -88,7 +89,6 @@ function App() {
         </Route>
 
         <Route element={<ProtectedRoutes allowedUserType="both" />}>
-          <Route path="/profile/:userId" element={<ProfilePage />} />
           <Route path="/see-all/:domain" element={<SeeAll loggedIn={loggedIn} mentor={mentor} onLogout={handleLogout} />} />
           <Route path="/availability/:mentorId" element={<CheckAvailability />} />
           <Route path="/booking/:mentorId" element={<BookingPage />} />
