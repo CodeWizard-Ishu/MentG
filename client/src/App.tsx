@@ -27,10 +27,10 @@ function App() {
   inject();
 
   const [loggedIn, setLoggedIn] = useState(() => {
-    return sessionStorage.getItem("loggedIn") === "true";
+    return localStorage.getItem("loggedIn") === "true";
   });
   const [mentor, setMentor] = useState(() => {
-    return sessionStorage.getItem("mentor") === "true";
+    return localStorage.getItem("mentor") === "true";
   });
 
   const handleLogin = (
@@ -40,26 +40,26 @@ function App() {
     firstName: string,
     lastName: string
   ) => {
-    sessionStorage.setItem("userToken", `Bearer ${token}`);
-    sessionStorage.setItem("loggedIn", "true");
-    sessionStorage.setItem("mentor", isMentor ? "true" : "false");
-    sessionStorage.setItem("userId", userId);
+    localStorage.setItem("userToken", `Bearer ${token}`);
+    localStorage.setItem("loggedIn", "true");
+    localStorage.setItem("mentor", isMentor ? "true" : "false");
+    localStorage.setItem("userId", userId);
     const capitalize = (string: string) => {
       if (!string) return "";
       return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     };
     const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
-    sessionStorage.setItem("fullName", formattedName);
+    localStorage.setItem("fullName", formattedName);
     setLoggedIn(true);
     setMentor(isMentor);
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem("userToken");
-    sessionStorage.removeItem("loggedIn");
-    sessionStorage.removeItem("mentor");
-    sessionStorage.removeItem("userId");
-    sessionStorage.removeItem("fullName");
+    localStorage.removeItem("userToken");
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("mentor");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("fullName");
     setLoggedIn(false);
     setMentor(false);
   };

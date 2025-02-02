@@ -34,7 +34,7 @@ const FeedbackReportMenu = ({
   const [hoveredRating, setHoveredRating] = useState<number>(0);
   const [feedback, setFeedback] = useState("");
   const [report, setReport] = useState("");
-  const token = sessionStorage.getItem("userToken") ?? "";
+  const token = localStorage.getItem("userToken") ?? "";
 
   const resetFeedbackForm = () => {
     setRating(0);
@@ -49,7 +49,7 @@ const FeedbackReportMenu = ({
     // Prepare the feedback data
     const feedbackData = {
       mentorId,
-      menteeId: sessionStorage.getItem("userId"), // Replace with actual mentee ID from your context or props
+      menteeId: localStorage.getItem("userId"), // Replace with actual mentee ID from your context or props
       score: rating,
       feedback: feedback,
     };

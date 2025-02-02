@@ -14,7 +14,7 @@ const BookingSuccessPage: React.FC = () => {
   useEffect(() => {
     if (isBookingSuccessful) {
       // Set booking completion status
-      sessionStorage.setItem('bookingComplete', 'true');
+      localStorage.setItem('bookingComplete', 'true');
       // Clear booking store state
       clearBooking();
     }

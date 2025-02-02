@@ -31,7 +31,7 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const mentorId = sessionStorage.getItem("userId");
+      const mentorId = localStorage.getItem("userId");
 
       if (!mentorId) {
         // setError("Mentor ID not found in local storage.");
@@ -41,7 +41,7 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
       }
 
       try {
-        const token = sessionStorage.getItem("userToken") ?? "";
+        const token = localStorage.getItem("userToken") ?? "";
 
         // Make the fetch request with the Authorization header
         const response = await fetch(`${BACKEND_URL}/api/mentor/${mentorId}`, {

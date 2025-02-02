@@ -42,11 +42,11 @@ interface MentorDashboardProps {
 const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
   const [profilePicture, setProfilePicture] = useState<string>(defaultImage);
-  const [fullName, setFullName] = useState<string>(sessionStorage.getItem("fullName") || "Mentor")
+  const [fullName, setFullName] = useState<string>(localStorage.getItem("fullName") || "Mentor")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
-  const userId = sessionStorage.getItem("userId");
-  const token = sessionStorage.getItem("userToken") ?? "";
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
   
   const refreshDashboardData = async () => {
     // Fetch updated user data
@@ -69,7 +69,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
       const newFullName = `${capitalize(data.user.firstName)} ${
         capitalize(data.user.lastName) || ""
       }`.trim();
-      sessionStorage.setItem("fullName", newFullName);
+      localStorage.setItem("fullName", newFullName);
       setFullName(newFullName);
     } catch (error) {
       toast.error(`Error refreshing dashboard data: ${error}`, {

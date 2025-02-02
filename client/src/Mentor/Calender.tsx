@@ -171,8 +171,8 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
   const [isSubmitting, setSubmitting] = useState(false);
   const [isCalendarConnected, setIsCalendarConnected] = useState(false);
 
-  const userId = sessionStorage.getItem("userId");
-  const token = sessionStorage.getItem("userToken") ?? "";
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   const fetchAvailability = async () => {
     try {

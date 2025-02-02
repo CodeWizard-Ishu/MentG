@@ -28,8 +28,8 @@ interface Testimonial {
 }
 
 const Testimonials = () => {
-  const userId = sessionStorage.getItem("userId");
-  const token = sessionStorage.getItem("userToken") ?? "";
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
   useEffect(() => {

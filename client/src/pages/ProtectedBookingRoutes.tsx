@@ -15,7 +15,7 @@ const ProtectedBookingRoutes: React.FC<ProtectedBookingRoutesProps> = ({
   const { selectedService, selectedSlot, clearBooking } = useBookingStore();
   
   // Get booking completion status from session storage
-  const isBookingComplete = sessionStorage.getItem('bookingComplete') === 'true';
+  const isBookingComplete = localStorage.getItem('bookingComplete') === 'true';
   
   // Clear booking state and session storage if booking is complete
   useEffect(() => {
@@ -23,7 +23,7 @@ const ProtectedBookingRoutes: React.FC<ProtectedBookingRoutesProps> = ({
       clearBooking();
       // Clear the booking completion status after a delay
       const timeoutId = setTimeout(() => {
-        sessionStorage.removeItem('bookingComplete');
+        localStorage.removeItem('bookingComplete');
       }, 2000);
       
       return () => clearTimeout(timeoutId);
@@ -32,8 +32,8 @@ const ProtectedBookingRoutes: React.FC<ProtectedBookingRoutesProps> = ({
 
   // Function to check if the current route is allowed based on booking state
   const isAllowed = () => {
-    const isLoggedIn = sessionStorage.getItem('loggedIn') === 'true';
-    const isMentor = sessionStorage.getItem('mentor') === 'true';
+    const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+    const isMentor = localStorage.getItem('mentor') === 'true';
     
     // Only mentees can access booking routes
     if (!isLoggedIn || isMentor) {

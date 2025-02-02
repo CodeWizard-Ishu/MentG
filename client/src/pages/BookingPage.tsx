@@ -96,8 +96,8 @@ const BookingPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [mentee, setMentee] = useState<Mentee | null>();
   const [mentorEmail, setMentorEmail] = useState("");
-  const token = sessionStorage.getItem("userToken") ?? "";
-  const menteeId = sessionStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
+  const menteeId = localStorage.getItem("userId");
   const { mentorId } = useParams();
   const {
     selectedService,
@@ -160,7 +160,7 @@ const BookingPage: React.FC = () => {
   }, []);
 
   const initialValues: FormValues = {
-    name: sessionStorage.getItem("fullName") || "",
+    name: localStorage.getItem("fullName") || "",
     phone: mentee?.phoneNumber || "",
     email: mentee?.user.email || "",
     sessionDetails: "",

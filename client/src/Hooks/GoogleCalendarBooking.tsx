@@ -25,7 +25,7 @@ const useGoogleCalendarBooking = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': sessionStorage.getItem('userToken') ?? '',
+          'Authorization': localStorage.getItem('userToken') ?? '',
         },
         body: JSON.stringify({
           mentorId: bookingDetails.mentorId,

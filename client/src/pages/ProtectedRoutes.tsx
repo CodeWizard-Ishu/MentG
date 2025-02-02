@@ -7,10 +7,10 @@ interface PrivateRouteProps {
 
 const ProtectedRoutes: React.FC<PrivateRouteProps> = ({ allowedUserType }) => {
   // Check if user is logged in
-  const isLoggedIn = sessionStorage.getItem('loggedIn') === 'true';
+  const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
   
   // Check user type
-  const isMentor = sessionStorage.getItem('mentor') === 'true';
+  const isMentor = localStorage.getItem('mentor') === 'true';
 
   // Determine if the current user is allowed based on the route's requirements
   const isAllowed = () => {

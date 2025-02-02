@@ -176,8 +176,8 @@ const validationSchema = Yup.object().shape({
 const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [user, setUser] = useState<User>();
-  const userId = sessionStorage.getItem("userId");
-  const token = sessionStorage.getItem("userToken") ?? "";
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   const getMentorDetails = async () => {
     try {
@@ -253,7 +253,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
       await getMentorDetails();
 
       const newFullName = `${values.firstName} ${values.lastName || ""}`.trim();
-      sessionStorage.setItem("fullName", newFullName);
+      localStorage.setItem("fullName", newFullName);
 
       if (onProfileUpdate) {
         await onProfileUpdate();

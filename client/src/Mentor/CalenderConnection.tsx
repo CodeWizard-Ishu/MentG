@@ -29,8 +29,8 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
   const [connection, setConnection] = useState<CalendarConnection | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const userId = sessionStorage.getItem("userId");
-  const token = sessionStorage.getItem("userToken") ?? "";
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   useEffect(() => {
     fetchCalendarConnections();

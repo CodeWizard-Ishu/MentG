@@ -59,7 +59,7 @@ const ProfilePage: React.FC = () => {
   }, []);
 
   const handleBook = () => {
-    if (sessionStorage.getItem("mentor") === "true" || sessionStorage.getItem("loggedIn") === "false") {
+    if (localStorage.getItem("mentor") === "true" || localStorage.getItem("loggedIn") === "false") {
       toast.error("Login as Mentee to book", {
         position: "bottom-right",
         pauseOnHover: false,
@@ -79,7 +79,7 @@ const ProfilePage: React.FC = () => {
         name: profileData.fullName,
       });
     }
-    if (sessionStorage.getItem("loggedIn")) navigate(`/availability/${userId}`);
+    if (localStorage.getItem("loggedIn")) navigate(`/availability/${userId}`);
     else navigate(`/login`);
     setLoading(false);
   };

@@ -41,10 +41,10 @@ const MenteeMeetings = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const token = sessionStorage.getItem("userToken") ?? "";
+  const token = localStorage.getItem("userToken") ?? "";
   useEffect(() => {
     const fetchMeetings = async () => {
-      const menteeId = sessionStorage.getItem("userId");
+      const menteeId = localStorage.getItem("userId");
 
       if (!menteeId) {
         // setError("Mentee ID not found in local storage.");

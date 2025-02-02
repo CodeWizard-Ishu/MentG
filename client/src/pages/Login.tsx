@@ -44,7 +44,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
   };
 
   useEffect(() => {
-    if (sessionStorage.getItem("loggedIn") === "true") {
+    if (localStorage.getItem("loggedIn") === "true") {
       navigate("/");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

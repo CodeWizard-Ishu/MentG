@@ -161,8 +161,8 @@ const validationSchema = Yup.object().shape({
 const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [user, setUser] = useState<User>();
-  const userId = sessionStorage.getItem("userId");
-  const token = sessionStorage.getItem("userToken") ?? "";
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   const getMenteeDetails = async () => {
     const response = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`, {
