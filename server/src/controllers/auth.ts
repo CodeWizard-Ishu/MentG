@@ -71,7 +71,7 @@ export const signupMentor = async (req: any, res: any) => {
     const token = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true, // make this true when using for production
+      secure: process.env.ENV === 'production', // make this true when using for production
       sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -148,7 +148,7 @@ export const signupMentee = async (req: any, res: any) => {
     const token = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true, // make this true when using for production
+      secure: process.env.ENV === 'production', // make this true when using for production
       sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -208,7 +208,7 @@ export const login = async (req: any, res: any) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,     // will be true in production
+      secure: process.env.ENV === 'production',     // will be true in production
       sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });

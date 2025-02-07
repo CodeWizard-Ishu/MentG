@@ -334,3 +334,74 @@ export const sendBookingDetails = async (
 
   await transporter.sendMail(mailOptions);
 };
+
+export const sendNote = async (mentorEmail: string, menteeEmail:string, mentorName: string, menteeName: string, message: string) => {
+  const mailOptions = {
+    from: "MentG - Mentoring Simplified <info@mentg.in>",
+    to: mentorEmail,
+    subject: `${menteeName} wants to connect with you!`,
+    html: `
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Mentee Note</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; line-height: 1.6; color: #777;">
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f4f4;">
+                <tr>
+                    <td align="center" style="padding: 20px 0;">
+                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                            <tr>
+                                <td align="center" style="padding: 20px;">
+                                    <h2 style="color: #4CAF50; margin: 0 0 20px 0; font-size: 24px;">Mentee Wants to Connect</h2>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0 20px;">
+                                    <p style="margin: 0 0 15px 0;">Dear ${mentorName},</p>
+                                    
+                                    <p style="margin: 0 0 15px 0;">A mentee named <strong>${menteeName}</strong> would like to connect with you.</p>
+                                    
+                                    <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                                        <h3 style="margin: 0 0 10px 0; color: #333;">Mentee's Message:</h3>
+                                        <p style="margin: 0; font-style: italic;">"${message}"</p>
+                                    </div>
+                                    
+                                    <div style="background-color: #f0f7ff; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                                        <h3 style="margin: 0 0 10px 0; color: #333;">Contact Information:</h3>
+                                        <p style="margin: 0;">
+                                            You can reply directly to the mentee at: 
+                                            <a href="mailto:${menteeEmail}" style="color: #4CAF50; text-decoration: none;">
+                                                ${menteeEmail}
+                                            </a>
+                                        </p>
+                                    </div>
+                                    
+                                    <p style="margin: 0 0 15px 0;">You can respond to this mentee by replying directly to their email address.</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 20px;">
+                                    <p style="margin: 0 0 15px 0;">Best Regards,<br/>MentG Team</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border-top: 1px solid #ddd; padding: 20px;" align="center">
+                                    <p style="font-size: 0.9em; color: #777; margin: 0;">
+                                        © ${new Date().getFullYear()} MentG. All rights reserved.
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        </html>
+      `,
+  };
+
+  await transporter.sendMail(mailOptions);
+};

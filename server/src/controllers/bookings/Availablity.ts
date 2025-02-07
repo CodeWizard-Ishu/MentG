@@ -1,4 +1,5 @@
 import { getPrismaClient } from "../../prisma";
+import { sendNote } from "../mailer";
 
 const prisma = getPrismaClient();
 
@@ -35,5 +36,36 @@ export const getBookingAvailablity = async (req: any, res: any) => {
     res
       .status(500)
       .json({ error: "An error occurred while retrieving availability." });
+  }
+};
+
+export const sendMentorNote = async (req: any, res: any) => {
+  const { mentorId, menteeId, message, menteeEmail } = req.body;
+
+  try {
+    // Fetch mentor's profile with associated user
+    const mentorProfile = await prisma.user.findUnique({
+      where: { id: parseInt(mentorId, 10) },
+    });
+
+    // Fetch mentee's profile with associated user
+    const menteeProfile = await prisma.user.findUnique({
+      where: { id: parseInt(menteeId, 10) }
+    });
+
+    // Validate profiles
+    if (!mentorProfile || !menteeProfile) {
+      return res.status(404).json({ error: "Mentor or Mentee not found" });
+    }
+
+    const mentorName = `${mentorProfile.firstName} ${mentorProfile.lastName}`;
+    const menteeName = `${menteeProfile.firstName} ${menteeProfile.lastName}`;
+
+    sendNote(mentorProfile.email, menteeEmail, mentorName, menteeName, message);
+
+    res.status(200).json({ message: "Note sent successfully" });
+  } catch (error) {
+    console.error("Error sending mentor note:", error);
+    res.status(500).json({ error: "Failed to send note" });
   }
 };

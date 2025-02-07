@@ -32,7 +32,7 @@ import {
   updateMenteeDetails,
 } from "../controllers/mentee/menteeDetails";
 import verifyToken from "../middleware/auth";
-import { getBookingAvailablity } from "../controllers/bookings/Availablity";
+import { getBookingAvailablity, sendMentorNote } from "../controllers/bookings/Availablity";
 import { getMentorEmail } from "../controllers/bookings/mentorEmail";
 import { getBookingFormData } from "../controllers/bookings/BookingForm";
 import { getServiceDetail } from "../controllers/bookings/payment";
@@ -84,6 +84,7 @@ router.get("/api/menteeDetails/:id", verifyToken, getMenteeDetails);
 router.put("/api/updateMenteeDetails/:id", verifyToken,updateMenteeDetails);
 
 router.get("/api/availability/:id/:mentorId", verifyToken, getBookingAvailablity);
+router.post("/api/:id/send-note", verifyToken, sendMentorNote)
 router.get("/api/mentorEmail/:id/:mentorId", verifyToken, getMentorEmail);
 router.get("/api/bookingform/:id", verifyToken, getBookingFormData);
 
