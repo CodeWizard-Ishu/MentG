@@ -34,7 +34,7 @@ const FeedbackReportMenu = ({
   const [hoveredRating, setHoveredRating] = useState<number>(0);
   const [feedback, setFeedback] = useState("");
   const [report, setReport] = useState("");
-  const token = localStorage.getItem("userToken") ?? "";
+  const menteeId = localStorage.getItem("userId");
 
   const resetFeedbackForm = () => {
     setRating(0);
@@ -49,20 +49,21 @@ const FeedbackReportMenu = ({
     // Prepare the feedback data
     const feedbackData = {
       mentorId,
-      menteeId: localStorage.getItem("userId"), // Replace with actual mentee ID from your context or props
+      menteeId: menteeId,
       score: rating,
       feedback: feedback,
     };
 
     try {
       // Make a POST request to submit the feedback
-      const response = await fetch(`${BACKEND_URL}/api/rating`, {
-        method: "POST",
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(feedbackData),
+      const response = await fetch(`${BACKEND_URL}/api/rating/${menteeId}`, 
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(feedbackData),
+          credentials: "include",
       });
 
       // Check if the response is successful

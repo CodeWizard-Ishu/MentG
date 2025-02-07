@@ -19,14 +19,9 @@ import Footer from "../components/Footer";
 interface LandingPageProps {
   loggedIn: boolean;
   mentor: boolean;
-  onLogout: () => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({
-  loggedIn,
-  mentor,
-  onLogout,
-}) => {
+const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("Technology");
   const [mentorsData, setMentorsData] = useState([]);
@@ -141,14 +136,6 @@ const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         ) : (
           <div className="space-x-2 md:space-x-4">
-            <Link to="/">
-              <button
-                onClick={onLogout}
-                className="px-2 md:px-4 py-1.5 md:py-2 text-white text-sm md:text-base lg:text-base border rounded-lg hover:border-gray-500 transition"
-              >
-                Logout
-              </button>
-            </Link>
             {mentor ? (
               <Link to="/dashboard">
                 <button className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-black text-sm md:text-base lg:text-base rounded-md hover:bg-gray-300 transition-colors">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -8,7 +8,13 @@ import Spinner from "../components/ui/Spinner";
 import { Bounce, toast } from "react-toastify";
 
 interface SignupPageProps {
-  onLoginClick?: () => void;
+  onSignup?: (
+    isMentor: boolean,
+    isActive: boolean,
+    userId: string,
+    firstName: string,
+    lastName: string
+  ) => void;
 }
 
 interface SignupFormValues {
@@ -41,7 +47,7 @@ const validationSchema = Yup.object().shape({
     .required("Password is required"),
 });
 
-const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
+const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
   const [loadingMentor, setLoadingMentor] = useState(false);
   const [loadingMentee, setLoadingMentee] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -54,24 +60,17 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
     password: "",
   };
 
+  useEffect(() => {
+      if (localStorage.getItem("loggedIn") === "true") {
+        navigate("/");
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
   const handleSubmit = async (
     values: SignupFormValues,
     isMentor: boolean,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    touched: any
   ) => {
-    // Check if any required field is untouched
-    const isAnyFieldUntouched =
-      !touched.firstName || !touched.email || !touched.password;
-
-    if (isAnyFieldUntouched) {
-      toast.error("The * marked fields are required!", {
-        position: "bottom-right",
-        pauseOnHover: false,
-        transition: Bounce,
-      });
-      return;
-    }
 
     if (!acceptTerms) {
       toast.error("Please accept the terms and privacy policy", {
@@ -99,11 +98,13 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
             lastName: values.lastName.trim(),
             email: values.email.trim().toLowerCase(),
           }),
+          credentials: "include",
         }
       );
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.log(errorData.message);
         toast.error(errorData.message || "Something went wrong!", {
           position: "bottom-right",
           pauseOnHover: false,
@@ -112,12 +113,23 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
         return;
       }
 
-      toast.success("SignUp Successful!", {
-        position: "bottom-right",
-        pauseOnHover: false,
-        transition: Bounce,
-      });
-      navigate("/login");
+      const data = await response.json();
+      onSignup(
+        data.user.isMentor,
+        data.user.isActive,
+        data.user.id,
+        data.user.firstName,
+        data.user.lastName
+      )
+
+      if(response.ok) {
+        toast.success("SignUp Successfull!", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+      }
+      navigate(data.user.isMentor ? "/dashboard" : "/dashboard/mentee");
     } catch (error) {
       console.error(error);
       toast.error("Network error. Please try again later.", {
@@ -295,7 +307,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
                 <div className="flex flex-col sm:flex-row gap-4 sm:space-x-4">
                   <button
                     type="button"
-                    onClick={() => handleSubmit(values, false, touched)}
+                    onClick={() => handleSubmit(values, false)}
                     disabled={loadingMentee}
                     className="w-full bg-[#08286b] text-white py-3 rounded-lg hover:bg-[#08276bcc] transition-colors font-semibold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -303,7 +315,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleSubmit(values, true, touched)}
+                    onClick={() => handleSubmit(values, true)}
                     disabled={loadingMentor}
                     className="w-full bg-white text-[#08286b] py-3 rounded-lg hover:bg-[#08276b2b] border-2 border-[#08286b] transition-colors font-bold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -319,7 +331,6 @@ const SignupPage: React.FC<SignupPageProps> = ({ onLoginClick = () => {} }) => {
               Already have an account?{" "}
               <Link to="/login">
                 <button
-                  onClick={onLoginClick}
                   className="text-black hover:underline ml-1 font-semibold"
                 >
                   Login

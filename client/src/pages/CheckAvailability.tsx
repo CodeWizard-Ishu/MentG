@@ -49,6 +49,8 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
   const [isSubmitting, setSubmitting] = useState(false);
   const { setSelectedSlot } = useBookingStore();
 
+  const menteeId = localStorage.getItem("userId");
+
   const navigate = useNavigate();
   const { mentorId } = useParams(); // Get mentorId from URL parameters
 
@@ -58,7 +60,13 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
       setIsLoading(true);
       try {
         const response = await fetch(
-          `${BACKEND_URL}/api/availability/${mentorId}`
+          `${BACKEND_URL}/api/availability/${menteeId}/${mentorId}`, {
+            method : "GET",
+            headers : {
+              "Content-Type" : "application/json"
+            },
+            credentials : "include"
+          }
         );
 
         if (!response.ok) {
@@ -78,7 +86,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
     };
 
     fetchAvailability();
-  }, [mentorId]); // Fetch availability whenever mentorId changes
+  }, [menteeId, mentorId]); // Fetch availability whenever mentorId changes
 
   // Calculate date bounds
   const dateBounds = useMemo(() => {

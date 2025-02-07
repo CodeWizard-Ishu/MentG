@@ -23,7 +23,7 @@ export const submitRating = async (req: any, res: any) => {
     const newRating = await prisma.rating.create({
       data: {
         mentorId,
-        menteeId: menteeProfile.id,
+        menteeId: menteeProfile.userId,
         score,
         feedback,
       },
@@ -39,17 +39,18 @@ export const submitRating = async (req: any, res: any) => {
 };
 
 export const getRatingsForMentor = async (req: any, res: any) => {
-  const mentorId = parseInt(req.params.mentorId, 10); // Get mentorId from route parameters
+  const { id } = req.params;
+  const parsedId = parseInt(id, 10);
 
   try {
     const mentorProfile = await prisma.mentorProfile.findUnique({
-      where: { userId: mentorId },
+      where: { userId: parsedId },
     });
     if (!mentorProfile) {
       return res.status(400).json({ error: "Mentor does not exist" });
     }
     const ratings = await prisma.rating.findMany({
-      where: { mentorId: mentorProfile.id },
+      where: { mentorId: mentorProfile.userId },
       include: {
         mentee: {
           // Assuming you want to include mentee details

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import BACKEND_URL from "../endpoint";
 import TestimonialCard from "../components/ui/TestimonialCard";
+import Spinner from "../components/ui/Spinner";
 
 // Define interfaces for the API response data structure
 interface User {
@@ -28,19 +29,21 @@ interface Testimonial {
 }
 
 const Testimonials = () => {
-  const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("userToken") ?? "";
+  const [loading, setLoading] = useState(true);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
+    setLoading(true);
     const fetchRatings = async () => {
       try {
         const response = await fetch(`${BACKEND_URL}/api/getRating/${userId}`, {
           method: "GET",
           headers: {
-            Authorization: token,
             "Content-Type": "application/json",
           },
+          credentials: "include",
         });
         const data = await response.json();
 
@@ -52,21 +55,24 @@ const Testimonials = () => {
       } catch (error) {
         console.error("Error fetching ratings:", error);
         setTestimonials([]);
+      } finally {
+        setLoading(false);
       }
     };
     fetchRatings();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userId]);
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen pl-4">
       <h1 className="text-2xl sm:text-3xl font-medium">Your Testimonials</h1>
       <h2 className="text-xs mb-4">
         (Testimonials and ratings from your audience show up here.)
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 lg:gap-8">
-        {testimonials.length === 0 ? (
-          <div className="col-span-full text-center text-gray-500">
+        {loading ? (
+          <Spinner clasName="mt-10 col-span-full text-center"/>
+        ) : testimonials.length === 0 ? (
+          <div className="mt-10 col-span-full text-center text-gray-500">
             No Feedbacks
           </div>
         ) : (

@@ -41,11 +41,10 @@ const MenteeMeetings = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const token = localStorage.getItem("userToken") ?? "";
+  const menteeId = localStorage.getItem("userId");
+
   useEffect(() => {
     const fetchMeetings = async () => {
-      const menteeId = localStorage.getItem("userId");
-
       if (!menteeId) {
         // setError("Mentee ID not found in local storage.");
         setError("Something went Wrong!");
@@ -61,9 +60,9 @@ const MenteeMeetings = () => {
           {
             method: "GET",
             headers: {
-              Authorization: token,
               "Content-Type": "application/json",
             },
+            credentials: "include",
           }
         );
         if (!response.ok) {
@@ -97,7 +96,7 @@ const MenteeMeetings = () => {
     };
 
     fetchMeetings();
-  }, [pagination.pageIndex, pagination.pageSize, token]);
+  }, [pagination.pageIndex, pagination.pageSize, menteeId]);
 
   if (loading) return <Spinner />;
   if (error) return <div className="text-2xl font-semibold">{error}</div>;

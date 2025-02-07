@@ -1,5 +1,5 @@
 import React, { useState, ReactNode, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BACKEND_URL from "../endpoint";
 import defaultImage from "../assets/defautProfilePic.jpg";
 import {
@@ -28,6 +28,8 @@ import Payments from "./Payments";
 import Services from "./Services";
 import Logo from "../assets/logo.png";
 import { Bounce, toast } from "react-toastify";
+import { CheckAuth } from "../utils/CheckAuth";
+import Spinner from "../components/ui/Spinner";
 
 interface NavItem {
   name: string;
@@ -42,12 +44,15 @@ interface MentorDashboardProps {
 const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<string>("home");
   const [profilePicture, setProfilePicture] = useState<string>(defaultImage);
-  const [fullName, setFullName] = useState<string>(localStorage.getItem("fullName") || "Mentor")
+  const [fullName, setFullName] = useState<string>(
+    localStorage.getItem("fullName") || "Mentor"
+  );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const navigate = useNavigate();
+
   const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("userToken") ?? "";
-  
+
   const refreshDashboardData = async () => {
     // Fetch updated user data
     try {
@@ -55,9 +60,9 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
         `${BACKEND_URL}/api/mentorDetails/${userId}`,
         {
           headers: {
-            Authorization: token,
             "Content-Type": "application/json",
           },
+          credentials: "include",
         }
       );
       const data = await response.json();
@@ -80,10 +85,55 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/auth/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      if (response.ok) {
+        toast.success("Logged out successfully", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+        localStorage.removeItem("loggedIn");
+        localStorage.removeItem("isActive");
+        localStorage.removeItem("mentor");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("fullName");
+        localStorage.removeItem("booking-store");
+      }
+      navigate("/");
+    } catch (error) {
+      console.error("Error logging out:", error);
+      toast.error(`Error logging out`, {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+    }
+  };
+
   useEffect(() => {
-    refreshDashboardData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (localStorage.getItem("loggedIn") === "true") {
+      const auth = CheckAuth({ onLogout, navigate });
+      auth.checkAuthStatus().then(isValid => {
+        setIsAuthenticated(isValid);
+      });
+      } else {
+        setIsAuthenticated(false);
+      }
+      refreshDashboardData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate, onLogout]);
+
+  if (isAuthenticated === null) {
+    return <Spinner/>;
+  }
 
   const navItems: NavItem[] = [
     { name: "Home", icon: <HomeIcon />, tab: "home" },
@@ -226,7 +276,10 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
 
             <Link to={"/"}>
               <button
-                onClick={onLogout}
+                onClick={() => {
+                  handleLogout();
+                  onLogout();
+                }}
                 className="w-full mt-5 text-red-500 bg-white hover:bg-red-100  rounded-lg"
               >
                 {isMobileMenuOpen ? (
@@ -266,15 +319,16 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
                     <span>Go to Profile</span>
                   </button>
                 </a>
-                <Link to="/" className="block">
-                  <button
-                    onClick={onLogout}
-                    className="w-full md:w-auto text-red-500 px-4 py-2 border-2 border-red-500 rounded-lg flex items-center justify-center space-x-2 hover:transition-all hover:shadow-red-500 hover:shadow-md hover:text-red-500"
-                  >
-                    <LogOut className="w-5 h-5" />
-                    <span>Log Out</span>
-                  </button>
-                </Link>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    onLogout();
+                  }}
+                  className="w-full md:w-auto text-red-500 px-4 py-2 border-2 border-red-500 rounded-lg flex items-center justify-center space-x-2 hover:transition-all hover:shadow-red-500 hover:shadow-md hover:text-red-500"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span>Log Out</span>
+                </button>
               </div>
             </div>
           </div>

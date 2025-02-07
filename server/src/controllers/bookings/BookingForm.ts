@@ -3,10 +3,10 @@ import { getPrismaClient } from "../../prisma";
 const prisma = getPrismaClient();
 
 export const getBookingFormData = async (req: any, res: any) => {
-  const { menteeId } = req.params;
+  const { id } = req.params;
 
   try {
-    const userId = parseInt(menteeId, 10);
+    const userId = parseInt(id, 10);
     if (isNaN(userId)) {
       return res.status(400).json({ error: "Invalid mentee ID" });
     }

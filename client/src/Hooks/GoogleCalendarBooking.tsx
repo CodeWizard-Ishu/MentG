@@ -21,11 +21,10 @@ const useGoogleCalendarBooking = () => {
   const createCalendarEvent = async (bookingDetails: BookingDetails) => {
     setIsCreatingEvent(true);
     try {
-      const response = await fetch(`${BACKEND_URL}/api/calendar/create-event`, {
+      const response = await fetch(`${BACKEND_URL}/api/calendar/create-event/${bookingDetails.menteeId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': localStorage.getItem('userToken') ?? '',
         },
         body: JSON.stringify({
           mentorId: bookingDetails.mentorId,
@@ -38,6 +37,7 @@ const useGoogleCalendarBooking = () => {
           mentorName: bookingDetails.mentorName,
           menteeName: bookingDetails.menteeName
         }),
+        credentials: 'include',
       });
 
       if (!response.ok) {

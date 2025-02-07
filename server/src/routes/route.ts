@@ -1,5 +1,5 @@
 import express from "express";
-import { login, signupMentee, signupMentor } from "../controllers/auth";
+import { checkAuth, login, logout, signupMentee, signupMentor } from "../controllers/auth";
 import { forgotPassword, resetPassword } from '../controllers/auth.controller';
 import cron from 'node-cron';
 import { cleanupExpiredTokens } from '../controllers/auth.controller'
@@ -46,11 +46,13 @@ import { getAllMentors } from "../controllers/mentors/allMentors";
 
 const router = express.Router();
 
+router.get("/auth/verify", checkAuth);
 router.post("/auth/signup/mentor", signupMentor);
 router.post("/auth/signup/mentee", signupMentee);
 router.post("/auth/login", login);
 router.post('/auth/forgot-password', forgotPassword);
 router.post('/auth/reset-password', resetPassword);
+router.post('/auth/logout', logout)
 cron.schedule('0 0 * * *', cleanupExpiredTokens);
 
 router.get("/api/mentor/topMentors", topMentorOfDomain);
@@ -58,49 +60,37 @@ router.get("/api/mentor/topMentors", topMentorOfDomain);
 router.get("/api/mentor/:id", verifyToken, getMentorData);
 router.get("/api/mentor/:id/meetings", verifyToken, getAllMeetings);
 
-router.put("/api/mentor/update/:mentorId", verifyToken, updateService);
-router.get("/api/mentor/services/:mentorId", verifyToken, getServices);
+router.put("/api/mentor/update/:id", verifyToken, updateService);
+router.get("/api/mentor/services/:id", verifyToken, getServices);
 
 router.get('/api/auth/google/connect', initiateGoogleConnection);
 router.get('/api/auth/google/callback', handleGoogleCallback);
-router.get('/api/calendar/connections/:userId', verifyToken, getCalendarConnections);
-router.post('/api/calendar/disconnect/:userId', verifyToken, disconnectCalendar);
-router.post("/api/mentor/updateAvailability", verifyToken, updateAvailability);
-router.get(
-  "/api/mentor/getAvailability/:mentorId",
-  verifyToken,
-  getAvailability
-);
+router.get('/api/calendar/connections/:id', verifyToken, getCalendarConnections);
+router.post('/api/calendar/disconnect/:id', verifyToken, disconnectCalendar);
+router.post("/api/mentor/updateAvailability/:id", verifyToken, updateAvailability);
+router.get("/api/mentor/getAvailability/:id", verifyToken, getAvailability);
 
-router.get("/api/mentee/getMentors", verifyToken, getMentors);
+router.get("/api/mentee/getMentors/:id", verifyToken, getMentors);
 router.get("/api/allMentors", getAllMentors);
 router.get("/api/getMentors", getMentors);
 router.get("/api/mentee/:id/meetings", verifyToken, getAllMenteeMeetings);
 
 router.get("/api/data/mentor/:id", getProfileData);
 
-router.get("/api/mentorDetails/:mentorId", verifyToken, getMentorDetails);
-router.put(
-  "/api/updateMentorDetails/:mentorId",
-  verifyToken,
-  updateMentorDetails
-);
+router.get("/api/mentorDetails/:id", verifyToken, getMentorDetails);
+router.put("/api/updateMentorDetails/:id", verifyToken, updateMentorDetails);
 
-router.get("/api/menteeDetails/:menteeId", verifyToken, getMenteeDetails);
-router.put(
-  "/api/updateMenteeDetails/:menteeId",
-  verifyToken,
-  updateMenteeDetails
-);
+router.get("/api/menteeDetails/:id", verifyToken, getMenteeDetails);
+router.put("/api/updateMenteeDetails/:id", verifyToken,updateMenteeDetails);
 
-router.get("/api/availability/:mentorId", getBookingAvailablity);
-router.get("/api/mentorEmail/:mentorId", verifyToken, getMentorEmail);
-router.get("/api/bookingform/:menteeId", verifyToken, getBookingFormData);
+router.get("/api/availability/:id/:mentorId", verifyToken, getBookingAvailablity);
+router.get("/api/mentorEmail/:id/:mentorId", verifyToken, getMentorEmail);
+router.get("/api/bookingform/:id", verifyToken, getBookingFormData);
 
-router.get("/api/service/:mentorId/:name", getServiceDetail);
-router.post("/api/booking", verifyToken, updateBooking);
-router.post("/api/calendar/create-event", verifyToken, createCalendarEvent);
+router.get("/api/service/:id/:mentorId/:name", verifyToken, getServiceDetail);
+router.post("/api/calendar/create-event/:id", verifyToken, createCalendarEvent);
+router.post("/api/booking/:id", verifyToken, updateBooking);
 
-router.post("/api/rating", verifyToken, submitRating);
-router.get("/api/getRating/:mentorId", verifyToken, getRatingsForMentor);
+router.post("/api/rating/:id", verifyToken, submitRating);
+router.get("/api/getRating/:id", verifyToken, getRatingsForMentor);
 export default router;

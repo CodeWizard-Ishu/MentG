@@ -1,71 +1,12 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
-import Logo from "../assets/logo.png";
 import contactImage from "../assets/pricing-image.jpg";
+import Header from "../components/Header";
 
-interface PricingProps {
-  loggedIn: boolean;
-  mentor: boolean;
-  onLogout: () => void;
-}
-
-const Pricing: React.FC<PricingProps> = ({ loggedIn, mentor, onLogout }) => {
-  useEffect(() => {}, [loggedIn, mentor]);
-
+const Pricing = () => {
   return (
     <div className="min-h-screen bg-sky-200">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-50 bg-[#08286b] flex justify-between items-center p-3 md:p-4 lg:p-6 shadow-md">
-        <div>
-          <a href="/" className="flex items-center">
-            <img
-              src={Logo}
-              alt="Logo"
-              className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
-            />
-          </a>
-        </div>
-        {!loggedIn ? (
-          <div className="space-x-2 md:space-x-4">
-            <Link to="/login">
-              <button className="px-2 md:px-4 py-1.5 md:py-2 text-white text-sm md:text-base lg:text-base border rounded-lg hover:border-gray-500 transition">
-                Login
-              </button>
-            </Link>
-
-            <Link to="/signup">
-              <button className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-sm md:text-base lg:text-base text-black rounded-md hover:bg-gray-300 transition-colors">
-                Join Now
-              </button>
-            </Link>
-          </div>
-        ) : (
-          <div className="space-x-2 md:space-x-4">
-            <Link to="/">
-              <button
-                onClick={onLogout}
-                className="px-2 md:px-4 py-1.5 md:py-2 text-white text-sm md:text-base lg:text-base border rounded-lg hover:border-gray-500 transition"
-              >
-                Logout
-              </button>
-            </Link>
-            {mentor ? (
-              <Link to="/dashboard">
-                <button className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-black text-sm md:text-base lg:text-base rounded-md hover:bg-gray-300 transition-colors">
-                  Dashboard
-                </button>
-              </Link>
-            ) : (
-              <Link to="/dashboard/mentee">
-                <button className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-black text-sm md:text-base lg:text-base rounded-md hover:bg-gray-300 transition-colors">
-                  Dashboard
-                </button>
-              </Link>
-            )}
-          </div>
-        )}
-      </header>
+      <Header/>
 
       {/* Main Content */}
       <div className="flex-grow px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-12">

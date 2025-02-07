@@ -162,15 +162,14 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [user, setUser] = useState<User>();
   const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("userToken") ?? "";
 
   const getMenteeDetails = async () => {
     const response = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`, {
       method: "GET",
       headers: {
-        Authorization: token,
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
     const data = await response.json();
     setUser(data);
@@ -277,10 +276,10 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
         {
           method: "PUT",
           headers: {
-            Authorization: token,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(values),
+          credentials: "include",
         }
       );
 

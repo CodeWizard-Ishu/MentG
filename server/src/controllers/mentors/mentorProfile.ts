@@ -3,7 +3,8 @@ import { getPrismaClient } from "../../prisma";
 const prisma = getPrismaClient();
 
 export const getProfileData = async (req: any, res: any) => {
-  const mentorId = parseInt(req.params.id);
+  const {id} = req.params;
+  const mentorId = parseInt(id, 10);
 
   try {
     const mentorProfile = await prisma.mentorProfile.findUnique({

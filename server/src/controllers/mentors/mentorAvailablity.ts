@@ -3,19 +3,20 @@ import { getPrismaClient } from "../../prisma";
 const prisma = getPrismaClient();
 
 export const updateAvailability = async (req: any, res: any) => {
-  const { mentorId, availability } = req.body;
+  const { id } = req.params;
+  const { availability } = req.body;
 
   try {
-    const parsedMentorId = parseInt(mentorId);
+    const parsedMentorId = parseInt(id);
 
     const mProfile = await prisma.mentorProfile.findUnique({
       where: { userId: parsedMentorId },
     });
-    const id = mProfile?.id;
+    const userId = mProfile?.userId;
 
     // Delete existing availability for the mentor
     await prisma.availability.deleteMany({
-      where: { mentorId: id },
+      where: { mentorId: userId },
     });
 
     // Create new availability entries
@@ -23,7 +24,7 @@ export const updateAvailability = async (req: any, res: any) => {
       data: availability
         .filter((option: any) => option.enabled) // Only include enabled days
         .map((option: any) => ({
-          mentorId: id,
+          mentorId: userId,
           dayOfWeek: option.dayOfWeek,
           // Frontend now sends ISO strings in UTC, so we can directly use them
           startTime: new Date(option.startTime),
@@ -42,17 +43,17 @@ export const updateAvailability = async (req: any, res: any) => {
 };
 
 export const getAvailability = async (req: any, res: any) => {
-  const { mentorId } = req.params;
+  const { id } = req.params;
 
   try {
-    const parsedMentorId = parseInt(mentorId);
+    const parsedMentorId = parseInt(id);
     const mProfile = await prisma.mentorProfile.findUnique({
       where: { userId: parsedMentorId },
     });
-    const id = mProfile?.id;
+    const userId = mProfile?.userId;
 
     const availability = await prisma.availability.findMany({
-      where: { mentorId: id },
+      where: { mentorId: userId },
     });
 
     // Transform the data for frontend

@@ -42,9 +42,10 @@ const Meetings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const mentorId = localStorage.getItem("userId");
+
   useEffect(() => {
     const fetchMeetings = async () => {
-      const mentorId = localStorage.getItem("userId");
 
       if (!mentorId) {
         // setError("Mentor ID not found in local storage.");
@@ -54,7 +55,6 @@ const Meetings = () => {
       }
 
       try {
-        const token = localStorage.getItem("userToken") ?? "";
         const response = await fetch(
           `${BACKEND_URL}/api/mentor/${mentorId}/meetings?page=${
             pagination.pageIndex + 1
@@ -62,9 +62,9 @@ const Meetings = () => {
           {
             method: "GET",
             headers: {
-              Authorization: token,
               "Content-Type": "application/json",
             },
+            credentials: "include",
           }
         );
         if (!response.ok) {
@@ -99,7 +99,7 @@ const Meetings = () => {
     };
 
     fetchMeetings();
-  }, [pagination.pageIndex, pagination.pageSize]);
+  }, [mentorId, pagination.pageIndex, pagination.pageSize]);
 
   if (loading) return <Spinner />;
   if (error) return <div className="text-2xl font-semibold">{error}</div>;

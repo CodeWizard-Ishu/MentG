@@ -30,7 +30,6 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
   const [isLoading, setIsLoading] = useState(true);
 
   const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("userToken") ?? "";
 
   useEffect(() => {
     fetchCalendarConnections();
@@ -44,9 +43,9 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
         {
           method: "GET",
           headers: {
-            Authorization: token,
             "Content-Type": "application/json",
           },
+          credentials: "include",
         }
       );
 
@@ -91,12 +90,12 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
       const response = await fetch(`${BACKEND_URL}/api/calendar/disconnect/${userId}`, {
         method: "POST",
         headers: {
-          Authorization: token,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           provider,
         }),
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -146,9 +145,9 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
   return (
     <div className="mb-10 ml-2">
       <div className="mb-4">
-        <div className="flex justify-start">
-          <CalendarDays size={30} className="m-1" />
-          <h2 className="text-2xl sm:text-3xl font-semibold">
+        <div className="flex items-center gap-2">
+          <CalendarDays className="w-7 h-7" />
+          <h2 className="text-2xl sm:text-3xl font-bold">
             Connect your Calendar
           </h2>
         </div>

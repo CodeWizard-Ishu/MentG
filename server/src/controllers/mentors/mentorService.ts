@@ -3,12 +3,12 @@ import { getPrismaClient } from "../../prisma";
 const prisma = getPrismaClient();
 
 export const updateService = async (req: any, res: any) => {
-  const { mentorId } = req.params;
+  const { id } = req.params;
   const { domain, services } = req.body;
 
   try {
     // Parse mentorId and check if it's a valid number
-    const parsedMentorId = parseInt(mentorId);
+    const parsedMentorId = parseInt(id);
     const mProfile = await prisma.mentorProfile.findUnique({
       where: { userId: parsedMentorId },
     });
@@ -85,15 +85,15 @@ export const updateService = async (req: any, res: any) => {
 };
 
 export const getServices = async (req: any, res: any) => {
-  const { mentorId } = req.params;
+  const { id } = req.params;
 
   try {
     // Parse mentorId and check if it's a valid number
-    const parsedMentorId = parseInt(mentorId);
+    const parsedMentorId = parseInt(id);
     const mProfile = await prisma.mentorProfile.findUnique({
       where: { userId: parsedMentorId },
     });
-    const id = mProfile?.id;
+    const userId = mProfile?.id;
 
     if (!mProfile) {
       return res.status(400).json({ error: "Invalid mentor ID" });
@@ -101,7 +101,7 @@ export const getServices = async (req: any, res: any) => {
 
     // Fetch Mentor Profile including domains and services
     const mentorProfile = await prisma.mentorProfile.findUnique({
-      where: { id: id },
+      where: { id: userId },
       include: {
         domains: true,
         services: true,

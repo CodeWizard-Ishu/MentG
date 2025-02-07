@@ -3,10 +3,10 @@ import { getPrismaClient } from "../../prisma";
 const prisma = getPrismaClient();
 
 export const getMentorDetails = async (req: any, res: any) => {
-  const { mentorId } = req.params;
+  const { id } = req.params;
 
   try {
-    const userId = parseInt(mentorId, 10);
+    const userId = parseInt(id, 10);
     if (isNaN(userId)) {
       return res.status(400).json({ error: "Invalid mentor ID" });
     }
@@ -39,7 +39,7 @@ export const getMentorDetails = async (req: any, res: any) => {
 };
 
 export const updateMentorDetails = async (req: any, res: any) => {
-  const { mentorId } = req.params;
+  const { id } = req.params;
   const {
     firstName,
     lastName,
@@ -52,7 +52,7 @@ export const updateMentorDetails = async (req: any, res: any) => {
   } = req.body;
 
   try {
-    const userId = parseInt(mentorId, 10);
+    const userId = parseInt(id, 10);
     if (isNaN(userId)) {
       return res.status(400).json({ error: "Invalid mentor ID" });
     }

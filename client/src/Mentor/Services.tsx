@@ -30,8 +30,8 @@ const Services: React.FC = () => {
   const [service, setService] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setSubmitting] = useState(false);
+
   const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("userToken") ?? "";
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -41,9 +41,9 @@ const Services: React.FC = () => {
           {
             method: "GET",
             headers: {
-              Authorization: token,
               "Content-Type": "application/json",
             },
+            credentials: "include",
           }
         );
         if (!response.ok) {
@@ -53,7 +53,6 @@ const Services: React.FC = () => {
         setDomain(data.domain[0]); // Assuming only one domain is returned
         setService(data.services);
       } catch (error) {
-        // console.error("Error fetching services:", error);
         toast.error(`${error}`, {
           position: "bottom-right",
           pauseOnHover: false,
@@ -64,7 +63,7 @@ const Services: React.FC = () => {
       }
     };
     fetchServices();
-  }, [userId, token]);
+  }, [userId]);
 
   const handleSave = async () => {
     setSubmitting(true);
@@ -89,10 +88,10 @@ const Services: React.FC = () => {
           // Replace with your actual URL
           method: "PUT",
           headers: {
-            Authorization: token,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
+          credentials: "include",
         }
       );
 
@@ -100,8 +99,6 @@ const Services: React.FC = () => {
         throw new Error("Network response was not ok");
       }
 
-      // const data = await response.json();
-      // console.log("Success:", data);
       toast.success("Profile updated successfully!", {
         position: "bottom-right",
         pauseOnHover: false,
@@ -109,7 +106,6 @@ const Services: React.FC = () => {
       });
       setSubmitting(false);
     } catch (error) {
-      // console.error("Error:", error);
       toast.error(`Failed to update profile, ${error}`, {
         position: "bottom-right",
         pauseOnHover: false,
@@ -132,8 +128,6 @@ const Services: React.FC = () => {
 
   return (
     <div className="min-h-screen px-4 sm:px-6 lg:px-8">
-      {/* PAGE BODY from here.. */}
-
       <div className="mb-9">
         <h1 className="text-2xl font-semibold mb-6 text-center sm:text-left">
           Choose your Domain
@@ -178,7 +172,6 @@ const Services: React.FC = () => {
         </div>
       </div>
 
-      {/* Save Button */}
       <div className="flex justify-center sm:justify-start mt-10 sm:mt-14">
         <button
           onClick={handleSave}

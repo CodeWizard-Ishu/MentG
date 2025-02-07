@@ -11,7 +11,7 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedDomain, setSelectedDomain] = useState("");
-  const token = localStorage.getItem("userToken") ?? "";
+  const menteeId = localStorage.getItem("userId");
 
   const capitalize = (string: string) => {
     if (!string) return "";
@@ -36,13 +36,13 @@ const Home = () => {
   const fetchMentors = async (domain: string) => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/mentee/getMentors?domain=${domain}&page=${currentPage}`,
+        `${BACKEND_URL}/api/mentee/getMentors/${menteeId}?domain=${domain}&page=${currentPage}`,
         {
           method: "GET",
           headers: {
-            Authorization: token,
             "Content-Type": "application/json",
           },
+          credentials: "include",
         }
       );
       if (!response.ok) {

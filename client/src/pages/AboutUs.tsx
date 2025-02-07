@@ -1,75 +1,17 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Sparkles, UserCheck, Users } from "lucide-react";
 import aboutusImage from "../assets/aboutus-image.jpg";
-
-interface AboutUsProps {
-  loggedIn: boolean;
-  mentor: boolean;
-  onLogout: () => void;
-}
-import Logo from "../assets/logo.png";
 import Vaishali from "../assets/Vaishali.jpg";
 import Utkarsh from "../assets/Utkarsh.jpg";
 import Kushagra from "../assets/Kushagra.jpg";
 import Footer from "../components/Footer";
+import Header from "../components/Header";
 
-const AboutUs: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
-  useEffect(() => {}, [loggedIn, mentor]);
+const AboutUs = () => {
 
   return (
     <div className="min-h-screen bg-sky-200">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-50 bg-[#08286b] flex justify-between items-center p-3 md:p-4 lg:p-6 shadow-md">
-        <div>
-          <a href="/" className="flex items-center">
-            <img
-              src={Logo}
-              alt="Logo"
-              className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
-            />
-          </a>
-        </div>
-        {!loggedIn ? (
-          <div className="space-x-2 md:space-x-4">
-            <Link to="/login">
-              <button className="px-2 md:px-4 py-1.5 md:py-2 text-white text-sm md:text-base lg:text-base border rounded-lg hover:border-gray-500 transition">
-                Login
-              </button>
-            </Link>
-
-            <Link to="/signup">
-              <button className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-sm md:text-base lg:text-base text-black rounded-md hover:bg-gray-300 transition-colors">
-                Join Now
-              </button>
-            </Link>
-          </div>
-        ) : (
-          <div className="space-x-2 md:space-x-4">
-            <Link to="/">
-              <button
-                onClick={onLogout}
-                className="px-2 md:px-4 py-1.5 md:py-2 text-white text-sm md:text-base lg:text-base border rounded-lg hover:border-gray-500 transition"
-              >
-                Logout
-              </button>
-            </Link>
-            {mentor ? (
-              <Link to="/dashboard">
-                <button className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-black text-sm md:text-base lg:text-base rounded-md hover:bg-gray-300 transition-colors">
-                  Dashboard
-                </button>
-              </Link>
-            ) : (
-              <Link to="/dashboard/mentee">
-                <button className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-black text-sm md:text-base lg:text-base rounded-md hover:bg-gray-300 transition-colors">
-                  Dashboard
-                </button>
-              </Link>
-            )}
-          </div>
-        )}
-      </header>
+      <Header/>
 
       {/* Hero Section */}
       <section className="relative py-8 sm:py-12 md:py-16 lg:min-h-screen lg:pt-12">

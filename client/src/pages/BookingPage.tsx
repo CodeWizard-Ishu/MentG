@@ -70,35 +70,15 @@ const validationSchema = Yup.object({
     .required("Session details are required"),
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const fetchPaymentInfo = async (mentorId: any, name: any, token: any) => {
-  const response = await fetch(
-    `${BACKEND_URL}/api/service/${mentorId}/${name.name}`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: token,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  const data = await response.json();
-  return {
-    sessionFees: data.data.price,
-    platformFees: 0,
-    discount: -data.data.price,
-    total: 0,
-  };
-};
-
 const BookingPage: React.FC = () => {
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [mentee, setMentee] = useState<Mentee | null>();
   const [mentorEmail, setMentorEmail] = useState("");
-  const token = localStorage.getItem("userToken") ?? "";
-  const menteeId = localStorage.getItem("userId");
   const { mentorId } = useParams();
+
+  const menteeId = localStorage.getItem("userId");
+  
   const {
     selectedService,
     selectedSlot,
@@ -117,13 +97,13 @@ const BookingPage: React.FC = () => {
 
   useEffect(() => {
     const getMentorEmail = async () => {
-      const response = await fetch(`${BACKEND_URL}/api/mentorEmail/${mentorId}`,
+      const response = await fetch(`${BACKEND_URL}/api/mentorEmail/${menteeId}/${mentorId}`,
         {
           method: "GET",
           headers: {
-            Authorization: token,
             "Content-Type": "application/json",
           },
+          credentials: "include",
         }
       );
       const email = await response.json();
@@ -135,9 +115,9 @@ const BookingPage: React.FC = () => {
         {
           method: "GET",
           headers: {
-            Authorization: token,
             "Content-Type": "application/json",
           },
+          credentials: "include",
         }
       );
       const data = await response.json();
@@ -145,7 +125,24 @@ const BookingPage: React.FC = () => {
     };
     const getPaymentInfo = async () => {
       try {
-        const info = await fetchPaymentInfo(mentorId, selectedService, token);
+        const serviceName = selectedService?.name ?? ""
+        const response = await fetch(
+          `${BACKEND_URL}/api/service/${menteeId}/${mentorId}/${serviceName}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        )
+        const data = await response.json();
+        const info : PaymentInfo = {
+          sessionFees: data.data.price,
+          platformFees: 0,
+          discount: -data.data.price,
+          total: 0,
+        }
         setPaymentInfo(info);
       } catch (error) {
         console.error("Error fetching payment information:", error);
@@ -220,24 +217,23 @@ const BookingPage: React.FC = () => {
       });
 
       const bookingData = {
-        mentorId: mentorId, // Replace with actual mentor ID
-        menteeId: menteeId, // Replace with actual mentee ID
+        mentorId: mentorId,
         dateTime: bookingDateTime,
         duration: duration,
-        payment: paymentInfo?.total, // Payment amount (can be adjusted based on your logic)
+        payment: paymentInfo?.total,
         serviceName: selectedService?.name,
         serviceDescription: values.sessionDetails,
         servicePrice: selectedService?.price,
         meetLink: meetLink,
       };
 
-      const response = await fetch(`${BACKEND_URL}/api/booking`, {
+      const response = await fetch(`${BACKEND_URL}/api/booking/${menteeId}`, {
         method: "POST",
         headers: {
-          Authorization: token,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(bookingData),
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -325,6 +321,7 @@ const BookingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-sky-200">
+      
       <Header />
 
       <div className="px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">

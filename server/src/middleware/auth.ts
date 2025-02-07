@@ -2,21 +2,30 @@ import jwt from "jsonwebtoken";
 
 const verifyToken = async (req:any, res:any, next:any) => {
   try {
-    let token = req.header("Authorization");
+    const token = req.cookies.token;
 
     if (!token) {
-      return res.status(403).send("Access Denied");
+      return res.status(401).json({success: false, message: "Unauthorized"});
     }
 
-    if (token.startsWith("Bearer ")) {
-      token = token.slice(7, token.length).trimLeft();
+    try {
+      const secret : any = process.env.JWT_SECRET;
+      const verified : any = jwt.verify(token, secret);
+
+      const {id} = req.params;
+      const requestedId = parseInt(id, 10);
+      const tokenUserId = parseInt(verified.id, 10);
+      if (requestedId && requestedId !== tokenUserId) {
+        return res.status(403).json({ message: 'Unauthorized' });
+      }
+
+      req.user = verified;
+      next();
+    } catch (error) {
+      return res.status(401).json({success: false, message: "Unauthorized"});
     }
-    const secret : any = process.env.JWT_SECRET;
-    const verified = jwt.verify(token, secret);
-    req.user = verified;
-    next();
   } catch (err:any) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 

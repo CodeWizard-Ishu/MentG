@@ -3,17 +3,17 @@ import { getPrismaClient } from "../../prisma";
 const prisma = getPrismaClient();
 
 export const getBookingAvailablity = async (req: any, res: any) => {
-  const { mentorId } = req.params;
+  const {mentorId} = req.params;
 
   try {
     const parsedMentorId = parseInt(mentorId);
     const mProfile = await prisma.mentorProfile.findUnique({
       where: { userId: parsedMentorId },
     });
-    const id = mProfile?.id;
+    const userId = mProfile?.userId;
 
     const availability = await prisma.availability.findMany({
-      where: { mentorId: id },
+      where: { mentorId: userId },
     });
 
     // Transform times to Date objects

@@ -26,7 +26,7 @@ export const getAllMenteeMeetings = async (req: any, res: any) => {
       return res.status(404).json({ error: "Mentee not found" });
     }
 
-    const menteeId = menteeProfile.id; // Get internal mentee ID
+    const menteeId = menteeProfile.userId; // Get internal mentee ID
     // Fetch total count of bookings for pagination
     const totalBookingsCount = await prisma.booking.count({
       where: { menteeId: Number(menteeId) },

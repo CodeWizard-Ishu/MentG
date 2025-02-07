@@ -6,7 +6,7 @@ export const getServiceDetail = async (req: any, res: any) => {
   const { mentorId, name } = req.params;
 
   try {
-    const parsedMentorId = parseInt(mentorId);
+    const parsedMentorId = parseInt(mentorId, 10);
     // Find the mentor profile by userId
     const mProfile = await prisma.mentorProfile.findUnique({
       where: { userId: parsedMentorId },

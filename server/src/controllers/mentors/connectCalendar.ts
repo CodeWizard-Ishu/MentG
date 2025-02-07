@@ -95,6 +95,7 @@ export const initiateGoogleConnection = async (req: any, res: any) => {
     "https://www.googleapis.com/auth/calendar",
     "https://www.googleapis.com/auth/userinfo.profile",
     "https://www.googleapis.com/auth/userinfo.email",
+    "openid",
   ];
 
   const state = JSON.stringify({ 
@@ -108,7 +109,8 @@ export const initiateGoogleConnection = async (req: any, res: any) => {
     access_type: 'offline',
     scope: scopes,
     state: state,
-    prompt: 'consent'
+    prompt: 'consent',
+    include_granted_scopes: true,
   });
 
   res.redirect(url);
@@ -170,8 +172,8 @@ export const handleGoogleCallback = async (req: any, res: any) => {
 };
 
 export const getCalendarConnections = async (req: any, res: any) => {
-  const { userId } = req.params;
-  const parsedMentorId = parseInt(userId);
+  const { id } = req.params;
+  const parsedMentorId = parseInt(id);
 
   try {
     const mProfile = await prisma.mentorProfile.findUnique({
@@ -215,9 +217,9 @@ export const getCalendarConnections = async (req: any, res: any) => {
 };
 
 export const disconnectCalendar = async (req: any, res: any) => {
-  const { userId } = req.params;
+  const { id } = req.params;
   const { provider } = req.body;
-  const parsedUserId = parseInt(userId);
+  const parsedUserId = parseInt(id);
 
   try {
     const mProfile = await prisma.mentorProfile.findUnique({

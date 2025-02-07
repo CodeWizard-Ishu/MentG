@@ -176,8 +176,8 @@ const validationSchema = Yup.object().shape({
 const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [user, setUser] = useState<User>();
+
   const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("userToken") ?? "";
 
   const getMentorDetails = async () => {
     try {
@@ -186,9 +186,9 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
         {
           method: "GET",
           headers: {
-            Authorization: token,
             "Content-Type": "application/json",
           },
+          credentials: "include",
         }
       );
       const data = await response.json();
@@ -235,10 +235,10 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
         {
           method: "PUT",
           headers: {
-            Authorization: token,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(values),
+          credentials: "include",
         }
       );
 

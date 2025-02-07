@@ -27,11 +27,11 @@ export const createCalendarEvent = async (req: any, res: any) => {
     const endTime = new Date(new Date(dateTime).getTime() + duration * 60000);
 
     const event = {
-      summary: `MentG Session: ${serviceName}`,
+      summary: `MentG : ${serviceName}`,
       description: serviceDescription,
       start: {
         dateTime: new Date(dateTime).toISOString(),
-        timeZone: "Etc/UTC",
+        timeZone: "Asia/Kolkata",
       },
       end: {
         dateTime: endTime.toISOString(),

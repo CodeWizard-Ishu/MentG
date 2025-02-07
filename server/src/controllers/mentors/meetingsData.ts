@@ -21,7 +21,7 @@ export const getAllMeetings = async (req: any, res: any) => {
     const mProfile = await prisma.mentorProfile.findUnique({
       where: { userId: Number(id) },
     });
-    const parsedId = mProfile?.id;
+    const parsedId = mProfile?.userId;
     // Fetch total count of bookings for pagination
     const totalBookingsCount = await prisma.booking.count({
       where: { mentorId: Number(parsedId) },

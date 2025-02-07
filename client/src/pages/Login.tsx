@@ -10,13 +10,12 @@ import ForgotPasswordModal from "./ForgotPasswordModal";
 
 interface LoginPageProps {
   onLogin?: (
-    token: string,
     isMentor: boolean,
+    isActive: boolean,
     userId: string,
     firstName: string,
     lastName: string
   ) => void;
-  onSignupClick?: () => void;
 }
 
 interface LoginFormValues {
@@ -59,13 +58,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(values),
+        credentials: "include",
       });
 
       const data = await response.json();
-      // console.log(data);
       onLogin(
-        data.token,
         data.user.isMentor,
+        data.user.isActive,
         data.user.id,
         data.user.firstName,
         data.user.lastName
@@ -78,8 +77,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
           transition: Bounce,
         });
       }
-      if (data.user.isMentor) navigate("/dashboard");
-      else navigate("/dashboard/mentee");
+      navigate(data.user.isMentor ? "/dashboard" : "/dashboard/mentee");
     } catch (error) {
       console.error(error);
       toast.error("Bad Credentials!", {

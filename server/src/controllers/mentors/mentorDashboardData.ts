@@ -29,7 +29,7 @@ export const getMentorData = async (req: any, res: any) => {
     const profilePicture = mentorData.profilePicture;
     // Get recent meetings (last 5 bookings)
     const recentMeetings = await prisma.booking.findMany({
-      where: { mentorId: mentorData.id },
+      where: { mentorId: mentorData.userId },
       orderBy: { dateTime: "desc" },
       take: 3,
       include: {

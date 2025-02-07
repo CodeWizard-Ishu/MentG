@@ -10,10 +10,9 @@ import Footer from "../components/Footer";
 interface AboutUsProps {
   loggedIn: boolean;
   mentor: boolean;
-  onLogout: () => void;
 }
 
-const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
+const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor,  }) => {
   const { domain } = useParams();
   const domainName: string = domain || "Technology";
   const [mentors, setMentors] = useState([]);
@@ -52,7 +51,6 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
       setMentors(sortedMentors);
       setTotalPages(data.totalPages);
     } catch (error) {
-      // console.error("Error fetching mentors:", error);
       toast.error(`${error}`, {
         position: "bottom-right",
         pauseOnHover: false,
@@ -102,14 +100,6 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor, onLogout }) => {
           </div>
         ) : (
           <div className="space-x-2 md:space-x-4">
-            <Link to="/">
-              <button
-                onClick={onLogout}
-                className="px-2 md:px-4 py-1.5 md:py-2 text-white text-sm md:text-base lg:text-base border rounded-lg hover:border-gray-500 transition"
-              >
-                Logout
-              </button>
-            </Link>
             {mentor ? (
               <Link to="/dashboard">
                 <button className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-black text-sm md:text-base lg:text-base rounded-md hover:bg-gray-300 transition-colors">
