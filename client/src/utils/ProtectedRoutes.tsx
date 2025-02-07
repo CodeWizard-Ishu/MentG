@@ -18,23 +18,17 @@ const ProtectedRoutes: React.FC<PrivateRouteProps> = ({
   useEffect(() => {
     if (localStorage.getItem("loggedIn") === "true") {
       const auth = CheckAuth({ onLogout, navigate });
-      auth.checkAuthStatus().then(isValid => {
+      auth.checkAuthStatus().then((isValid) => {
         setIsAuthenticated(isValid);
       });
     } else {
       setIsAuthenticated(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isAuthenticated === null) {
-    return (
-      <div className="flex justify-center items-center">
-        <div className="text-center">
-          <Spinner />
-        </div>
-      </div>
-    );
+    return <Spinner clasName="min-h-screen content-center" />;
   }
 
   // Check if user is logged in

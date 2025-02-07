@@ -121,24 +121,18 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   useEffect(() => {
     if (localStorage.getItem("loggedIn") === "true") {
       const auth = CheckAuth({ onLogout, navigate });
-      auth.checkAuthStatus().then(isValid => {
+      auth.checkAuthStatus().then((isValid) => {
         setIsAuthenticated(isValid);
       });
-      } else {
-        setIsAuthenticated(false);
-      }
-      refreshDashboardData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    } else {
+      setIsAuthenticated(false);
+    }
+    refreshDashboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, onLogout]);
 
   if (isAuthenticated === null) {
-    return (
-      <div className="flex justify-center items-center">
-        <div className="text-center">
-          <Spinner />
-        </div>
-      </div>
-    );
+    return <Spinner clasName="min-h-screen content-center" />;
   }
 
   const navItems: NavItem[] = [

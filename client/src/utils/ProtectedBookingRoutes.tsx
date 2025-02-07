@@ -33,13 +33,7 @@ const ProtectedBookingRoutes: React.FC<ProtectedBookingRoutesProps> = ({
   }, []);
 
   if (isAuthenticated === null) {
-    return (
-      <div className="flex justify-center items-center">
-        <div className="text-center">
-          <Spinner />
-        </div>
-      </div>
-    );
+    return <Spinner clasName="min-h-screen content-center" />;
   }
 
   // Get booking completion status from session storage

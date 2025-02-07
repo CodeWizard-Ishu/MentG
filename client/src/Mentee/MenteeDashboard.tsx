@@ -98,26 +98,19 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
 
   useEffect(() => {
     if (localStorage.getItem("loggedIn") === "true") {
-          const auth = CheckAuth({ onLogout, navigate });
-          auth.checkAuthStatus().then(isValid => {
-            setIsAuthenticated(isValid);
-          });
-          } else {
-            setIsAuthenticated(false);
-          }
+      const auth = CheckAuth({ onLogout, navigate });
+      auth.checkAuthStatus().then((isValid) => {
+        setIsAuthenticated(isValid);
+      });
+    } else {
+      setIsAuthenticated(false);
+    }
     getMenteeDetails();
   }, [getMenteeDetails, navigate, onLogout]);
 
   if (isAuthenticated === null) {
-    return (
-      <div className="flex justify-center items-center">
-        <div className="text-center">
-          <Spinner />
-        </div>
-      </div>
-    );
+    return <Spinner clasName="min-h-screen content-center" />;
   }
-
 
   const navItems: NavItem[] = [
     { name: "Home", icon: <HomeIcon />, tab: "home" },
