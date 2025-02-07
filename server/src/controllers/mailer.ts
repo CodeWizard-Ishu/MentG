@@ -290,11 +290,64 @@ export const sendforgotpasswordmail = async (
     to: email,
     subject: "Password Reset Request",
     html: `
-      <h1>Password Reset Request</h1>
-      <p>You requested a password reset. Click the link below to reset your password:</p>
-      <a href="${resetUrl}">Reset Password</a>
-      <p>This link will expire in 1 hour.</p>
-      <p>If you didn't request this, please inform to support@mentg.in.</p>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Password Reset Request - MentG</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; line-height: 1.6; color: #777; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f4f4;">
+            <tr>
+                <td align="center" style="padding: 20px 0;">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        <tr>
+                            <td align="center" style="padding: 20px;">
+                                <h2 style="color: #4CAF50; margin: 0 0 20px 0; font-size: 24px; font-family: Arial, sans-serif;">Password Reset Request</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0 20px;">
+                                <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">You have requested to reset your password for your MentG account.</p>
+                                
+                                <div style="background-color: #f0f7ff; padding: 15px; border-radius: 5px; margin-bottom: 15px; text-align: center;">
+                                    <p style="margin: 0 0 15px 0;">Click the button below to reset your password:</p>
+                                    <a href="${resetUrl}" style="display: inline-block; padding: 12px 24px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Reset Password</a>
+                                </div>
+                                
+                                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                                    <p style="margin: 0; color: #666;">
+                                        <strong>Important:</strong><br/>
+                                        • This link will expire in 1 hour<br/>
+                                        • If you didn't request this password reset, please contact us immediately at support@mentg.in
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border-top: 1px solid #ddd; padding: 20px;" align="center">
+                                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td align="center" style="font-size: 0.9em; color: #777; font-family: Arial, sans-serif;">
+                                            If you have any questions, feel free to contact us at:<br style="margin: 0;">
+                                            <a href="mailto:support@mentg.in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">support@mentg.in</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" style="padding: 20px; font-size: 0.9em; color: #777; font-family: Arial, sans-serif;">
+                                <p style="margin: 0 0 10px 0;">&copy; ${new Date().getFullYear()} Mentg. All rights reserved.</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
     `,
   };
 
@@ -316,19 +369,84 @@ export const sendBookingDetails = async (
     to: [`${mentorEmail}`, `${menteeEmail}`],
     subject: "Booking Created Successfully - MentG",
     html: `
-        <h2>Booking Confirmation</h2>
-        <p>Your 1:1 session has been scheduled successfully!</p>
-        <h3>Session Details:</h3>
-        <ul>
-          <li>Service: ${serviceName}</li>
-          <li>Mentor: ${mentorName}</li>
-          <li>Mentee: ${menteeName}</li>
-          <li>Date: ${new Date(dateTime).toLocaleDateString("en-IN")}</li>
-          <li>Time: ${new Date(dateTime).toLocaleTimeString("en-IN")}</li>
-          <li>Duration: ${duration} minutes</li>
-          <li>Google Meet Link: ${meetLink}</li>
-        </ul>
-        <p>Click the Google Meet link above to join the session at the scheduled time.</p>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Booking Confirmation - MentG</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; line-height: 1.6; color: #777; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f4f4;">
+            <tr>
+                <td align="center" style="padding: 20px 0;">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        <tr>
+                            <td align="center" style="padding: 20px;">
+                                <h2 style="color: #4CAF50; margin: 0 0 20px 0; font-size: 24px; font-family: Arial, sans-serif;">Booking Confirmation</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0 20px;">
+                                <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Your ${serviceName} has been scheduled successfully!</p>
+                                
+                                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                                    <h3 style="margin: 0 0 10px 0; color: #333;">Session Details:</h3>
+                                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 0;">
+                                        <tr>
+                                            <td style="padding: 5px 0;"><strong>Service:</strong> ${serviceName}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 5px 0;"><strong>Mentor:</strong> ${mentorName}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 5px 0;"><strong>Mentee:</strong> ${menteeName}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 5px 0;"><strong>Date:</strong> ${new Date(dateTime).toLocaleDateString("en-IN")}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 5px 0;"><strong>Time:</strong> ${new Date(dateTime).toLocaleTimeString("en-IN")}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 5px 0;"><strong>Duration:</strong> ${duration} minutes</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                
+                                <div style="background-color: #f0f7ff; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                                    <h3 style="margin: 0 0 10px 0; color: #333;">Meeting Link:</h3>
+                                    <p style="margin: 0;">
+                                        <a href="${meetLink}" style="color: #4CAF50; text-decoration: none;">Join Google Meet</a>
+                                    </p>
+                                </div>
+                                
+                                <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Click the Google Meet link above to join the session at the scheduled time.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border-top: 1px solid #ddd; padding: 20px;" align="center">
+                                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td align="center" style="font-size: 0.9em; color: #777; font-family: Arial, sans-serif;">
+                                            If you have any questions, feel free to contact us at:<br style="margin: 0;">
+                                            <a href="mailto:support@mentg.in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">support@mentg.in</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" style="padding: 20px; font-size: 0.9em; color: #777; font-family: Arial, sans-serif;">
+                                <p style="margin: 0 0 10px 0;">&copy; ${new Date().getFullYear()} Mentg. All rights reserved.</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
       `,
   };
 
