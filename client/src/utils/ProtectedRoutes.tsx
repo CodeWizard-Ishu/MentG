@@ -28,7 +28,7 @@ const ProtectedRoutes: React.FC<PrivateRouteProps> = ({
   }, []);
 
   if (isAuthenticated === null) {
-    return <Spinner/>;
+    return <Spinner clasName='flex justify-center items-center'/>;
   }
 
   // Check if user is logged in

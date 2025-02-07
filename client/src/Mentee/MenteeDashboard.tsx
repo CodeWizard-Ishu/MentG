@@ -109,7 +109,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
   }, [getMenteeDetails, navigate, onLogout]);
 
   if (isAuthenticated === null) {
-    return <Spinner/>;
+    return <Spinner clasName='flex justify-center items-center'/>;
   }
 
 
