@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import useBookingStore from '../Hooks/useBookingStore';
-import Spinner from '../components/ui/Spinner';
-import { CheckAuth } from './CheckAuth';
+import React, { useEffect, useState } from "react";
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
+import useBookingStore from "../Hooks/useBookingStore";
+import Spinner from "../components/ui/Spinner";
+import { CheckAuth } from "./CheckAuth";
 
 interface ProtectedBookingRoutesProps {
   requireService?: boolean;
@@ -13,7 +13,7 @@ interface ProtectedBookingRoutesProps {
 const ProtectedBookingRoutes: React.FC<ProtectedBookingRoutesProps> = ({
   requireService = false,
   requireSlot = false,
-  onLogout
+  onLogout,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const location = useLocation();
@@ -22,28 +22,34 @@ const ProtectedBookingRoutes: React.FC<ProtectedBookingRoutesProps> = ({
 
   useEffect(() => {
     if (localStorage.getItem("loggedIn") === "true") {
-          const auth = CheckAuth({ onLogout, navigate });
-          auth.checkAuthStatus().then(isValid => {
-            setIsAuthenticated(isValid);
-          });
-        } else {
-          setIsAuthenticated(false);
-        }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, []);
+      const auth = CheckAuth({ onLogout, navigate });
+      auth.checkAuthStatus().then((isValid) => {
+        setIsAuthenticated(isValid);
+      });
+    } else {
+      setIsAuthenticated(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isAuthenticated === null) {
-    return <Spinner clasName='flex justify-center items-center'/>;
+    return (
+      <div className="flex justify-center items-center">
+        <div className="text-center">
+          <Spinner />
+        </div>
+      </div>
+    );
   }
-  
+
   // Get booking completion status from session storage
-  const isBookingComplete = localStorage.getItem('bookingComplete') === 'true';
+  const isBookingComplete = localStorage.getItem("bookingComplete") === "true";
 
   // Function to check if the current route is allowed based on booking state
   const isAllowed = () => {
-    const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
-    const isMentor = localStorage.getItem('mentor') === 'true';
-    
+    const isLoggedIn = localStorage.getItem("loggedIn") === "true";
+    const isMentor = localStorage.getItem("mentor") === "true";
+
     // Only mentees can access booking routes
     if (!isLoggedIn || isMentor) {
       return false;
@@ -72,14 +78,14 @@ const ProtectedBookingRoutes: React.FC<ProtectedBookingRoutesProps> = ({
     if (isBookingComplete) {
       return <Navigate to="/dashboard/mentee" replace />;
     }
-    
+
     // If accessing success page without completing booking, redirect to home
-    if (location.pathname.includes('/booking/successfull')) {
+    if (location.pathname.includes("/booking/successfull")) {
       return <Navigate to="/" replace />;
     }
-    
+
     // For other booking routes, redirect to profile page if no service selected
-    const mentorId = location.pathname.split('/')[2];
+    const mentorId = location.pathname.split("/")[2];
     return <Navigate to={`/profile/${mentorId}`} replace />;
   }
 

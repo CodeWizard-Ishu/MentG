@@ -28,7 +28,13 @@ const ProtectedRoutes: React.FC<PrivateRouteProps> = ({
   }, []);
 
   if (isAuthenticated === null) {
-    return <Spinner clasName='flex justify-center items-center'/>;
+    return (
+      <div className="flex justify-center items-center">
+        <div className="text-center">
+          <Spinner />
+        </div>
+      </div>
+    );
   }
 
   // Check if user is logged in

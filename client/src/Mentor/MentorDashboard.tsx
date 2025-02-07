@@ -132,7 +132,13 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   }, [navigate, onLogout]);
 
   if (isAuthenticated === null) {
-    return <Spinner clasName='flex justify-center items-center'/>;
+    return (
+      <div className="flex justify-center items-center">
+        <div className="text-center">
+          <Spinner />
+        </div>
+      </div>
+    );
   }
 
   const navItems: NavItem[] = [
