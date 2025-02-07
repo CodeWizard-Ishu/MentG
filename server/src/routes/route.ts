@@ -43,6 +43,7 @@ import {
   submitRating,
 } from "../controllers/bookings/rating";
 import { getAllMentors } from "../controllers/mentors/allMentors";
+import { ContactSubmission } from "../controllers/contactSubmission";
 
 const router = express.Router();
 
@@ -54,6 +55,8 @@ router.post('/auth/forgot-password', forgotPassword);
 router.post('/auth/reset-password', resetPassword);
 router.post('/auth/logout', logout)
 cron.schedule('0 0 * * *', cleanupExpiredTokens);
+
+router.post("/api/contact", ContactSubmission);
 
 router.get("/api/mentor/topMentors", topMentorOfDomain);
 

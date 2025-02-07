@@ -43,6 +43,25 @@ export const sendMentorNote = async (req: any, res: any) => {
   const { mentorId, menteeId, message, menteeEmail } = req.body;
 
   try {
+    if(!mentorId || !menteeId) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid request",
+      });
+    }
+    if (!menteeEmail || !message) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide all required fields",
+      });
+    }
+    if (!menteeEmail.includes("@")) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email format",
+      });
+    }
+
     // Fetch mentor's profile with associated user
     const mentorProfile = await prisma.user.findUnique({
       where: { id: parseInt(mentorId, 10) },
