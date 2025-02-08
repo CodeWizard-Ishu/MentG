@@ -74,7 +74,7 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
           },
           {
             icon: <User className="text-purple-500" />,
-            title: "Total Clients",
+            title: "Total Mentees",
             value: `${data.uniqueMentees}`, // Assuming uniqueMentees is a number
           },
         ]);
@@ -131,7 +131,7 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  {["Client", "Date", "Duration", "Status"].map((header) => (
+                  {["Mentee", "Date", "Duration", "Status"].map((header) => (
                     <th
                       key={header}
                       className="p-3 text-left text-xs sm:text-sm text-gray-500 font-medium"

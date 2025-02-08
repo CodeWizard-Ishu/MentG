@@ -131,7 +131,7 @@ const Meetings = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="p-3 text-left text-xs sm:text-sm text-gray-500 font-medium">
-                    Client
+                    Mentee
                   </th>
                   <th className="p-3 text-left text-xs sm:text-sm text-gray-500 font-medium">
                     Date

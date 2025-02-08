@@ -53,7 +53,7 @@ export const updateService = async (req: any, res: any) => {
         set: [{ id: domainRecord.id }], // Set the new domain
       },
       services: {
-        connect: Array.from(serviceIdsMap.values()).map((id) => ({ id })), // Connect existing service IDs
+        set: Array.from(serviceIdsMap.values()).map((id) => ({ id })), // Connect existing service IDs
       },
     };
 
