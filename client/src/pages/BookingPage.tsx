@@ -182,7 +182,10 @@ const BookingPage: React.FC = () => {
       const convertISTtoUTC = (date: Date, time: Date) => {
         const combinedDate = new Date(date);
         combinedDate.setHours(time.getHours(), time.getMinutes(), 0, 0);
-        return combinedDate;
+        const utcTime = new Date(
+          combinedDate.getTime() - (5.5 * 60 * 60 * 1000) // Subtract 5.5 hours in milliseconds
+        );
+        return utcTime;
       };
 
       if (
@@ -193,10 +196,11 @@ const BookingPage: React.FC = () => {
         throw new Error("Invalid slot selection");
       }
 
-      const bookingDateTime = convertISTtoUTC(
-        selectedSlot.date,
-        selectedSlot.startTime
-      );
+      // Creating event with dateTime in IST
+      const eventDateTime = new Date(selectedSlot.date);
+      eventDateTime.setHours(selectedSlot.startTime.getHours(), selectedSlot.startTime.getMinutes(), 0, 0);
+      console.log(eventDateTime);
+
       const duration = calculateDuration(
         selectedSlot.startTime,
         selectedSlot.endTime
@@ -206,7 +210,7 @@ const BookingPage: React.FC = () => {
       const meetLink = await createCalendarEvent({
         mentorId: mentorId!,
         menteeId: menteeId!,
-        dateTime: bookingDateTime,
+        dateTime: eventDateTime,
         duration: duration,
         serviceName: selectedService?.name ?? "",
         serviceDescription: values.sessionDetails,
@@ -215,6 +219,9 @@ const BookingPage: React.FC = () => {
         mentorName: mentorDetails?.name ?? "",
         menteeName: values.name,
       });
+
+      // saving event's dateTime to Database in UTC --------> NOTE: all dateTimes in database are stored in UTC timezone
+      const bookingDateTime = convertISTtoUTC(selectedSlot.date, selectedSlot.startTime);
 
       const bookingData = {
         mentorId: mentorId,

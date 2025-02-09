@@ -358,6 +358,7 @@ export const sendBookingDetails = async (
   mentorEmail: string,
   menteeEmail: string,
   serviceName: string,
+  sessionDescription: string,
   mentorName: string,
   menteeName: string,
   dateTime: string,
@@ -368,8 +369,7 @@ export const sendBookingDetails = async (
     from: "MentG - Mentoring Simplified <info@mentg.in>",
     to: [`${mentorEmail}`, `${menteeEmail}`],
     subject: "Booking Created Successfully - MentG",
-    html: `
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -379,66 +379,82 @@ export const sendBookingDetails = async (
     <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; line-height: 1.6; color: #777; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
         <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f4f4;">
             <tr>
-                <td align="center" style="padding: 20px 0;">
-                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <td align="center" style="padding: 40px 0;">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                         <tr>
-                            <td align="center" style="padding: 20px;">
-                                <h2 style="color: #4CAF50; margin: 0 0 20px 0; font-size: 24px; font-family: Arial, sans-serif;">Booking Confirmation</h2>
+                            <td align="center" style="padding: 30px 20px;">
+                                <h2 style="color: #4CAF50; margin: 0; font-size: 28px; font-family: Arial, sans-serif; letter-spacing: 0.5px;">Booking Confirmation</h2>
                             </td>
                         </tr>
                         <tr>
-                            <td style="padding: 0 20px;">
-                                <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Your ${serviceName} has been scheduled successfully!</p>
+                            <td style="padding: 0 30px;">
+                                <p style="margin: 0 0 20px 0; font-family: Arial, sans-serif; font-size: 16px;">Your ${serviceName} has been scheduled successfully!</p>
                                 
-                                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
-                                    <h3 style="margin: 0 0 10px 0; color: #333;">Session Details:</h3>
+                                <div style="background-color: #f9f9f9; padding: 25px; border-radius: 8px; margin-bottom: 25px;">
+                                    <h3 style="margin: 0 0 15px 0; color: #333; font-size: 20px;">Session Details:</h3>
                                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 0;">
                                         <tr>
-                                            <td style="padding: 5px 0;"><strong>Service:</strong> ${serviceName}</td>
+                                            <td style="padding: 8px 0;"><strong>Service:</strong> ${serviceName}</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 5px 0;"><strong>Mentor:</strong> ${mentorName}</td>
+                                            <td style="padding: 8px 0;"><strong>Mentor:</strong> ${mentorName}</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 5px 0;"><strong>Mentee:</strong> ${menteeName}</td>
+                                            <td style="padding: 8px 0;"><strong>Mentee:</strong> ${menteeName}</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 5px 0;"><strong>Date:</strong> ${new Date(dateTime).toLocaleDateString("en-IN")}</td>
+                                            <td style="padding: 8px 0;"><strong>Date:</strong> ${new Date(
+                                              dateTime
+                                            ).toLocaleDateString("en-IN")}</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 5px 0;"><strong>Time:</strong> ${new Date(dateTime).toLocaleTimeString("en-IN")}</td>
+                                            <td style="padding: 8px 0;"><strong>Time:</strong> ${new Date(
+                                              dateTime
+                                            ).toLocaleTimeString("en-IN")}</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 5px 0;"><strong>Duration:</strong> ${duration} minutes</td>
+                                            <td style="padding: 8px 0;"><strong>Duration:</strong> 60 minutes</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px 0;">
+                                                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                    <tr>
+                                                        <td style="padding: 8px 0; vertical-align: top; white-space: nowrap;"><strong>Session Description:</strong></td>
+                                                        <td style="padding: 8px 0;">
+                                                            <p style="padding-left: 15px; white-space: pre-wrap; font-family: Arial, sans-serif; margin: 0;">dhoievoieoermgciuermbi uiv bu bruv briuv br vuirbvy rbi vurbvui uvgiv rbvbr r8t</p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
                                         </tr>
                                     </table>
                                 </div>
                                 
-                                <div style="background-color: #f0f7ff; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
-                                    <h3 style="margin: 0 0 10px 0; color: #333;">Meeting Link:</h3>
+                                <div style="background-color: #f0f7ff; padding: 25px; border-radius: 8px; margin-bottom: 25px;">
+                                    <h3 style="margin: 0 0 15px 0; color: #333; font-size: 20px;">Meeting Link:</h3>
                                     <p style="margin: 0;">
-                                        <a href="${meetLink}" style="color: #4CAF50; text-decoration: none;">Join Google Meet</a>
+                                        <a href="${meetLink}" style="color: #4CAF50; text-decoration: none; font-weight: bold;">Join Google Meet</a>
                                     </p>
                                 </div>
                                 
-                                <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Click the Google Meet link above to join the session at the scheduled time.</p>
+                                <p style="margin: 0 0 25px 0; font-family: Arial, sans-serif; font-size: 16px;">Click the Google Meet link above to join the session at the scheduled time.</p>
                             </td>
                         </tr>
                         <tr>
-                            <td style="border-top: 1px solid #ddd; padding: 20px;" align="center">
+                            <td style="border-top: 1px solid #eee; padding: 25px;" align="center">
                                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                                     <tr>
-                                        <td align="center" style="font-size: 0.9em; color: #777; font-family: Arial, sans-serif;">
-                                            If you have any questions, feel free to contact us at:<br style="margin: 0;">
-                                            <a href="mailto:support@mentg.in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">support@mentg.in</a>
+                                        <td align="center" style="font-size: 14px; color: #777; font-family: Arial, sans-serif; line-height: 1.8;">
+                                            If you have any questions, feel free to contact us at:<br>
+                                            <a href="mailto:support@mentg.in" style="color: #4CAF50; text-decoration: none; font-weight: bold;">support@mentg.in</a>
                                         </td>
                                     </tr>
                                 </table>
                             </td>
                         </tr>
                         <tr>
-                            <td align="center" style="padding: 20px; font-size: 0.9em; color: #777; font-family: Arial, sans-serif;">
-                                <p style="margin: 0 0 10px 0;">&copy; ${new Date().getFullYear()} Mentg. All rights reserved.</p>
+                            <td align="center" style="padding: 20px; font-size: 14px; color: #999; font-family: Arial, sans-serif;">
+                                <p style="margin: 0;">&copy; ${new Date().getFullYear()} Mentg. All rights reserved.</p>
                             </td>
                         </tr>
                     </table>
@@ -447,7 +463,7 @@ export const sendBookingDetails = async (
         </table>
     </body>
     </html>
-      `,
+    `,
   };
 
   await transporter.sendMail(mailOptions);

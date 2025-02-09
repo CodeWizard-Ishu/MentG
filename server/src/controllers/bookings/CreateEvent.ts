@@ -57,6 +57,7 @@ export const createCalendarEvent = async (req: any, res: any) => {
       mentorEmail,
       menteeEmail,
       serviceName,
+      serviceDescription,
       mentorName,
       menteeName,
       dateTime,

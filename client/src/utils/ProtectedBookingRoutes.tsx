@@ -68,9 +68,11 @@ const ProtectedBookingRoutes: React.FC<ProtectedBookingRoutesProps> = ({
   };
 
   if (!isAllowed()) {
+    const mentorId = location.pathname.split("/")[2];
+    
     // If booking is complete, redirect to mentee dashboard
     if (isBookingComplete) {
-      return <Navigate to="/dashboard/mentee" replace />;
+      return <Navigate to={`/profile/${mentorId}`} replace />;
     }
 
     // If accessing success page without completing booking, redirect to home
@@ -79,7 +81,6 @@ const ProtectedBookingRoutes: React.FC<ProtectedBookingRoutesProps> = ({
     }
 
     // For other booking routes, redirect to profile page if no service selected
-    const mentorId = location.pathname.split("/")[2];
     return <Navigate to={`/profile/${mentorId}`} replace />;
   }
 

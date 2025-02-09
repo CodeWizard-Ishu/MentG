@@ -19,9 +19,9 @@ const domainOptions = [
 ];
 
 const serviceOptions = [
-  "1:1 Sessions",
+  "1:1 Session",
   "Quick Chat",
-  "Priority DMs",
+  "Priority DM",
   "Webinars",
 ];
 
