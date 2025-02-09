@@ -84,7 +84,6 @@ export const signupMentor = async (req: any, res: any) => {
       message: "User Created Successfully",
       user: {
         ...user,
-        id: undefined,
         password: undefined,
       },
     });
@@ -161,7 +160,6 @@ export const signupMentee = async (req: any, res: any) => {
       message: "User Created Successfully",
       user: {
         ...user,
-        id: undefined,
         password: undefined,
       },
     });
