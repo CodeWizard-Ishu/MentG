@@ -13,8 +13,9 @@ const capitalize = (string: string) => {
 const setCookieOptions = {
   httpOnly: true,
   secure: true,       // must: make this true when using for production
+  sameSite: 'none',
   maxAge: 7 * 24 * 60 * 60 * 1000,
-  domain: 'mentg.in',
+  path: "/",
 }
 
 export const signupMentor = async (req: any, res: any) => {
