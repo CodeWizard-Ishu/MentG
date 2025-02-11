@@ -14,6 +14,7 @@ const setCookieOptions = {
   httpOnly: true,
   secure: true,       // must: make this true when using for production
   maxAge: 7 * 24 * 60 * 60 * 1000,
+  domain: 'mentg.in',
 }
 
 export const signupMentor = async (req: any, res: any) => {
