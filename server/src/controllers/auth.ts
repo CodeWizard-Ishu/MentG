@@ -10,6 +10,13 @@ const capitalize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 };
 
+const setCookieOptions = {
+  httpOnly: true,
+  secure: true,       // must: make this true when using for production
+  sameSite: "none",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+}
+
 export const signupMentor = async (req: any, res: any) => {
   const { firstName, lastName, email, password } = req.body;
 
@@ -69,12 +76,7 @@ export const signupMentor = async (req: any, res: any) => {
     //jwt
     const secret: any = process.env.JWT_SECRET;
     const token = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.ENV === 'production', // make this true when using for production
-      sameSite: "none",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("token", token, setCookieOptions);
 
     const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
     sendMentorSignupMail(email, formattedName);
@@ -145,12 +147,7 @@ export const signupMentee = async (req: any, res: any) => {
     //jwt
     const secret: any = process.env.JWT_SECRET;
     const token = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.ENV === 'production', // make this true when using for production
-      sameSite: "none",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("token", token, setCookieOptions);
 
     const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
     sendMenteeSignupMail(email, formattedName);
@@ -204,12 +201,7 @@ export const login = async (req: any, res: any) => {
 		  expiresIn: "7d",
 	  });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.ENV === 'production',     // will be true in production
-      sameSite: "none",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("token", token, setCookieOptions);
 
     res.status(200).json({
       success: true,
@@ -244,6 +236,5 @@ export const checkAuth = async (req: any, res: any) => {
 
 export const logout = async (req: any, res: any) => {
   res.clearCookie("token");
-  res.clearCookie("userId");
   res.status(200).json({ success: true, message: "Logged out successfully" });
 };
