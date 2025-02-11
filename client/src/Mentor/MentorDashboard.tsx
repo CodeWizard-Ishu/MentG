@@ -28,8 +28,6 @@ import Payments from "./Payments";
 import Services from "./Services";
 import Logo from "../assets/logo.png";
 import { Bounce, toast } from "react-toastify";
-import { CheckAuth } from "../utils/CheckAuth";
-import Spinner from "../components/ui/Spinner";
 
 interface NavItem {
   name: string;
@@ -48,7 +46,6 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
     localStorage.getItem("fullName") || "Mentor"
   );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId");
@@ -119,21 +116,9 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("loggedIn") === "true") {
-      const auth = CheckAuth({ onLogout, navigate });
-      auth.checkAuthStatus().then((isValid) => {
-        setIsAuthenticated(isValid);
-      });
-    } else {
-      setIsAuthenticated(false);
-    }
     refreshDashboardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate, onLogout]);
-
-  if (isAuthenticated === null) {
-    return <Spinner clasName="min-h-screen content-center" />;
-  }
+  }, []);
 
   const navItems: NavItem[] = [
     { name: "Home", icon: <HomeIcon />, tab: "home" },
