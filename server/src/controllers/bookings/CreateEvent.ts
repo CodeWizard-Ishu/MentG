@@ -37,19 +37,31 @@ export const createCalendarEvent = async (req: any, res: any) => {
         dateTime: endTime.toISOString(),
         timeZone: "Asia/Kolkata",
       },
-      attendees: [{email: menteeEmail}, {email: mentorEmail}],
+      attendees: [
+        {email: menteeEmail, responseStatus: 'needsAction'},
+        {email: mentorEmail, responseStatus: 'needsAction', organizer: true}
+      ],
       conferenceData: {
         createRequest: {
           requestId: `mentg-${Date.now()}`,
           conferenceSolutionKey: { type: "hangoutsMeet" },
         },
       },
+
+      organizer: {
+        email: mentorEmail,
+        self: true
+      },
+
+      creator: {
+        self: true
+      }
     };
 
     const calendarEvent = await calendar.events.insert({
       calendarId: "primary",
       conferenceDataVersion: 1,
-      requestBody: event,
+      sendUpdates: 'all'
     });
 
     // Send confirmation emails
