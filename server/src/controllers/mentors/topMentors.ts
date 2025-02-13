@@ -15,25 +15,30 @@ const getTopMentors = async (domainNames: any) => {
     return [];
   }
   const topMentorsPromises = domainIds.map(async (domainId) => {
-    const mentors = await prisma.mentorProfile.findMany({
+    const data = await prisma.mentorProfile.findMany({
       where: {
         domains: {
           some: { id: domainId },
         },
       },
       orderBy: {
-        rating: "desc", // Order by rating in descending order
+        rating: "desc",
       },
-      take: 10, // Limit to top 10
+      take: 10,
       include: {
-        user: true, //{
-        // select: {
-        //   firstName: true,
-        //   lastName: true,
-        // },
-        //},
+        user: true,
       },
     });
+
+    const mentors = data.map((mentor) => {
+      return {
+        profilePicture: mentor.profilePicture,
+        bio: mentor.bio,
+        firstName: mentor.user.firstName,
+        lastName: mentor.user.lastName,
+      };
+    });
+
     return { domainId, mentors };
   });
 

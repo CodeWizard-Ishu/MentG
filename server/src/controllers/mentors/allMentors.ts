@@ -5,13 +5,22 @@ const prisma = getPrismaClient();
 const getMentors = async (page: any, limit: any) => {
   try {
     // Fetch mentors associated with the domain
-    const mentors = await prisma.mentorProfile.findMany({
+    const data = await prisma.mentorProfile.findMany({
       include: {
         user: true,
       },
       skip: (page - 1) * limit,
       take: Number(limit),
     });
+
+    const mentors = data.map((mentor) => {
+      return {
+        profilePicture: mentor.profilePicture,
+        bio: mentor.bio,
+        firstName: mentor.user.firstName,
+        lastName: mentor.user.lastName,
+      }
+    })
 
     const totalMentors = await prisma.mentorProfile.count();
 

@@ -134,9 +134,7 @@ const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor,  }) => {
                     >
                       <ProfileCard
                         key={idx}
-                        name={`${capitalize(
-                          mentor.user.firstName
-                        )} ${capitalize(mentor.user.lastName)}`}
+                        name={`${capitalize(mentor.firstName)} ${capitalize(mentor.lastName)}`}
                         imageUrl={mentor.profilePicture || DefaultImage}
                         desc={mentor.bio || "No description available."}
                       />

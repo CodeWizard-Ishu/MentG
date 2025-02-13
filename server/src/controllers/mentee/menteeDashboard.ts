@@ -15,7 +15,7 @@ const getMentorsOfDomain = async (domain: any, page: any, limit: any) => {
     }
 
     // Fetch mentors associated with the domain
-    const mentors = await prisma.mentorProfile.findMany({
+    const data = await prisma.mentorProfile.findMany({
       where: {
         domains: {
           some: {
@@ -38,6 +38,14 @@ const getMentorsOfDomain = async (domain: any, page: any, limit: any) => {
           },
         },
       },
+    });
+
+    const mentors = data.map((mentor) => {
+      return {
+        profilePicture: mentor.profilePicture,
+        bio: mentor.bio,
+        firstName: mentor.user.firstName,
+        lastName: mentor.user.lastName,}
     });
 
     return {

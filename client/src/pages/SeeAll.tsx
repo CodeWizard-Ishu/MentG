@@ -14,7 +14,7 @@ interface AboutUsProps {
 
 const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor,  }) => {
   const { domain } = useParams();
-  const domainName: string = domain || "Technology";
+  const domainName: string = domain || "";
   const [mentors, setMentors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -135,9 +135,7 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor,  }) => {
                     >
                       <ProfileCard
                         key={idx}
-                        name={`${capitalize(
-                          mentor.user.firstName
-                        )} ${capitalize(mentor.user.lastName)}`}
+                        name={`${capitalize(mentor.firstName)} ${capitalize(mentor.lastName)}`}
                         imageUrl={mentor.profilePicture || DefaultImage}
                         desc={mentor.bio || "No description available."}
                       />

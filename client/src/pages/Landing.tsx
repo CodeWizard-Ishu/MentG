@@ -240,9 +240,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
                         >
                           <ProfileCard
                             key={mentor.id}
-                            name={`${capitalize(
-                              mentor.user.firstName
-                            )} ${capitalize(mentor.user.lastName)}`}
+                            name={`${capitalize(mentor.firstName)} ${capitalize(mentor.lastName)}`}
                             imageUrl={mentor.profilePicture || defaultImage}
                             desc={mentor.bio || "No bio available."}
                           />
