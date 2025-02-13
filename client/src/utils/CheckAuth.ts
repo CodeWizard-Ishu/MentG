@@ -8,9 +8,16 @@ interface CheckAuthProps {
 
 export const CheckAuth = ({onLogout, navigate}: CheckAuthProps) => {
 
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
+
   const checkAuthStatus = async () => {
     try {
-      const authResponse = await fetch(`${BACKEND_URL}/auth/verify`, {
+      const authResponse = await fetch(`${BACKEND_URL}/auth/verify/${userId}`, {
+        headers:{
+          "Authorization" : token,
+          "Content-Type": "application/json",
+        },
         credentials: "include",
       });
 
@@ -23,6 +30,7 @@ export const CheckAuth = ({onLogout, navigate}: CheckAuthProps) => {
           credentials: "include",
         });
         if (logoutResponse.ok) {
+          localStorage.removeItem("userToken");
           localStorage.removeItem("loggedIn");
           localStorage.removeItem("isActive");
           localStorage.removeItem("mentor");

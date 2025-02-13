@@ -33,6 +33,7 @@ const Testimonials = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   useEffect(() => {
     setLoading(true);
@@ -41,6 +42,7 @@ const Testimonials = () => {
         const response = await fetch(`${BACKEND_URL}/api/getRating/${userId}`, {
           method: "GET",
           headers: {
+            "Authorization": token,
             "Content-Type": "application/json",
           },
           credentials: "include",
@@ -60,7 +62,7 @@ const Testimonials = () => {
       }
     };
     fetchRatings();
-  }, [userId]);
+  }, [token, userId]);
 
   return (
     <div className="min-h-screen pl-4">

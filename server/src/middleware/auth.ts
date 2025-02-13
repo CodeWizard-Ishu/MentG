@@ -2,10 +2,16 @@ import jwt from "jsonwebtoken";
 
 const verifyToken = async (req:any, res:any, next:any) => {
   try {
-    const token = req.cookies.token;
+    // const token = req.cookies.token;
+
+    let token = req.header("Authorization");
 
     if (!token) {
       return res.status(401).json({success: false, message: "Unauthorized"});
+    }
+
+    if (token.startsWith("Bearer ")) {
+      token = token.slice(7, token.length).trimLeft();
     }
 
     try {

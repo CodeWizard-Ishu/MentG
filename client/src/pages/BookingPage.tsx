@@ -78,6 +78,7 @@ const BookingPage: React.FC = () => {
   const { mentorId } = useParams();
 
   const menteeId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
   
   const {
     selectedService,
@@ -101,6 +102,7 @@ const BookingPage: React.FC = () => {
         {
           method: "GET",
           headers: {
+            "Authorization": token,
             "Content-Type": "application/json",
           },
           credentials: "include",
@@ -115,6 +117,7 @@ const BookingPage: React.FC = () => {
         {
           method: "GET",
           headers: {
+            "Authorization": token,
             "Content-Type": "application/json",
           },
           credentials: "include",
@@ -131,6 +134,7 @@ const BookingPage: React.FC = () => {
           {
             method: "GET",
             headers: {
+              "Authorization": token,
               "Content-Type": "application/json",
             },
             credentials: "include",
@@ -237,6 +241,7 @@ const BookingPage: React.FC = () => {
       const response = await fetch(`${BACKEND_URL}/api/booking/${menteeId}`, {
         method: "POST",
         headers: {
+          "Authorization": token,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(bookingData),

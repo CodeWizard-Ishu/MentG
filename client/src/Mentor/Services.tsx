@@ -32,6 +32,7 @@ const Services: React.FC = () => {
   const [isSubmitting, setSubmitting] = useState(false);
 
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -41,6 +42,7 @@ const Services: React.FC = () => {
           {
             method: "GET",
             headers: {
+              "Authorization": token,
               "Content-Type": "application/json",
             },
             credentials: "include",
@@ -63,7 +65,7 @@ const Services: React.FC = () => {
       }
     };
     fetchServices();
-  }, [userId]);
+  }, [token, userId]);
 
   const handleSave = async () => {
     setSubmitting(true);
@@ -88,6 +90,7 @@ const Services: React.FC = () => {
           // Replace with your actual URL
           method: "PUT",
           headers: {
+            "Authorization": token,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),

@@ -49,6 +49,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   const refreshDashboardData = async () => {
     // Fetch updated user data
@@ -57,6 +58,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
         `${BACKEND_URL}/api/mentorDetails/${userId}`,
         {
           headers: {
+            "Authorization": token,
             "Content-Type": "application/json",
           },
           credentials: "include",
@@ -92,19 +94,27 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
         credentials: "include",
       });
       if (response.ok) {
-        toast.success("Logged out successfully", {
-          position: "bottom-right",
-          pauseOnHover: false,
-          transition: Bounce,
-        });
+        localStorage.removeItem("userToken");
         localStorage.removeItem("loggedIn");
         localStorage.removeItem("isActive");
         localStorage.removeItem("mentor");
         localStorage.removeItem("userId");
         localStorage.removeItem("fullName");
         localStorage.removeItem("booking-store");
+        toast.success("Logged out successfully", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+        navigate("/");
       }
-      navigate("/");
+      else{
+        toast.error("Error logging out", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+      }
     } catch (error) {
       console.error("Error logging out:", error);
       toast.error(`Error logging out`, {

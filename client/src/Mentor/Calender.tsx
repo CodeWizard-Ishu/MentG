@@ -172,6 +172,7 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
   const [isCalendarConnected, setIsCalendarConnected] = useState(false);
 
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   const fetchAvailability = async () => {
     try {
@@ -180,6 +181,7 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
         {
           method: "GET",
           headers: {
+            "Authorization": token,
             "Content-Type": "application/json",
           },
           credentials: "include",
@@ -356,6 +358,7 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
         {
           method: "POST",
           headers: {
+            "Authorization": token,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({

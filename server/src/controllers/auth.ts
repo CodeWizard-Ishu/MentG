@@ -10,14 +10,14 @@ const capitalize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 };
 
-const setCookieOptions = {
-  httpOnly: true,
-  secure: true,       // must: make this true when using for production
-  sameSite: 'none',
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-  path: "/",
-  domain: 'mentg.onrender.com',
-}
+// const setCookieOptions = {
+//   httpOnly: true,
+//   secure: true,       // must: make this true when using for production
+//   sameSite: 'none',
+//   maxAge: 7 * 24 * 60 * 60 * 1000,
+//   path: "/",
+//   domain: 'mentg.onrender.com',
+// }
 
 export const signupMentor = async (req: any, res: any) => {
   const { firstName, lastName, email, password } = req.body;
@@ -78,7 +78,8 @@ export const signupMentor = async (req: any, res: any) => {
     //jwt
     const secret: any = process.env.JWT_SECRET;
     const token = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
-    res.cookie("token", token, setCookieOptions);
+
+    // res.cookie("token", token, setCookieOptions);
 
     const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
     sendMentorSignupMail(email, formattedName);
@@ -90,6 +91,7 @@ export const signupMentor = async (req: any, res: any) => {
         ...user,
         password: undefined,
       },
+      token,
     });
     console.log(`User signed up as mentor: ${email}`);
   } catch (error: any) {
@@ -118,7 +120,9 @@ export const signupMentee = async (req: any, res: any) => {
       where: { email },
     });
     if (existingUser && existingUser.isActive == true) {
-      return res.status(400).json({ success: false, message: "User already exists" });
+      return res
+        .status(400)
+        .json({ success: false, message: "User already exists" });
     }
 
     // Hash the password
@@ -149,7 +153,8 @@ export const signupMentee = async (req: any, res: any) => {
     //jwt
     const secret: any = process.env.JWT_SECRET;
     const token = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
-    res.cookie("token", token, setCookieOptions);
+
+    // res.cookie("token", token, setCookieOptions);
 
     const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
     sendMenteeSignupMail(email, formattedName);
@@ -161,9 +166,10 @@ export const signupMentee = async (req: any, res: any) => {
         ...user,
         password: undefined,
       },
+      token,
     });
     console.log(`User signed up as mentee: ${email}`);
-  } catch (error:any) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).json({ success: false, message: error.message });
   }
@@ -194,16 +200,18 @@ export const login = async (req: any, res: any) => {
     // Check if password is correct
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({success: false, message: "Email/Password not matched!" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Email/Password not matched!" });
     }
 
     //jwt
     const secret: any = process.env.JWT_SECRET;
-	  const token = jwt.sign({id: user.id }, secret, {
-		  expiresIn: "7d",
-	  });
+    const token = jwt.sign({ id: user.id }, secret, {
+      expiresIn: "7d",
+    });
 
-    res.cookie("token", token, setCookieOptions);
+    // res.cookie("token", token, setCookieOptions);
 
     res.status(200).json({
       success: true,
@@ -212,6 +220,7 @@ export const login = async (req: any, res: any) => {
         ...user,
         password: undefined,
       },
+      token,
     });
   } catch (error: any) {
     console.error(error);
@@ -221,22 +230,39 @@ export const login = async (req: any, res: any) => {
 
 export const checkAuth = async (req: any, res: any) => {
   try {
-    const token = req.cookies.token;
-    
+    // const token = req.cookies.token;
+    let token = req.header("Authorization");
+
     if (!token) {
-      return res.status(401).json({ success: false, message: "Unauthorized - No token found" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Unauthorized - No token found" });
     }
 
-    const secret: any = process.env.JWT_SECRET;
-    jwt.verify(token, secret);
+    if (token.startsWith("Bearer ")) {
+      token = token.slice(7, token.length).trimLeft();
+    }
 
-    res.status(200).json({ success: true, message: "Authorized" });
-  } catch (error:any) {
+    try {
+      const secret: any = process.env.JWT_SECRET;
+      const verified: any = jwt.verify(token, secret);
+
+      const { id } = req.params;
+      const requestedId = parseInt(id, 10);
+      const tokenUserId = parseInt(verified.id, 10);
+      if (requestedId && requestedId !== tokenUserId) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      res.status(200).json({ success: true, message: "Authorized" });
+    } catch (error) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+  } catch (error: any) {
     res.status(401).json({ success: false, message: "Authentication expired" });
   }
 };
 
 export const logout = async (req: any, res: any) => {
-  res.clearCookie("token");
+  // res.clearCookie("token");
   res.status(200).json({ success: true, message: "Logged out successfully" });
 };

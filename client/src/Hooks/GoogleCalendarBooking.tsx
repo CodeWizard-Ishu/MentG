@@ -18,12 +18,15 @@ interface BookingDetails {
 const useGoogleCalendarBooking = () => {
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
 
+  const token = localStorage.getItem("userToken") ?? "";
+
   const createCalendarEvent = async (bookingDetails: BookingDetails) => {
     setIsCreatingEvent(true);
     try {
       const response = await fetch(`${BACKEND_URL}/api/calendar/create-event/${bookingDetails.menteeId}`, {
         method: 'POST',
         headers: {
+          'Authorization': token,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({

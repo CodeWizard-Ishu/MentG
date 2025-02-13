@@ -59,6 +59,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
   const { setSelectedSlot } = useBookingStore();
 
   const menteeId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   const navigate = useNavigate();
   const { mentorId } = useParams(); // Get mentorId from URL parameters
@@ -78,6 +79,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
           {
             method: "GET",
             headers: {
+              "Authorization": token,
               "Content-Type": "application/json",
             },
             credentials: "include",
@@ -101,7 +103,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
     };
 
     fetchAvailability();
-  }, [menteeId, mentorId]); // Fetch availability whenever mentorId changes
+  }, [menteeId, mentorId, token]); // Fetch availability whenever mentorId changes
 
   // Calculate date bounds
   const dateBounds = useMemo(() => {
@@ -197,6 +199,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
       const response = await fetch(`${BACKEND_URL}/api/${menteeId}/send-note`, {
         method: "POST",
         headers: {
+          "Authorization": token,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({

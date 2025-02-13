@@ -41,7 +41,9 @@ const MenteeMeetings = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   const menteeId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   useEffect(() => {
     const fetchMeetings = async () => {
@@ -60,6 +62,7 @@ const MenteeMeetings = () => {
           {
             method: "GET",
             headers: {
+              "Authorization": token,
               "Content-Type": "application/json",
             },
             credentials: "include",
@@ -96,7 +99,7 @@ const MenteeMeetings = () => {
     };
 
     fetchMeetings();
-  }, [pagination.pageIndex, pagination.pageSize, menteeId]);
+  }, [pagination.pageIndex, pagination.pageSize, menteeId, token]);
 
   if (loading) return <Spinner />;
   if (error) return <div className="text-2xl font-semibold">{error}</div>;

@@ -30,6 +30,7 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
   const [isLoading, setIsLoading] = useState(true);
 
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   useEffect(() => {
     fetchCalendarConnections();
@@ -43,6 +44,7 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
         {
           method: "GET",
           headers: {
+            "Authorization": token,
             "Content-Type": "application/json",
           },
           credentials: "include",
@@ -90,6 +92,7 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
       const response = await fetch(`${BACKEND_URL}/api/calendar/disconnect/${userId}`, {
         method: "POST",
         headers: {
+          "Authorization": token,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({

@@ -34,12 +34,14 @@ function App() {
   });
 
   const handleLogin = (
+    token: string,
     isMentor: boolean,
     isActive: boolean,
     userId: string,
     firstName: string,
     lastName: string
   ) => {
+    localStorage.setItem("userToken", `Bearer ${token}`);
     localStorage.setItem("loggedIn", "true");
     localStorage.setItem("mentor", isMentor ? "true" : "false");
     localStorage.setItem("isActive", isActive ? "true" : " false");
@@ -55,12 +57,14 @@ function App() {
   };
 
   const handleSignup = (
+    token: string,
     isMentor: boolean,
     isActive: boolean,
     userId: string,
     firstName: string,
     lastName: string
   ) => {
+    localStorage.setItem("userToken", `Bearer ${token}`);
     localStorage.setItem("loggedIn", "true");
     localStorage.setItem("mentor", isMentor ? "true" : "false");
     localStorage.setItem("isActive", isActive ? "true" : " false");

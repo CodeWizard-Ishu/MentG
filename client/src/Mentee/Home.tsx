@@ -11,7 +11,9 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedDomain, setSelectedDomain] = useState("");
+
   const menteeId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   const capitalize = (string: string) => {
     if (!string) return "";
@@ -40,6 +42,7 @@ const Home = () => {
         {
           method: "GET",
           headers: {
+            "Authorization": token,
             "Content-Type": "application/json",
           },
           credentials: "include",

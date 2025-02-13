@@ -10,6 +10,7 @@ import ForgotPasswordModal from "./ForgotPasswordModal";
 
 interface LoginPageProps {
   onLogin?: (
+    token: string,
     isMentor: boolean,
     isActive: boolean,
     userId: string,
@@ -63,6 +64,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
 
       const data = await response.json();
       onLogin(
+        data.token,
         data.user.isMentor,
         data.user.isActive,
         data.user.id,

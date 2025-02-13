@@ -9,6 +9,7 @@ import { Bounce, toast } from "react-toastify";
 
 interface SignupPageProps {
   onSignup?: (
+    token: string,
     isMentor: boolean,
     isActive: boolean,
     userId: string,
@@ -115,6 +116,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
 
       const data = await response.json();
       onSignup(
+        data.token,
         data.user.isMentor,
         data.user.isActive,
         data.user.id,

@@ -47,7 +47,7 @@ import { ContactSubmission } from "../controllers/contactSubmission";
 
 const router = express.Router();
 
-router.get("/auth/verify", checkAuth);
+router.get("/auth/verify/:id", checkAuth);
 router.post("/auth/signup/mentor", signupMentor);
 router.post("/auth/signup/mentee", signupMentee);
 router.post("/auth/login", login);

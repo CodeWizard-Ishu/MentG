@@ -30,6 +30,7 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
   const [error, setError] = useState<string | null>(null);
 
   const mentorId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,6 +47,7 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
         const response = await fetch(`${BACKEND_URL}/api/mentor/${mentorId}`, {
           method: "GET",
           headers: {
+            "Authorization": token,
             "Content-Type": "application/json",
           },
           credentials: "include",

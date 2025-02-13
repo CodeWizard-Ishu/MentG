@@ -40,11 +40,13 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   const getMenteeDetails = useCallback(async () => {
     const response = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`, {
       method: "GET",
       headers: {
+        "Authorization": token,
         "Content-Type": "application/json",
       },
       credentials: "include",
@@ -61,7 +63,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
     localStorage.setItem("fullName", formattedName);
     setFullName(formattedName);
     return data;
-  }, [userId]);
+  }, [token, userId]);
 
   const handleLogout = async () => {
     try {
@@ -73,19 +75,27 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
         credentials: "include",
       });
       if (response.ok) {
-        toast.success("Logged out successfully", {
-          position: "bottom-right",
-          pauseOnHover: false,
-          transition: Bounce,
-        });
+        localStorage.removeItem("userToken");
         localStorage.removeItem("loggedIn");
         localStorage.removeItem("isActive");
         localStorage.removeItem("mentor");
         localStorage.removeItem("userId");
         localStorage.removeItem("fullName");
         localStorage.removeItem("booking-store");
+        toast.success("Logged out successfully", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+        navigate("/");
       }
-      navigate("/");
+      else{
+        toast.error("Error logging out", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+      }
     } catch (error) {
       console.error("Error logging out:", error);
       toast.error(`Error logging out`, {

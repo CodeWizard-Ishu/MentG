@@ -178,6 +178,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
   const [user, setUser] = useState<User>();
 
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   const getMentorDetails = async () => {
     try {
@@ -186,6 +187,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
         {
           method: "GET",
           headers: {
+            "Authorization": token,
             "Content-Type": "application/json",
           },
           credentials: "include",
@@ -235,6 +237,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
         {
           method: "PUT",
           headers: {
+            "Authorization": token,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(values),

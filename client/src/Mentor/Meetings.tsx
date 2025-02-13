@@ -43,6 +43,7 @@ const Meetings = () => {
   const [error, setError] = useState<string | null>(null);
 
   const mentorId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
 
   useEffect(() => {
     const fetchMeetings = async () => {
@@ -62,6 +63,7 @@ const Meetings = () => {
           {
             method: "GET",
             headers: {
+              "Authorization": token,
               "Content-Type": "application/json",
             },
             credentials: "include",
@@ -99,7 +101,7 @@ const Meetings = () => {
     };
 
     fetchMeetings();
-  }, [mentorId, pagination.pageIndex, pagination.pageSize]);
+  }, [mentorId, pagination.pageIndex, pagination.pageSize, token]);
 
   if (loading) return <Spinner />;
   if (error) return <div className="text-2xl font-semibold">{error}</div>;
