@@ -15,6 +15,7 @@ const getMentors = async (page: any, limit: any) => {
 
     const mentors = data.map((mentor) => {
       return {
+        userId: mentor.userId,
         profilePicture: mentor.profilePicture,
         bio: mentor.bio,
         firstName: mentor.user.firstName,
