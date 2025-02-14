@@ -116,20 +116,18 @@ const Home = () => {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            mentors.map((mentor: any, idx: any) => (
+            mentors.map((mentor: any) => (
               <Link
-                key={idx}
+                key={mentor.id}
                 to={`/profile/${mentor.userId}`}
                 style={{ textDecoration: "none" }}
                 className="transform transition-transform duration-300 hover:scale-105"
               >
                 <ProfileCard
-                  key={idx}
-                  name={`${capitalize(mentor.user.firstName)} ${capitalize(
-                    mentor.user.lastName
-                  )}`}
+                  key={mentor.id}
+                  name={`${capitalize(mentor.firstName)} ${capitalize(mentor.lastName)}`}
                   imageUrl={mentor.profilePicture || DefaultImage}
-                  desc={mentor.bio || "No description available."}
+                  desc={mentor.bio || "No bio available."}
                 />
               </Link>
             ))

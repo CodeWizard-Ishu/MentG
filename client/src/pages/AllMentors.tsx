@@ -136,7 +136,7 @@ const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor,  }) => {
                         key={idx}
                         name={`${capitalize(mentor.firstName)} ${capitalize(mentor.lastName)}`}
                         imageUrl={mentor.profilePicture || DefaultImage}
-                        desc={mentor.bio || "No description available."}
+                        desc={mentor.bio || "No bio available."}
                       />
                     </Link>
                   ))
