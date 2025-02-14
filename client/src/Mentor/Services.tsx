@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import BACKEND_URL from "../endpoint";
 import { Bounce, toast } from "react-toastify";
 import Spinner from "../components/ui/Spinner";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "../components/ui/alert";
+
+const MAX_DOMAINS = 3;
 
 const domainOptions = [
   "Technology",
@@ -26,10 +30,11 @@ const serviceOptions = [
 ];
 
 const Services: React.FC = () => {
-  const [domain, setDomain] = useState<string>();
-  const [service, setService] = useState<string[]>([]);
+  const [domains, setDomains] = useState<string[]>([]);
+  const [services, setServices] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setSubmitting] = useState(false);
+  const [showMaxDomainsAlert, setShowMaxDomainsAlert] = useState(false);
 
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("userToken") ?? "";
@@ -52,8 +57,8 @@ const Services: React.FC = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setDomain(data.domain[0]); // Assuming only one domain is returned
-        setService(data.services);
+        setDomains(Array.isArray(data.domains) ? data.domains : []);
+        setServices(Array.isArray(data.services) ? data.services : []);
       } catch (error) {
         toast.error(`${error}`, {
           position: "bottom-right",
@@ -67,27 +72,50 @@ const Services: React.FC = () => {
     fetchServices();
   }, [token, userId]);
 
+  const handleDomain = (item: string) => {
+    setDomains((prev) => {
+      if (prev.includes(item)) {
+        // Remove domain if already selected
+        return prev.filter((domain) => domain !== item);
+      } else if (prev.length >= MAX_DOMAINS) {
+        // Show alert if trying to add more than MAX_DOMAINS
+        setShowMaxDomainsAlert(true);
+        setTimeout(() => setShowMaxDomainsAlert(false), 3000);
+        return prev;
+      } else {
+        // Add new domain
+        return [...prev, item];
+      }
+    });
+  };
+
+  const handleService = (item: string) => {
+    setServices((prev) =>
+      prev.includes(item) ? prev.filter((e) => e !== item) : [...prev, item]
+    );
+  };
+
   const handleSave = async () => {
     setSubmitting(true);
-    if (!domain || service.length === 0) {
-      toast.warning("Please select a domain and at least one service.", {
+    if (domains.length === 0 || services.length === 0) {
+      toast.warning("Please select at least one domain and one service.", {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
       });
+      setSubmitting(false);
       return;
     }
 
     const payload = {
-      domain,
-      services: service,
+      domains,
+      services,
     };
 
     try {
       const response = await fetch(
         `${BACKEND_URL}/api/mentor/update/${userId}`,
         {
-          // Replace with your actual URL
           method: "PUT",
           headers: {
             "Authorization": token,
@@ -107,82 +135,87 @@ const Services: React.FC = () => {
         pauseOnHover: false,
         transition: Bounce,
       });
-      setSubmitting(false);
     } catch (error) {
       toast.error(`Failed to update profile, ${error}`, {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
       });
+    } finally {
+      setSubmitting(false);
     }
-  };
-
-  const handleDomain = (item: string) => {
-    setDomain(item);
-  };
-
-  const handleService = (item: string) => {
-    setService((prev) =>
-      prev.includes(item) ? prev.filter((e) => e !== item) : [...prev, item]
-    );
   };
 
   if (loading) return <Spinner />;
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-8">
-      <div className="mb-9">
-        <h1 className="text-2xl font-semibold mb-6 text-center sm:text-left">
-          Choose your Domain
-        </h1>
-        <div className="grid grid-cols-2 gap-2 w-full sm:grid-cols-3 lg:grid-cols-4">
-          {domainOptions.map((option) => (
-            <button
-              type="button"
-              key={option}
-              className={`py-2 px-4 rounded border text-center ${
-                domain === option
-                  ? "border-black bg-gray-400 rounded-full font-medium text-black transition-all"
-                  : "bg-white rounded-full text-black"
-              }`}
-              onClick={() => handleDomain(option)}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div className="px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-9">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <h1 className="text-2xl font-semibold">Choose your Domains</h1>
+            <p className="text-sm text-gray-600">
+              Select up to {MAX_DOMAINS} domains
+            </p>
+          </div>
 
-      <div className="mb-9">
-        <label className="block text-lg text-black font-medium mb-4 text-center sm:text-left">
-          Which service you want to give?
-        </label>
-        <div className="grid grid-cols-2 gap-2 w-full sm:grid-cols-3 lg:grid-cols-4">
-          {serviceOptions.map((option) => (
-            <button
-              type="button"
-              key={option}
-              className={`py-2 px-4 rounded border text-center ${
-                service.includes(option)
-                  ? "border-black bg-gray-400 rounded-full font-medium text-black transition-all"
-                  : "bg-white rounded-full text-black"
-              }`}
-              onClick={() => handleService(option)}
-            >
-              {option}
-            </button>
-          ))}
+          <div className="grid grid-cols-2 gap-3 w-full sm:grid-cols-3 lg:grid-cols-4">
+            {domainOptions.map((option) => (
+              <button
+                type="button"
+                key={option}
+                className={`py-3 px-4 rounded-full border text-center transition-all hover:shadow-md ${
+                  domains.includes(option)
+                    ? "border-black bg-gray-400 text-black font-medium"
+                    : "bg-white text-black hover:bg-gray-50"
+                }`}
+                onClick={() => handleDomain(option)}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+          {showMaxDomainsAlert && (
+            <Alert variant="destructive" className="mt-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                You can select a maximum of {MAX_DOMAINS} domains
+              </AlertDescription>
+            </Alert>
+          )}
         </div>
-      </div>
 
-      <div className="flex justify-center sm:justify-start mt-10 sm:mt-14">
-        <button
-          onClick={handleSave}
-          disabled={isSubmitting}
-          className="bg-black text-white px-4 py-2 w-40 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
-        >
-          {isSubmitting ? <Spinner /> : "Save Changes"}
-        </button>
+        <div className="mb-9">
+          <label className="block text-lg text-black font-medium mb-4">
+            Which services do you want to offer?
+          </label>
+          <div className="grid grid-cols-2 gap-3 w-full sm:grid-cols-3 lg:grid-cols-4">
+            {serviceOptions.map((option) => (
+              <button
+                type="button"
+                key={option}
+                className={`py-3 px-4 rounded-full border text-center transition-all duration-200 hover:shadow-md ${
+                  services.includes(option)
+                    ? "border-black bg-gray-400 text-black font-medium"
+                    : "bg-white text-black hover:bg-gray-50"
+                }`}
+                onClick={() => handleService(option)}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex justify-center sm:justify-start mt-10">
+          <button
+            onClick={handleSave}
+            disabled={isSubmitting || domains.length === 0 || services.length === 0}
+            className="bg-black text-white px-6 py-3  rounded-md hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:hover:bg-black font-semibold text-md shadow-md"
+          >
+            {isSubmitting ? <Spinner /> : "Save Changes"}
+          </button>
+        </div>
       </div>
     </div>
   );
