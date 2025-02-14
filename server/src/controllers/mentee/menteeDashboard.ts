@@ -42,6 +42,7 @@ const getMentorsOfDomain = async (domain: any, page: any, limit: any) => {
 
     const mentors = data.map((mentor) => {
       return {
+        id: mentor.id,
         userId: mentor.userId,
         profilePicture: mentor.profilePicture,
         bio: mentor.bio,
