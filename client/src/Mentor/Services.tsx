@@ -211,7 +211,7 @@ const Services: React.FC = () => {
           <button
             onClick={handleSave}
             disabled={isSubmitting || domains.length === 0 || services.length === 0}
-            className="bg-black text-white px-6 py-3  rounded-md hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:hover:bg-black font-semibold text-md shadow-md"
+            className="bg-black text-white px-6 py-3 w-48 rounded-md hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:hover:bg-black font-semibold text-md shadow-md"
           >
             {isSubmitting ? <Spinner /> : "Save Changes"}
           </button>
