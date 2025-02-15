@@ -9,6 +9,7 @@ import { Bounce, toast } from "react-toastify";
 import LinkedinImage from "../assets/linkedin.png";
 import InstagramImage from "../assets/instagram.png";
 import TwitterImage from "../assets/twitter.png";
+import { ProfileSettingsSkeleton } from "../components/ui/Skeletons/MenteeDashboardSkeletons";
 
 interface FormValues {
   profilePicture: string | null;
@@ -183,7 +184,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!user) return <Spinner />;
+  if (!user) return <ProfileSettingsSkeleton/>;
 
   const initialValues: FormValues = {
     profilePicture: user.profilePicture,

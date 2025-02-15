@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import BACKEND_URL from "../endpoint"; // Adjust this import based on your project structure
-import Spinner from "../components/ui/Spinner";
 import { Bounce, toast } from "react-toastify";
 import ReportMenu from "./ReportMenu";
+import { MeetingsSkeleton } from "../components/ui/Skeletons/MentorDashboardSkeletons";
 
 // Define interfaces for type safety
 interface Meeting {
@@ -103,7 +103,7 @@ const Meetings = () => {
     fetchMeetings();
   }, [mentorId, pagination.pageIndex, pagination.pageSize, token]);
 
-  if (loading) return <Spinner />;
+  if (loading) return <MeetingsSkeleton/>;
   if (error) return <div className="text-2xl font-semibold">{error}</div>;
 
   // Calculate total pages

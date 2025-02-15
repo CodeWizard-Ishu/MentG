@@ -6,13 +6,14 @@ import DefaultImage from "../assets/defautProfilePic.jpg";
 import BACKEND_URL from "../endpoint";
 import { Bounce, toast } from "react-toastify";
 import Footer from "../components/Footer";
+import GridLoadingSkeleton from "../components/ui/Skeletons/GridLoadingSkeleton";
 
 interface AboutUsProps {
   loggedIn: boolean;
   mentor: boolean;
 }
 
-const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor,  }) => {
+const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
   const [mentors, setMentors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -123,25 +124,29 @@ const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor,  }) => {
           </h1>
           <div className="mt-12 md:mt-16 lg:mt-24 ">
             <div className="bg-white/50 backdrop-blur-sm p-6 sm:p-8 md:p-10 rounded-xl shadow-lg">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                {
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  mentors.map((mentor: any, idx: any) => (
-                    <Link
-                      key={idx}
-                      to={`/profile/${mentor.userId}`}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <ProfileCard
+              {mentors.length === 0 ? (
+                <GridLoadingSkeleton />
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                  {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    mentors.map((mentor: any, idx: any) => (
+                      <Link
                         key={idx}
-                        name={`${capitalize(mentor.firstName)} ${capitalize(mentor.lastName)}`}
-                        imageUrl={mentor.profilePicture || DefaultImage}
-                        desc={mentor.bio || "No bio available."}
-                      />
-                    </Link>
-                  ))
-                }
-              </div>
+                        to={`/profile/${mentor.userId}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <ProfileCard
+                          key={idx}
+                          name={`${capitalize(mentor.firstName)} ${capitalize(mentor.lastName)}`}
+                          imageUrl={mentor.profilePicture || DefaultImage}
+                          desc={mentor.bio || "No bio available."}
+                        />
+                      </Link>
+                    ))
+                  }
+                </div>
+              )}
             </div>
             {totalPages > 0 && (
               <div className="flex justify-between items-center mt-4">

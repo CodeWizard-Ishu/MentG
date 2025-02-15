@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import ProfileCard from "../components/ui/ProfileCard";
 import Footer from "../components/Footer";
+import LandingSkeleton from "../components/ui/Skeletons/LandingSkeleton";
 
 interface LandingPageProps {
   loggedIn: boolean;
@@ -25,6 +26,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("Technology");
   const [mentorsData, setMentorsData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const capitalize = (string: string) => {
     if (!string) return "";
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -64,6 +66,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
       }
     } catch (error) {
       console.error("Error fetching top mentors:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -230,7 +234,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
             <div className="bg-white/70 backdrop-blur-sm p-6 sm:p-8 md:p-10 rounded-xl shadow-lg">
               <div className="flex grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 overflow-x-auto scrollbar-hide">
                 <div className="flex space-x-4">
-                  {mentorsData.length > 0 &&
+                  {mentorsData.length === 0 && loading ? <LandingSkeleton/> : (
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     mentorsData.map((mentor: any) => (
                       <div key={mentor.id} className="w-40 sm:w-48 md:w-44">
@@ -246,7 +250,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
                           />
                         </Link>
                       </div>
-                    ))}
+                    )))}
                 </div>
               </div>
             </div>

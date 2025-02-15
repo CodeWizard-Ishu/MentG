@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ReactNode } from "react";
 import { Calendar, User, IndianRupee } from "lucide-react";
 import BACKEND_URL from "../endpoint";
-import Spinner from "../components/ui/Spinner";
+import { HomeSkeleton } from "../components/ui/Skeletons/MentorDashboardSkeletons";
 import { Bounce, toast } from "react-toastify";
 
 // Define interfaces for type safety
@@ -102,7 +102,7 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (loading) return <Spinner />;
+  if (loading) return <HomeSkeleton/>;
   if (error) return <div className="text-2xl font-semibold">{error}</div>;
 
   return (

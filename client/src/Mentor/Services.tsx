@@ -4,6 +4,7 @@ import { Bounce, toast } from "react-toastify";
 import Spinner from "../components/ui/Spinner";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "../components/ui/alert";
+import { ServicesSkeleton } from "../components/ui/Skeletons/MentorDashboardSkeletons";
 
 const MAX_DOMAINS = 3;
 
@@ -146,7 +147,7 @@ const Services: React.FC = () => {
     }
   };
 
-  if (loading) return <Spinner />;
+  if (loading) return <ServicesSkeleton/>;
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">

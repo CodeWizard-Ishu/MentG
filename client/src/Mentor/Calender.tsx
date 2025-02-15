@@ -13,6 +13,7 @@ import BACKEND_URL from "../endpoint";
 import { Bounce, toast } from "react-toastify";
 import Spinner from "../components/ui/Spinner";
 import CalendarIntegration from "./CalenderConnection";
+import { CalendarSkeleton } from "../components/ui/Skeletons/MentorDashboardSkeletons";
 
 interface TimeSlot {
   startTime: Date;
@@ -390,7 +391,7 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
     }
   };
 
-  if (loading) return <Spinner />;
+  if (loading) return <CalendarSkeleton/>;
 
   return (
     <div>

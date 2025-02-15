@@ -10,6 +10,7 @@ import LinkedIn from "../assets/linkedin.png";
 import Twitter from "../assets/twitter.png";
 import defaultImage from "../assets/defautProfilePic.jpg";
 import { Bounce, toast } from "react-toastify";
+import ProfilePageSkeleton from "../components/ui/Skeletons/ProfilePageSkeleton";
 
 interface Services {
   name: string;
@@ -85,7 +86,7 @@ const ProfilePage: React.FC = () => {
   };
 
   if (!profileData) {
-    return <Spinner clasName="min-h-screen content-center" />;
+    return <ProfilePageSkeleton/>;
   }
 
   return (
