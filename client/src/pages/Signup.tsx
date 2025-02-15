@@ -124,14 +124,11 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
         data.user.lastName
       )
 
-      if(response.ok) {
-        toast.success("SignUp Successfull!", {
-          position: "bottom-right",
-          pauseOnHover: false,
-          transition: Bounce,
-        });
+      if (data.user.isMentor) {
+        navigate("/onboarding");
+      } else {
+        navigate("/dashboard/mentee");
       }
-      navigate(data.user.isMentor ? "/dashboard" : "/dashboard/mentee");
     } catch (error) {
       console.error(error);
       toast.error("Network error. Please try again later.", {

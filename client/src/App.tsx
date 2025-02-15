@@ -21,6 +21,7 @@ import ResetPasswordPage from "./pages/ResetPassword";
 import BookingSuccessPage from "./pages/BookingSuccessful";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import ProtectedBookingRoutes from "./utils/ProtectedBookingRoutes";
+import Onboarding from "./pages/Onboarding";
 
 function App() {
   injectSpeedInsights();
@@ -102,6 +103,7 @@ function App() {
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoutes allowedUserType="mentor" onLogout={handleLogout} />}>
+          <Route path="/onboarding" element={<Onboarding/>} />
           <Route path="/dashboard" element={<MentorDashboard onLogout={handleLogout} />} />
         </Route>
 

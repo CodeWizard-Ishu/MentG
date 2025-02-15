@@ -164,10 +164,10 @@ const Services: React.FC = () => {
               <button
                 type="button"
                 key={option}
-                className={`py-3 px-4 rounded-full border text-center transition-all hover:shadow-md ${
+                className={`py-3 px-4 rounded-xl border-2 text-center text-sm sm:text-base transition-all duration-200 hover:shadow-md ${
                   domains.includes(option)
-                    ? "border-black bg-gray-400 text-black font-medium"
-                    : "bg-white text-black hover:bg-gray-50"
+                    ? "border-blue-500 bg-blue-50 text-blue-700 font-medium"
+                    : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
                 }`}
                 onClick={() => handleDomain(option)}
               >
@@ -179,7 +179,7 @@ const Services: React.FC = () => {
             <Alert variant="destructive" className="mt-4">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                You can select a maximum of {MAX_DOMAINS} domains
+                You can select maximum {MAX_DOMAINS} domains
               </AlertDescription>
             </Alert>
           )}
@@ -194,10 +194,10 @@ const Services: React.FC = () => {
               <button
                 type="button"
                 key={option}
-                className={`py-3 px-4 rounded-full border text-center transition-all duration-200 hover:shadow-md ${
+                className={`py-3 px-4 rounded-xl border-2 text-center text-sm sm:text-base transition-all duration-200 hover:shadow-md ${
                   services.includes(option)
-                    ? "border-black bg-gray-400 text-black font-medium"
-                    : "bg-white text-black hover:bg-gray-50"
+                    ? "border-blue-500 bg-blue-50 text-blue-700 font-medium"
+                    : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
                 }`}
                 onClick={() => handleService(option)}
               >
