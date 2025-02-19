@@ -1,7 +1,89 @@
 import Logo from "../assets/logo.png";
 import { Instagram, Linkedin, MapPin, Twitter, Youtube } from "lucide-react";
+import { Button } from "../components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../components/ui/dialog";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
+import { Bounce, toast } from 'react-toastify';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useState } from 'react';
+import BACKEND_URL from "../endpoint";
+import Spinner from "../components/ui/Spinner";
+
+interface FeedbackFromValues {
+  name: string;
+  email: string;
+  message: string;
+}
 
 const Footer = () => {
+  const [open, setOpen] = useState(false);
+
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required("Name is required"),
+    email: Yup.string()
+      .email("Please enter a valid email address")
+      .matches(
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        "Please enter a valid email address"
+      )
+      .required("Email is required")
+      .trim(),
+    message: Yup.string()
+      .min(10, "Message is too short")
+      .required("Message is required"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      email: '',
+      message: '',
+    },
+    validationSchema,
+    onSubmit: async (values: FeedbackFromValues, { setSubmitting, resetForm }) => {
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/contact`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          toast.success("Thank you for your feedback!", {
+            position: "bottom-right",
+            pauseOnHover: false,
+            transition: Bounce,
+          });
+          resetForm();
+          setOpen(false);
+        } else {
+          toast.error(data.message || "Failed to send feedback");
+        }
+      } catch (error) {
+        console.error("Error sending feedback:", error);
+        toast.error("Failed to send feedback. Please try again later.", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
+
   return (
     <div>
       <footer className="bg-[#08286b] text-white">
@@ -77,33 +159,111 @@ const Footer = () => {
               </a>
               . All Rights Reserved.
             </span>
-            <div className="flex space-x-4 md:space-x-6">
-              <a
-                href="https://www.linkedin.com/company/mentg/"
-                className="text-white hover:text-blue-500 transition-colors"
-                target="_blank"
-              >
-                <Linkedin size={20} />
-              </a>
-              <a
-                href="https://www.instagram.com/mentg.in/"
-                className="text-white hover:text-blue-500 transition-colors"
-                target="_blank"
-              >
-                <Instagram size={20} />
-              </a>
-              <a
-                href="https://x.com/mentg_in"
-                className="text-white hover:text-blue-500 transition-colors"
-              >
-                <Twitter size={20} />
-              </a>
-              <a
-                href="https://www.youtube.com/@MentG_in"
-                className="text-white hover:text-blue-500 transition-colors"
-              >
-                <Youtube size={20} />
-              </a>
+            <div className="flex justify-between md:justify-end items-center">
+              <div className="flex space-x-4 md:space-x-6 md:order-2">
+                <a
+                  href="https://www.linkedin.com/company/mentg/"
+                  className="text-white hover:text-blue-500 transition-colors"
+                  target="_blank"
+                >
+                  <Linkedin size={20} />
+                </a>
+                <a
+                  href="https://www.instagram.com/mentg.in/"
+                  className="text-white hover:text-blue-500 transition-colors"
+                  target="_blank"
+                >
+                  <Instagram size={20} />
+                </a>
+                <a
+                  href="https://x.com/mentg_in"
+                  className="text-white hover:text-blue-500 transition-colors"
+                >
+                  <Twitter size={20} />
+                </a>
+                <a
+                  href="https://www.youtube.com/..MentG_in"
+                  className="text-white hover:text-blue-500 transition-colors"
+                >
+                  <Youtube size={20} />
+                </a>
+              </div>
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    className="bg-white text-black text-sm hover:bg-gray-100 hover:text-black font-medium rounded-md md:mr-6 md:order-1"
+                  >
+                    Feedback
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Send Feedback</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={formik.handleSubmit} className="space-y-4">
+                    <div>
+                      <Input
+                        id="name"
+                        placeholder="Your Name"
+                        {...formik.getFieldProps('name')}
+                        className={`${
+                          formik.touched.name && formik.errors.name
+                            ? "border-2 border-red-500"
+                            : ""
+                        }`}
+                      />
+                      {formik.touched.name && formik.errors.name && (
+                        <p className="text-sm text-red-500 mt-1">{formik.errors.name}</p>
+                      )}
+                    </div>
+                    <div>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Your Email"
+                        {...formik.getFieldProps('email')}
+                        className={`${
+                          formik.touched.email && formik.errors.email
+                            ? "border-2 border-red-500"
+                            : ""
+                        }`}
+                      />
+                      {formik.touched.email && formik.errors.email && (
+                        <p className="text-sm text-red-500 mt-1">{formik.errors.email}</p>
+                      )}
+                    </div>
+                    <div>
+                      <Textarea
+                        id="message"
+                        rows={5}
+                        placeholder="Your Message"
+                        {...formik.getFieldProps('message')}
+                        className={`${
+                          formik.touched.message && formik.errors.message
+                            ? "border-2 border-red-500"
+                            : ""
+                        }`}
+                      />
+                      {formik.touched.message && formik.errors.message && (
+                        <p className="text-sm text-red-500 mt-1">{formik.errors.message}</p>
+                      )}
+                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full"
+                      disabled={formik.isSubmitting}
+                    >
+                      {formik.isSubmitting ? (
+                        <Spinner />
+                      ) : (
+                        "Submit Feedback"
+                      )}
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>

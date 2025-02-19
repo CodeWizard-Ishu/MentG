@@ -554,7 +554,7 @@ export const sendContactFormMail = async (
   const mailOptions = {
     from: "MentG - Contact Form <info@mentg.in>",
     to: "support@mentg.in",
-    subject: "New Contact Form Submission",
+    subject: "Contact/Feedback Submission",
     html: `
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml">
@@ -570,7 +570,7 @@ export const sendContactFormMail = async (
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                             <tr>
                                 <td align="center" style="padding: 20px;">
-                                    <h2 style="color: #4CAF50; margin: 0 0 20px 0; font-size: 24px;">New Contact Form Submission</h2>
+                                    <h2 style="color: #4CAF50; margin: 0 0 20px 0; font-size: 24px;">New Contact/Feedback Message</h2>
                                 </td>
                             </tr>
                             <tr>
