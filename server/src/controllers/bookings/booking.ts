@@ -15,6 +15,10 @@ export const updateBooking = async (req: any, res: any) => {
   const servicePrice = req.body.servicePrice; // Service price as number
   const meetLink = req.body.meetLink;  //google meet link as string
 
+  if(serviceName === "Quick Chat" || serviceName === "Priority DMs" || serviceName === "Webinars" || !meetLink){
+    throw new Error("Service cannot be booked");
+  }
+
   try {
     const mentorProfile = await prisma.mentorProfile.findUnique({
       where: { userId: mentorId },

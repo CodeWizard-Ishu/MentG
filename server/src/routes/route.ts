@@ -44,6 +44,7 @@ import {
 } from "../controllers/bookings/rating";
 import { getAllMentors } from "../controllers/mentors/allMentors";
 import { ContactSubmission } from "../controllers/contactSubmission";
+import { sendReminderEmails } from "../controllers/reminderMail";
 
 const router = express.Router();
 
@@ -55,6 +56,7 @@ router.post('/auth/forgot-password', forgotPassword);
 router.post('/auth/reset-password', resetPassword);
 router.post('/auth/logout', logout)
 cron.schedule('0 0 * * *', cleanupExpiredTokens);
+cron.schedule('30 4 * * 5', sendReminderEmails);
 
 router.post("/api/contact", ContactSubmission);
 

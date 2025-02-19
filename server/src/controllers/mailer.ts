@@ -4,7 +4,7 @@ import Imap from "node-imap";
 
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
   host: process.env.MAIL_SMTPHOST,
   port: 465,
   secure: true,

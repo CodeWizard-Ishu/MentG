@@ -68,6 +68,7 @@ const validationSchema = Yup.object().shape({
     .trim(),
 
   bio: Yup.string()
+    .required("Bio is required")
     .nullable()
     .test("no-urls", "Bio should not contain URLs", (value) => {
       if (!value) return true;
@@ -76,6 +77,7 @@ const validationSchema = Yup.object().shape({
     }),
 
   linkedin: Yup.string()
+    .required("LinkedIn URL is required")
     .nullable()
     .test("linkedin-url", "Please enter a valid LinkedIn URL", (value) => {
       if (!value) return true;
@@ -151,6 +153,7 @@ const validationSchema = Yup.object().shape({
     ),
 
   profilePicture: Yup.string()
+    .required("Profile picture is required")
     .nullable()
     .test("file-size", "Profile picture is too large", (value) => {
       if (!value) return true;
@@ -397,6 +400,11 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                     className="hidden"
                   />
                 </div>
+                {errors.profilePicture && touched.profilePicture && (
+                  <div className="text-red-500 text-sm mt-1">
+                    {errors.profilePicture}
+                  </div>
+                )}
               </div>
 
               {/* <div className="mb-6">
@@ -484,56 +492,62 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                   Social Accounts
                 </label>
                 <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <img
-                      src={LinkedinImage}
-                      alt="LinkedIn"
-                      className="w-8 h-8 m-1"
-                    />
-                    <Field
-                      type="text"
-                      name="linkedin"
-                      className="block w-full border rounded p-2"
-                      placeholder="LinkedIn URL"
-                    />
+                  <div>
+                    <div className="flex gap-2">
+                      <img
+                        src={LinkedinImage}
+                        alt="LinkedIn"
+                        className="w-8 h-8 m-1"
+                      />
+                      <Field
+                        type="text"
+                        name="linkedin"
+                        className="block w-full border rounded p-2"
+                        placeholder="LinkedIn URL"
+                      />
+                    </div>
                     {errors.linkedin && touched.linkedin && (
-                      <div className="text-red-500 text-sm mt-1">
+                      <div className="text-red-500 text-sm mt-1 ml-14">
                         {errors.linkedin}
                       </div>
                     )}
                   </div>
-                  <div className="flex gap-2">
-                    <img
-                      src={InstagramImage}
-                      alt="Instagram"
-                      className="w-8 h-8 m-1"
-                    />
-                    <Field
-                      type="text"
-                      name="instagram"
-                      className="block w-full border rounded p-2"
-                      placeholder="Instagram URL"
-                    />
+                  <div>
+                    <div className="flex gap-2">
+                      <img
+                        src={InstagramImage}
+                        alt="Instagram"
+                        className="w-8 h-8 m-1"
+                      />
+                      <Field
+                        type="text"
+                        name="instagram"
+                        className="block w-full border rounded p-2"
+                        placeholder="Instagram URL"
+                      />
+                    </div>
                     {errors.instagram && touched.instagram && (
-                      <div className="text-red-500 text-sm mt-1">
+                      <div className="text-red-500 text-sm mt-1 ml-14">
                         {errors.instagram}
                       </div>
                     )}
                   </div>
-                  <div className="flex gap-2">
-                    <img
-                      src={TwitterImage}
-                      alt="Twitter/X"
-                      className="w-8 h-8 m-1"
-                    />
-                    <Field
-                      type="text"
-                      name="twitter"
-                      className="block w-full border rounded p-2"
-                      placeholder="Twitter URL"
-                    />
+                  <div>
+                    <div className="flex gap-2">
+                      <img
+                        src={TwitterImage}
+                        alt="Twitter/X"
+                        className="w-8 h-8 m-1"
+                      />
+                      <Field
+                        type="text"
+                        name="twitter"
+                        className="block w-full border rounded p-2"
+                        placeholder="Twitter URL"
+                      />
+                    </div>
                     {errors.twitter && touched.twitter && (
-                      <div className="text-red-500 text-sm mt-1">
+                      <div className="text-red-500 text-sm mt-1 ml-14">
                         {errors.twitter}
                       </div>
                     )}
@@ -545,17 +559,19 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                 <label htmlFor="phoneNumber" className="block font-medium mb-2">
                   Phone Number
                 </label>
-                <div className="flex gap-3">
-                  <PhoneCall className="w-8 h-8 m-1" />
-                  <Field
-                    type="tel"
-                    id="phoneNumber"
-                    name="phoneNumber"
-                    className="block w-full border rounded p-2"
-                    placeholder="Enter your phone number"
-                  />
+                <div>
+                  <div className="flex gap-3">
+                    <PhoneCall className="w-8 h-8 m-1" />
+                    <Field
+                      type="tel"
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      className="block w-full border rounded p-2"
+                      placeholder="Enter your phone number"
+                    />
+                  </div>
                   {errors.phoneNumber && touched.phoneNumber && (
-                    <div className="text-red-500 text-sm mt-1">
+                    <div className="text-red-500 text-sm mt-1 ml-14">
                       {errors.phoneNumber}
                     </div>
                   )}
@@ -578,46 +594,6 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                   />
                 </div>
               </div>
-
-              {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label htmlFor="password" className="block font-medium mb-2">
-                    Password
-                  </label>
-                  <Field
-                    type="password"
-                    id="password"
-                    name="password"
-                    className="block w-full border rounded p-2"
-                    placeholder="Enter a new password"
-                  />
-                  {errors.password && touched.password && (
-                    <div className="text-red-500 text-sm mt-1">
-                      {errors.password}
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <label
-                    htmlFor="confirmPassword"
-                    className="block font-medium mb-2"
-                  >
-                    Confirm Password
-                  </label>
-                  <Field
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    className="block w-full border rounded p-2"
-                    placeholder="Confirm your password"
-                  />
-                  {errors.confirmPassword && touched.confirmPassword && (
-                    <div className="text-red-500 text-sm mt-1">
-                      {errors.confirmPassword}
-                    </div>
-                  )}
-                </div>
-              </div> */}
             </div>
           </div>
           <div className="flex justify-start mt-14">

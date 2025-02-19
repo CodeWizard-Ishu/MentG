@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Zap, Users, Star, Video } from "lucide-react";
+import { Zap, Users, Star, Video, MessageCircleMore, MessageSquareMore, Tv } from "lucide-react";
 import useBookingStore from "../Hooks/useBookingStore";
 import BACKEND_URL from "../endpoint";
 import Logo from "../assets/logo.png";
@@ -70,6 +70,20 @@ const ProfilePage: React.FC = () => {
     }
 
     const selectedServiceData = services.find((s) => s.name === serviceTab);
+
+    if (
+      selectedServiceData?.name === "Quick Chat" ||
+      selectedServiceData?.name === "Priority DMs" ||
+      selectedServiceData?.name === "Webinars"
+    ) {
+      toast.info("This service is coming soon! Meantime, you can book 1:1 sessions.", {
+        position: "top-center",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+      return;
+    }
+
     if (selectedServiceData) {
       setSelectedService({
         name: selectedServiceData.name,
@@ -80,7 +94,8 @@ const ProfilePage: React.FC = () => {
         name: profileData.fullName,
       });
     }
-    if (localStorage.getItem("loggedIn")) navigate(`/availability/${userId}`);
+    if (localStorage.getItem("loggedIn") === "true")
+      navigate(`/availability/${userId}`);
     else navigate(`/login`);
     setLoading(false);
   };
@@ -264,7 +279,10 @@ const ProfilePage: React.FC = () => {
                         >
                           <div className="flex items-center space-x-3 md:space-x-4">
                             <div className="bg-indigo-100 p-2 md:p-3 rounded-full">
-                              <Video className="w-5 h-5 md:w-6 md:h-6 text-black" />
+                              {service.name === "1:1 Sessions" ? (<Video className="w-5 h-5 md:w-6 md:h-6 text-black" />) : <></>}
+                              {service.name === "Quick Chat" ? (<MessageCircleMore className="w-5 h-5 md:w-6 md:h-6 text-black" />) : <></>}
+                              {service.name === "Priority DMs" ? (<MessageSquareMore className="w-5 h-5 md:w-6 md:h-6 text-black" />) : <></>}
+                              {service.name === "Webinars" ? (<Tv className="w-5 h-5 md:w-6 md:h-6 text-black" />) : <></>}
                             </div>
                             <div className="text-left">
                               <h3 className="text-xs md:text-sm font-semibold text-black">

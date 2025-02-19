@@ -19,6 +19,10 @@ export const createCalendarEvent = async (req: any, res: any) => {
       menteeName,
     } = req.body;
 
+    if(serviceName === "Quick Chat" || serviceName === "Priority DMs" || serviceName === "Webinars"){
+      throw new Error("Service cannot be booked");
+    }
+
     const oauth2Client = await getAuthenticatedGoogleClient(parseInt(mentorId));
 
     const calendar = google.calendar({ version: "v3", auth: oauth2Client });
