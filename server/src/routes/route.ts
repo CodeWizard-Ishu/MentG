@@ -56,7 +56,7 @@ router.post('/auth/forgot-password', forgotPassword);
 router.post('/auth/reset-password', resetPassword);
 router.post('/auth/logout', logout)
 cron.schedule('0 0 * * *', cleanupExpiredTokens);
-cron.schedule('30 4 * * 5', sendReminderEmails);
+cron.schedule('0 5 * * 4', sendReminderEmails);
 
 router.post("/api/contact", ContactSubmission);
 
