@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 const prisma = getPrismaClient();
 dotenv.config();
 
+const BATCH_SIZE = 30;
+
 interface ProfileStatus {
   hasServices: boolean;
   hasCalendar: boolean;
@@ -162,50 +164,85 @@ function generateEmailContent(
   `;
 }
 
+async function processMentorBatch(mentors: any[]) {
+  for (const mentor of mentors) {
+    try {
+      const status = await checkProfileStatus(mentor.id);
+
+      if (
+        !status.hasServices ||
+        !status.hasCalendar ||
+        !status.hasAvailability ||
+        !status.hasProfileDetails
+      ) {
+        const mailOptions = {
+          from: "MentG Team <info@mentg.in>",
+          to: mentor.email,
+          subject: "Need your attention here!",
+          html: generateEmailContent(
+            `${mentor.firstName} ${mentor.lastName}`,
+            status
+          ),
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log(`Reminder email sent to ${mentor.email} (ID: ${mentor.id})`);
+        
+        // Add delay between emails to prevent rate limiting
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    } catch (error) {
+      console.error(`Error processing mentor ${mentor.id}:`, error);
+      continue;
+    }
+  }
+}
+
 export async function sendReminderEmails() {
   try {
-    // Get all mentor users
-    const mentors = await prisma.user.findMany({
-      where: {
-        isMentor: true,
-        isActive: true,
-      },
-      include: {
-        mentorProfile: true,
-      },
-    });
+    let processedCount = 0;
+    let lastProcessedId = 0;
 
-    for (const mentor of mentors) {
-      try {
-        const status = await checkProfileStatus(mentor.id);
+    while (true) {
+      // Get next batch of mentors
+      const mentorBatch = await prisma.user.findMany({
+        where: {
+          isMentor: true,
+          isActive: true,
+          id: {
+            gt: lastProcessedId
+          }
+        },
+        orderBy: {
+          id: 'asc'
+        },
+        take: BATCH_SIZE,
+        include: {
+          mentorProfile: true,
+        },
+      });
 
-        // Only send email if any section is incomplete
-        if (
-          !status.hasServices ||
-          !status.hasCalendar ||
-          !status.hasAvailability ||
-          !status.hasProfileDetails
-        ) {
-          const mailOptions = {
-            from: "MentG Team <info@mentg.in>",
-            to: mentor.email,
-            subject: "Need your attention here!",
-            html: generateEmailContent(
-              `${mentor.firstName} ${mentor.lastName}`,
-              status
-            ),
-          };
-
-          await transporter.sendMail(mailOptions);
-          console.log(`Reminder email sent to ${mentor.email}`);
-        }
-      } catch (error) {
-        console.error(`Error processing mentor ${mentor.id}:`, error);
-        continue; // Continue with next mentor even if one fails
+      // Break if no more mentors to process
+      if (mentorBatch.length === 0) {
+        break;
       }
+
+      // Process current batch
+      await processMentorBatch(mentorBatch);
+      
+      // Update counters
+      processedCount += mentorBatch.length;
+      lastProcessedId = mentorBatch[mentorBatch.length - 1].id;
+
+      console.log(`Processed ${processedCount} mentors. Last ID: ${lastProcessedId}`);
+      
+      // Add delay between batches
+      await new Promise(resolve => setTimeout(resolve, 60*60*1000));
     }
+
+    console.log(`Completed processing all mentors. Total processed: ${processedCount}`);
   } catch (error) {
-    console.error("Error in sendTargetedEmails:", error);
+    console.error("Error in sendReminderEmails:", error);
     throw error;
   } finally {
     await prisma.$disconnect();
