@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import BACKEND_URL from "../endpoint";
-import { Bounce, toast } from "react-toastify";
 import FeedbackReportMenu from "./FeedbackReportMenu";
 import { MeetingsSkeleton } from "../components/ui/Skeletons/MenteeDashboardSkeletons";
 
@@ -14,7 +13,7 @@ interface Meeting {
   mentorId: number;
 }
 
-// Utility function to format UTC datetime to IST
+// format UTC datetime to IST
 const formatToIST = (utcDateStr: string): string => {
   const date = new Date(utcDateStr);
 
@@ -48,7 +47,6 @@ const MenteeMeetings = () => {
   useEffect(() => {
     const fetchMeetings = async () => {
       if (!menteeId) {
-        // setError("Mentee ID not found in local storage.");
         setError("Something went Wrong!");
         setLoading(false);
         return;
@@ -69,12 +67,7 @@ const MenteeMeetings = () => {
           }
         );
         if (!response.ok) {
-          // throw new Error("Failed to fetch meetings");
-          toast.error("Failed to fetch meetings", {
-            position: "bottom-right",
-            pauseOnHover: false,
-            transition: Bounce,
-          });
+          throw new Error("Failed to fetch meetings");
         }
 
         const data = await response.json();

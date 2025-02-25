@@ -16,6 +16,10 @@ import Spinner from "./components/ui/Spinner";
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const MentorDashboard = lazy(() => import("./Mentor/MentorDashboard"));
 const MenteeDashboard = lazy(() => import("./Mentee/MenteeDashboard"));
+const MenteeHome = lazy(() => import("./Mentee/Home"));
+const MenteeMeetings = lazy(() => import("./Mentee/Meetings"));
+const MenteeMessages = lazy(() => import("./Mentee/Messages"));
+const MenteeSettings = lazy(() => import("./Mentee/ProfileSettings"));
 const BookingPage = lazy(() => import("./pages/BookingPage"));
 const CheckAvailability = lazy(() => import("./pages/CheckAvailability"));
 const AboutUs = lazy(() => import("./pages/AboutUs"));
@@ -55,7 +59,7 @@ function App() {
     localStorage.setItem("userToken", `Bearer ${token}`);
     localStorage.setItem("loggedIn", "true");
     localStorage.setItem("mentor", isMentor ? "true" : "false");
-    localStorage.setItem("isActive", isActive ? "true" : " false");
+    localStorage.setItem("isActive", isActive ? "true" : "false");
     localStorage.setItem("userId", userId);
     const capitalize = (string: string) => {
       if (!string) return "";
@@ -78,7 +82,7 @@ function App() {
     localStorage.setItem("userToken", `Bearer ${token}`);
     localStorage.setItem("loggedIn", "true");
     localStorage.setItem("mentor", isMentor ? "true" : "false");
-    localStorage.setItem("isActive", isActive ? "true" : " false");
+    localStorage.setItem("isActive", isActive ? "true" : "false");
     localStorage.setItem("userId", userId);
     const capitalize = (string: string) => {
       if (!string) return "";
@@ -119,7 +123,13 @@ function App() {
           </Route>
 
           <Route element={<ProtectedRoutes allowedUserType="mentee" onLogout={handleLogout} />}>
-            <Route path="/dashboard/mentee" element={<MenteeDashboard onLogout={handleLogout} />} />
+            <Route path="/dashboard/mentee" element={<MenteeDashboard onLogout={handleLogout} />}>
+              <Route index element={<MenteeHome />} />
+              <Route path="home" element={<MenteeHome />} />
+              <Route path="meetings" element={<MenteeMeetings />} />
+              <Route path="messages" element={<MenteeMessages />} />
+              <Route path="settings" element={<MenteeSettings />} />
+            </Route>
             {/* Booking Flow Routes */}
             <Route element={<ProtectedBookingRoutes requireService={true} onLogout={handleLogout} />}>
               <Route path="/availability/:mentorId" element={<CheckAvailability />} />

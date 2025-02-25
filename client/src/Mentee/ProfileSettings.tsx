@@ -10,6 +10,7 @@ import LinkedinImage from "../assets/linkedin.png";
 import InstagramImage from "../assets/instagram.png";
 import TwitterImage from "../assets/twitter.png";
 import { ProfileSettingsSkeleton } from "../components/ui/Skeletons/MenteeDashboardSkeletons";
+import { useMenteeDashboardContext } from "./MenteeDashboardContext";
 
 interface FormValues {
   profilePicture: string | null;
@@ -39,10 +40,6 @@ interface User {
   };
 }
 
-interface ProfileDetailsProps {
-  onProfileUpdate?: () => Promise<void>;
-}
-
 const validationSchema = Yup.object().shape({
   firstName: Yup.string()
     .required("First name is required")
@@ -60,7 +57,7 @@ const validationSchema = Yup.object().shape({
     )
     .trim(),
 
-  bio: Yup.string()
+  goals: Yup.string()
     .nullable()
     .test("no-urls", "Bio should not contain URLs", (value) => {
       if (!value) return true;
@@ -129,7 +126,6 @@ const validationSchema = Yup.object().shape({
     .matches(/^(\+\d{1,3}[- ]?)?\d{10}$/, "Please enter a valid phone number")
     .test("phone-format", "Invalid phone number format", (value) => {
       if (!value) return true;
-      // Remove all non-digit characters
       const digitsOnly = value.replace(/\D/g, "");
       return digitsOnly.length >= 10 && digitsOnly.length <= 15;
     }),
@@ -147,55 +143,53 @@ const validationSchema = Yup.object().shape({
     .nullable()
     .test("file-size", "Profile picture is too large", (value) => {
       if (!value) return true;
-      // Check if base64 string size is less than 5MB
       const sizeInBytes = (value.length * 3) / 4;
       const sizeInMB = sizeInBytes / (1024 * 1024);
       return sizeInMB <= 5;
     })
     .test("file-type", "Invalid image format", (value) => {
       if (!value) return true;
-      // Check if the base64 string starts with image data
       return value.startsWith("data:image/");
     }),
 });
 
-const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
+const ProfileDetails: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User | null>(null);
+  const { getMenteeDetails, updateProfilePicture, updateFullName } = useMenteeDashboardContext();
 
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("userToken") ?? "";
 
-  const getMenteeDetails = async () => {
-    const response = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`, {
-      method: "GET",
-      headers: {
-        "Authorization": token,
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
-    const data = await response.json();
-    setUser(data);
-  };
-
   useEffect(() => {
-    getMenteeDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const fetchMenteeDetails = async () => {
+      await getMenteeDetails();
+      const response = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`, {
+        method: "GET",
+        headers: {
+          "Authorization": token,
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      const data = await response.json();
+      setUser(data);
+    };
+    fetchMenteeDetails();
+  }, [getMenteeDetails, userId, token]);
 
-  if (!user) return <ProfileSettingsSkeleton/>;
+  if (!user) return <ProfileSettingsSkeleton />;
 
   const initialValues: FormValues = {
     profilePicture: user.profilePicture,
-    firstName: user.user.firstName,
+    firstName: user.user.firstName ?? "",
     lastName: user.user.lastName ?? "",
     goals: user.goals ?? "",
     phoneNumber: user.phoneNumber ?? "",
     linkedin: user.linkedin ?? "",
     instagram: user.instagram ?? "",
     twitter: user.twitter ?? "",
-    email: user.user.email,
+    email: user.user.email ?? "",
   };
 
   const handleImageUpload = async (
@@ -229,9 +223,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
       img.onload = async () => {
         // Create a canvas element for resizing
         const canvas = document.createElement("canvas");
-        const pica = new Pica(); // Initialize Pica
-
-        // Set desired dimensions for the resized image
+        const pica = new Pica();
         const MAX_WIDTH = 300;
         const MAX_HEIGHT = 300;
 
@@ -251,22 +243,22 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
           }
         }
 
-        canvas.width = width; // Set canvas width
-        canvas.height = height; // Set canvas height
+        canvas.width = width;
+        canvas.height = height;
 
         try {
           // Use Pica to resize the image
           await pica.resize(img, canvas);
           // Convert the resized canvas to a Base64 image
           const resizedImageDataUrl = canvas.toDataURL("image/webp", 0.9);
-          // Get compressed file size in KB
-          setFieldValue("profilePicture", resizedImageDataUrl); // Set the resized image as Base64
+          setFieldValue("profilePicture", resizedImageDataUrl);
+          updateProfilePicture(resizedImageDataUrl); // Update context immediately
         } catch (error) {
           console.error("Error resizing image with Pica:", error);
         }
       };
 
-      reader.readAsDataURL(file); // Read the file as Data URL
+      reader.readAsDataURL(file);
     }
   };
 
@@ -294,16 +286,35 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
           pauseOnHover: false,
           transition: Bounce,
         });
-      }
-
-      toast.success("Changes saved successfully!", {
-        position: "bottom-right",
-        pauseOnHover: false,
-        transition: Bounce,
-      });
-      await getMenteeDetails();
-      if (onProfileUpdate) {
-        await onProfileUpdate();
+      } else {
+        toast.success("Changes saved successfully!", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+        const capitalize = (string: string) => {
+          if (!string) return "";
+          return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+        };
+        const newFullName = `${capitalize(values.firstName)} ${capitalize(values.lastName)}`;
+        updateFullName(newFullName); // Update context
+        await getMenteeDetails(); // Refresh data from server
+        const updatedData = await response.json();
+        if (updatedData && updatedData.user && updatedData.user.firstName) {
+          setUser(updatedData);
+        } else {
+          // If response is malformed, refetch from server
+          const refetchResponse = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`, {
+            method: "GET",
+            headers: {
+              "Authorization": token,
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
+          const refetchedData = await refetchResponse.json();
+          setUser(refetchedData);
+        }
       }
       setSubmitting(false);
     } catch (error) {
@@ -453,7 +464,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                         </div>
                       )}
                     </div>
-                    <div className="flex gpa-2">
+                    <div className="flex gap-2">
                       <img
                         src={TwitterImage}
                         alt="Twitter/X"
@@ -511,39 +522,6 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ onProfileUpdate }) => {
                     />
                   </div>
                 </div>
-
-                {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label className="block font-medium mb-2">Password</label>
-                    <Field
-                      name="password"
-                      type="password"
-                      className="block w-full border rounded p-2"
-                      placeholder="Enter a new password"
-                    />
-                    {errors.password && touched.password && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {errors.password}
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <label className="block font-medium mb-2">
-                      Confirm Password
-                    </label>
-                    <Field
-                      name="confirmPassword"
-                      type="password"
-                      className="block w-full border rounded p-2"
-                      placeholder="Confirm your password"
-                    />
-                    {errors.confirmPassword && touched.confirmPassword && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {errors.confirmPassword}
-                      </div>
-                    )}
-                  </div>
-                </div> */}
 
                 <div className="flex justify-start mt-14">
                   <button

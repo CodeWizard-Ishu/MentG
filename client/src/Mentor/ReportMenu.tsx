@@ -1,18 +1,12 @@
 import { useState } from "react";
 import { MoreVertical, Flag } from "lucide-react";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "../components/ui/dialog";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
+import { Modal } from "../components/ui/modal";
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
 
@@ -59,62 +53,53 @@ const ReportMenu = ({ menteeId, menteeName }: ReportMenuProps) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Report Dialog - Responsive sizing and spacing */}
-      <Dialog
-        open={reportOpen}
-        onOpenChange={(newOpen) => {
-          setReportOpen(newOpen);
-          if (!newOpen) resetForm();
+      {/* Report Dialog */}
+      <Modal
+        isOpen={reportOpen}
+        onClose={() => {
+          setReportOpen(false);
+          resetForm();
         }}
+        title={`Submit Report for Session with ${menteeName}`}
+        description="Please describe the issue you'd like to report"
       >
-        <DialogContent className="w-[95vw] max-w-md mx-auto sm:w-full p-4 sm:p-6 rounded-xl">
-          <DialogHeader className="space-y-2 sm:space-y-3">
-            <DialogTitle className="text-lg sm:text-xl font-semibold">
-              Submit Report for Session with {menteeName}
-            </DialogTitle>
-            <DialogDescription className="text-sm sm:text-base">
-              Please describe the issue you'd like to report
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 sm:space-y-6 py-2 sm:py-4">
-            {/* Report Details - Responsive sizing */}
-            <div className="space-y-2 sm:space-y-3">
-              <label
-                htmlFor="report"
-                className="text-sm sm:text-base font-medium"
-              >
-                Report Details
-              </label>
-              <Textarea
-                id="report"
-                value={report}
-                onChange={(e) => setReport(e.target.value)}
-                placeholder="Please provide more details about the issue..."
-                className="min-h-[80px] sm:min-h-[100px] text-sm sm:text-base resize-y"
-              />
-            </div>
-
-            {/* Buttons - Responsive spacing */}
-            <div className="flex justify-end gap-2 sm:gap-3 pt-2 sm:pt-4">
-              <Button
-                variant="outline"
-                onClick={() => setReportOpen(false)}
-                className="text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSubmit}
-                disabled={!report.trim()}
-                className="text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
-              >
-                Submit Report
-              </Button>
-            </div>
+        <div className="space-y-4 sm:space-y-6 py-2 sm:py-4">
+          {/* Report Details - Responsive sizing */}
+          <div className="space-y-2 sm:space-y-3">
+            <label
+              htmlFor="report"
+              className="text-sm sm:text-base font-medium"
+            >
+              Report Details
+            </label>
+            <Textarea
+              id="report"
+              value={report}
+              onChange={(e) => setReport(e.target.value)}
+              placeholder="Please provide more details about the issue..."
+              className="min-h-[80px] sm:min-h-[100px] text-sm sm:text-base resize-y"
+            />
           </div>
-        </DialogContent>
-      </Dialog>
+
+          {/* Buttons - Responsive spacing */}
+          <div className="flex justify-end gap-2 sm:gap-3 pt-2 sm:pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setReportOpen(false)}
+              className="text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              disabled={!report.trim()}
+              className="text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
+            >
+              Submit Report
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 };
