@@ -108,7 +108,7 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
                 </button>
               </Link>
             ) : (
-              <Link to="/dashboard/mentee">
+              <Link to="/dashboard/mentee/">
                 <button className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-black text-sm md:text-base lg:text-base rounded-md hover:bg-gray-300 transition-colors">
                   Dashboard
                 </button>

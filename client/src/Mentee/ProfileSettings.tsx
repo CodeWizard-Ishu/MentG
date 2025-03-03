@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { Mail, PhoneCall, User } from "lucide-react";
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import * as Yup from "yup";
+import ReactCrop, { Crop } from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 import BACKEND_URL from "../endpoint";
-import Pica from "pica";
 import Spinner from "../components/ui/Spinner";
 import { Bounce, toast } from "react-toastify";
 import LinkedinImage from "../assets/linkedin.png";
@@ -11,6 +12,7 @@ import InstagramImage from "../assets/instagram.png";
 import TwitterImage from "../assets/twitter.png";
 import { ProfileSettingsSkeleton } from "../components/ui/Skeletons/MenteeDashboardSkeletons";
 import { useMenteeDashboardContext } from "./MenteeDashboardContext";
+import { Modal } from "../components/ui/modal";
 
 interface FormValues {
   profilePicture: string | null;
@@ -57,7 +59,7 @@ const validationSchema = Yup.object().shape({
     )
     .trim(),
 
-  goals: Yup.string()
+  bio: Yup.string()
     .nullable()
     .test("no-urls", "Bio should not contain URLs", (value) => {
       if (!value) return true;
@@ -126,6 +128,7 @@ const validationSchema = Yup.object().shape({
     .matches(/^(\+\d{1,3}[- ]?)?\d{10}$/, "Please enter a valid phone number")
     .test("phone-format", "Invalid phone number format", (value) => {
       if (!value) return true;
+      // Remove all non-digit characters
       const digitsOnly = value.replace(/\D/g, "");
       return digitsOnly.length >= 10 && digitsOnly.length <= 15;
     }),
@@ -143,27 +146,34 @@ const validationSchema = Yup.object().shape({
     .nullable()
     .test("file-size", "Profile picture is too large", (value) => {
       if (!value) return true;
+      // Check if base64 string size is less than 5MB
       const sizeInBytes = (value.length * 3) / 4;
       const sizeInMB = sizeInBytes / (1024 * 1024);
       return sizeInMB <= 5;
     })
     .test("file-type", "Invalid image format", (value) => {
       if (!value) return true;
+      // Check if the base64 string starts with image data
       return value.startsWith("data:image/");
     }),
 });
 
 const ProfileDetails: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const { getMenteeDetails, updateProfilePicture, updateFullName } = useMenteeDashboardContext();
+  const [user, setUser] = useState<User>();
+  const { onProfileUpdate } = useMenteeDashboardContext();
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [crop, setCrop] = useState<Crop>({ unit: '%', width: 100, height: 100, x: 0, y: 0 });
+  const imageRef = useRef<HTMLImageElement | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [currentSetFieldValue, setCurrentSetFieldValue] = useState<((field: string, value: any) => void) | null>(null);
 
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("userToken") ?? "";
 
-  useEffect(() => {
-    const fetchMenteeDetails = async () => {
-      await getMenteeDetails();
+  const getMenteeDetails = async () => {
+    try {
       const response = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`, {
         method: "GET",
         headers: {
@@ -172,27 +182,93 @@ const ProfileDetails: React.FC = () => {
         },
         credentials: "include",
       });
+
+      if(!response.ok) {
+        throw new Error("Failed to fetch mentee details");
+      }
+
       const data = await response.json();
       setUser(data);
-    };
-    fetchMenteeDetails();
-  }, [getMenteeDetails, userId, token]);
+    } catch (error) {
+      toast.error(`${error}`,{
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      })
+    }
+  };
 
-  if (!user) return <ProfileSettingsSkeleton />;
+  useEffect(() => {
+    getMenteeDetails();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token, userId]);
+
+  if (!user) return <ProfileSettingsSkeleton/>;
 
   const initialValues: FormValues = {
     profilePicture: user.profilePicture,
-    firstName: user.user.firstName ?? "",
+    firstName: user.user.firstName,
     lastName: user.user.lastName ?? "",
     goals: user.goals ?? "",
     phoneNumber: user.phoneNumber ?? "",
     linkedin: user.linkedin ?? "",
     instagram: user.instagram ?? "",
     twitter: user.twitter ?? "",
-    email: user.user.email ?? "",
+    email: user.user.email,
   };
 
-  const handleImageUpload = async (
+  const getCroppedImg = (image: HTMLImageElement, crop: Crop): Promise<string> => {
+    const canvas = document.createElement('canvas');
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    
+    // Calculate dimensions ensuring we stay within bounds
+    const cropWidth = crop.width * scaleX;
+    const cropHeight = crop.height * scaleY;
+    const cropX = crop.x * scaleX;
+    const cropY = crop.y * scaleY;
+    
+    // Set canvas dimensions
+    canvas.width = 300;
+    canvas.height = 300;
+    
+    const ctx = canvas.getContext('2d');
+    
+    if (!ctx) {
+      return Promise.reject(new Error('Could not get canvas context'));
+    }
+    
+    // Draw the cropped image on the canvas (with resizing)
+    ctx.drawImage(
+      image,
+      cropX,
+      cropY,
+      cropWidth,
+      cropHeight,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+    
+    // Return as Promise resolving to base64 string
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          resolve('');
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          resolve(reader.result as string);
+        };
+        reader.readAsDataURL(blob);
+      }, 'image/webp', 0.9);
+    });
+  };
+
+  const handleImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setFieldValue: (field: string, value: any) => void
@@ -212,60 +288,44 @@ const ProfileDetails: React.FC = () => {
         }
         return;
       }
-      // Create an image element
-      const img = new Image();
+
+      // Store setFieldValue for later use in crop completion
+      setCurrentSetFieldValue(() => setFieldValue);
+      
+      // Read the file and set it for cropping
       const reader = new FileReader();
-
-      reader.onloadend = () => {
-        img.src = reader.result as string; // Set image source to FileReader result
+      reader.onload = () => {
+        setImageSrc(reader.result as string);
+        setShowCropModal(true);
       };
-
-      img.onload = async () => {
-        // Create a canvas element for resizing
-        const canvas = document.createElement("canvas");
-        const pica = new Pica();
-        const MAX_WIDTH = 300;
-        const MAX_HEIGHT = 300;
-
-        let width = img.width;
-        let height = img.height;
-
-        // Calculate new dimensions while maintaining aspect ratio
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-
-        try {
-          // Use Pica to resize the image
-          await pica.resize(img, canvas);
-          // Convert the resized canvas to a Base64 image
-          const resizedImageDataUrl = canvas.toDataURL("image/webp", 0.9);
-          setFieldValue("profilePicture", resizedImageDataUrl);
-          updateProfilePicture(resizedImageDataUrl); // Update context immediately
-        } catch (error) {
-          console.error("Error resizing image with Pica:", error);
-        }
-      };
-
       reader.readAsDataURL(file);
     }
   };
 
-  const handleSubmit = async (
-    values: FormValues,
-    { setSubmitting }: FormikHelpers<FormValues>
-  ) => {
+  const handleCropComplete = async () => {
+    if (imageRef.current && imageSrc && currentSetFieldValue) {
+      try {
+        const croppedImageUrl = await getCroppedImg(imageRef.current, crop);
+        currentSetFieldValue('profilePicture', croppedImageUrl);
+        setShowCropModal(false);
+        setImageSrc(null);
+        
+        // Reset the file input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+      } catch (error) {
+        console.error("Error cropping image:", error);
+        toast.error("Failed to process image", {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        });
+      }
+    }
+  };
+
+  const handleSubmit = async (values: FormValues, { setSubmitting }: FormikHelpers<FormValues>) => {
     try {
       const response = await fetch(
         `${BACKEND_URL}/api/updateMenteeDetails/${userId}`,
@@ -281,263 +341,293 @@ const ProfileDetails: React.FC = () => {
       );
 
       if (!response.ok) {
-        toast.error("Something went wrong!", {
-          position: "bottom-right",
-          pauseOnHover: false,
-          transition: Bounce,
-        });
-      } else {
-        toast.success("Changes saved successfully!", {
-          position: "bottom-right",
-          pauseOnHover: false,
-          transition: Bounce,
-        });
-        const capitalize = (string: string) => {
-          if (!string) return "";
-          return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-        };
-        const newFullName = `${capitalize(values.firstName)} ${capitalize(values.lastName)}`;
-        updateFullName(newFullName); // Update context
-        await getMenteeDetails(); // Refresh data from server
-        const updatedData = await response.json();
-        if (updatedData && updatedData.user && updatedData.user.firstName) {
-          setUser(updatedData);
-        } else {
-          // If response is malformed, refetch from server
-          const refetchResponse = await fetch(`${BACKEND_URL}/api/menteeDetails/${userId}`, {
-            method: "GET",
-            headers: {
-              "Authorization": token,
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          });
-          const refetchedData = await refetchResponse.json();
-          setUser(refetchedData);
-        }
+        throw new Error("Failed to save changes");
       }
-      setSubmitting(false);
+
+      await getMenteeDetails();
+      const newFullName = `${values.firstName} ${values.lastName || ""}`.trim();
+      localStorage.setItem("fullName", newFullName);
+      await onProfileUpdate();
+
+      toast.success("Profile details updated successfully", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
     } catch (error) {
       toast.error(`An error occurred while saving changes, ${error}`, {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
       });
+    } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen p-4">
-      <div>
-        <div className="w-full md:w-2/4">
-          <h2 className="text-2xl font-bold mb-4">Profile Details</h2>
+    <>
+      <div className="min-h-screen p-4">
+        <div>
+          <div className="w-full md:w-2/4">
+            <h2 className="text-2xl font-bold mb-4">Profile Details</h2>
 
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-            enableReinitialize
-          >
-            {({ values, errors, touched, setFieldValue, isSubmitting }) => (
-              <Form>
-                <div className="flex items-center justify-between space-x-6 mb-6">
-                  <div className="relative font-medium">
-                    <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                      {values.profilePicture ? (
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+              enableReinitialize
+            >
+              {({ values, errors, touched, setFieldValue, isSubmitting }) => (
+                <Form>
+                  <div className="flex items-center justify-between space-x-6 mb-6">
+                    <div className="relative font-medium">
+                      <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                        {values.profilePicture ? (
+                          <img
+                            src={values.profilePicture}
+                            alt="Profile"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <User className="w-12 h-12 text-gray-400" />
+                        )}
+                      </div>
+                      Profile Picture
+                    </div>
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="underline font-medium"
+                      >
+                        Upload a photo
+                      </button>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={(e) => handleImageUpload(e, setFieldValue)}
+                        accept="image/*"
+                        className="hidden"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label className="block font-medium mb-2">First Name</label>
+                      <Field
+                        name="firstName"
+                        type="text"
+                        className="block w-full border rounded p-2"
+                        placeholder="Enter your first name"
+                      />
+                      {errors.firstName && touched.firstName && (
+                        <div className="text-red-500 text-sm mt-1">
+                          {errors.firstName}
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block font-medium mb-2">Last Name</label>
+                      <Field
+                        name="lastName"
+                        type="text"
+                        className="block w-full border rounded p-2"
+                        placeholder="Enter your last name"
+                      />
+                      {errors.lastName && touched.lastName && (
+                        <div className="text-red-500 text-sm mt-1">
+                          {errors.lastName}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="block font-medium mb-2">
+                      About Yourself
+                    </label>
+                    <Field
+                      as="textarea"
+                      name="goals"
+                      rows={6}
+                      className="block w-full border rounded p-2"
+                      placeholder="Tell us about yourself"
+                    />
+                    {errors.goals && touched.goals && (
+                      <div className="text-red-500 text-sm mt-1">
+                        {errors.goals}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="block font-medium mb-2">
+                      Social Accounts
+                    </label>
+                    <div className="space-y-2">
+                      <div className="flex gap-2">
                         <img
-                          src={values.profilePicture}
-                          alt="Profile"
-                          className="w-full h-full object-cover"
+                          src={LinkedinImage}
+                          alt="Linkedin"
+                          className="w-8 h-8 m-1"
                         />
-                      ) : (
-                        <User className="w-12 h-12 text-gray-400" />
-                      )}
+                        <Field
+                          name="linkedin"
+                          type="text"
+                          className="block w-full border rounded p-2"
+                          placeholder="LinkedIn URL"
+                        />
+                        {errors.linkedin && touched.linkedin && (
+                          <div className="text-red-500 text-sm mt-1">
+                            {errors.linkedin}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <img
+                          src={InstagramImage}
+                          alt="Instagram"
+                          className="w-8 h-8 m-1"
+                        />
+                        <Field
+                          name="instagram"
+                          type="text"
+                          className="block w-full border rounded p-2"
+                          placeholder="Instagram URL"
+                        />
+                        {errors.instagram && touched.instagram && (
+                          <div className="text-red-500 text-sm mt-1">
+                            {errors.instagram}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex gpa-2">
+                        <img
+                          src={TwitterImage}
+                          alt="Twitter/X"
+                          className="w-8 h-8 m-1"
+                        />
+                        <Field
+                          name="twitter"
+                          type="text"
+                          className="block w-full border rounded p-2"
+                          placeholder="Twitter URL"
+                        />
+                        {errors.twitter && touched.twitter && (
+                          <div className="text-red-500 text-sm mt-1">
+                            {errors.twitter}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    Profile Picture
                   </div>
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="underline font-medium"
+
+                  <div className="mb-4">
+                    <label
+                      htmlFor="phoneNumber"
+                      className="block font-medium mb-2"
                     >
-                      Upload a photo
+                      Phone Number
+                    </label>
+                    <div className="flex gap-3">
+                      <PhoneCall className="w-8 h-8 m-1" />
+                      <Field
+                        type="tel"
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        className="block w-full border rounded p-2"
+                        placeholder="Enter your phone number"
+                      />
+                      {errors.phoneNumber && touched.phoneNumber && (
+                        <div className="text-red-500 text-sm mt-1">
+                          {errors.phoneNumber}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="block font-medium mb-2">Email</label>
+                    <div className="flex gap-3">
+                      <Mail className="w-8 h-8 m-1" />
+                      <Field
+                        name="email"
+                        type="email"
+                        className="block w-full border rounded p-2"
+                        placeholder="Enter your email"
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-start mt-14">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="bg-black text-white px-4 py-2 w-40 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
+                    >
+                      {isSubmitting ? <Spinner /> : "Save Changes"}
                     </button>
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={(e) => handleImageUpload(e, setFieldValue)}
-                      accept="image/*"
-                      className="hidden"
-                    />
                   </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label className="block font-medium mb-2">First Name</label>
-                    <Field
-                      name="firstName"
-                      type="text"
-                      className="block w-full border rounded p-2"
-                      placeholder="Enter your first name"
-                    />
-                    {errors.firstName && touched.firstName && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {errors.firstName}
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <label className="block font-medium mb-2">Last Name</label>
-                    <Field
-                      name="lastName"
-                      type="text"
-                      className="block w-full border rounded p-2"
-                      placeholder="Enter your last name"
-                    />
-                    {errors.lastName && touched.lastName && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {errors.lastName}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <label className="block font-medium mb-2">
-                    About Yourself
-                  </label>
-                  <Field
-                    as="textarea"
-                    name="goals"
-                    rows={6}
-                    className="block w-full border rounded p-2"
-                    placeholder="Tell us about yourself"
-                  />
-                  {errors.goals && touched.goals && (
-                    <div className="text-red-500 text-sm mt-1">
-                      {errors.goals}
-                    </div>
-                  )}
-                </div>
-
-                <div className="mb-4">
-                  <label className="block font-medium mb-2">
-                    Social Accounts
-                  </label>
-                  <div className="space-y-2">
-                    <div className="flex gap-2">
-                      <img
-                        src={LinkedinImage}
-                        alt="Linkedin"
-                        className="w-8 h-8 m-1"
-                      />
-                      <Field
-                        name="linkedin"
-                        type="text"
-                        className="block w-full border rounded p-2"
-                        placeholder="LinkedIn URL"
-                      />
-                      {errors.linkedin && touched.linkedin && (
-                        <div className="text-red-500 text-sm mt-1">
-                          {errors.linkedin}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex gap-2">
-                      <img
-                        src={InstagramImage}
-                        alt="Instagram"
-                        className="w-8 h-8 m-1"
-                      />
-                      <Field
-                        name="instagram"
-                        type="text"
-                        className="block w-full border rounded p-2"
-                        placeholder="Instagram URL"
-                      />
-                      {errors.instagram && touched.instagram && (
-                        <div className="text-red-500 text-sm mt-1">
-                          {errors.instagram}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex gap-2">
-                      <img
-                        src={TwitterImage}
-                        alt="Twitter/X"
-                        className="w-8 h-8 m-1"
-                      />
-                      <Field
-                        name="twitter"
-                        type="text"
-                        className="block w-full border rounded p-2"
-                        placeholder="Twitter URL"
-                      />
-                      {errors.twitter && touched.twitter && (
-                        <div className="text-red-500 text-sm mt-1">
-                          {errors.twitter}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <label
-                    htmlFor="phoneNumber"
-                    className="block font-medium mb-2"
-                  >
-                    Phone Number
-                  </label>
-                  <div className="flex gap-3">
-                    <PhoneCall className="w-8 h-8 m-1" />
-                    <Field
-                      type="tel"
-                      id="phoneNumber"
-                      name="phoneNumber"
-                      className="block w-full border rounded p-2"
-                      placeholder="Enter your phone number"
-                    />
-                    {errors.phoneNumber && touched.phoneNumber && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {errors.phoneNumber}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <label className="block font-medium mb-2">Email</label>
-                  <div className="flex gap-3">
-                    <Mail className="w-8 h-8 m-1" />
-                    <Field
-                      name="email"
-                      type="email"
-                      className="block w-full border rounded p-2"
-                      placeholder="Enter your email"
-                      disabled
-                    />
-                  </div>
-                </div>
-
-                <div className="flex justify-start mt-14">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="bg-black text-white px-4 py-2 w-40 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 font-semibold text-md shadow-md"
-                  >
-                    {isSubmitting ? <Spinner /> : "Save Changes"}
-                  </button>
-                </div>
-              </Form>
-            )}
-          </Formik>
+                </Form>
+              )}
+            </Formik>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Image Crop Modal using the shared Modal component */}
+      <Modal 
+        isOpen={showCropModal && !!imageSrc} 
+        onClose={() => {
+          setShowCropModal(false);
+          setImageSrc(null);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+          }
+        }}
+        title="Crop Profile Picture"
+      >
+        <div className="mb-4 flex justify-center">
+          <ReactCrop
+            crop={crop}
+            onChange={c => setCrop(c)}
+            aspect={1}
+            circularCrop
+          >
+            <img 
+              src={imageSrc || ''} 
+              alt="Crop" 
+              ref={imageRef}
+              style={{ maxHeight: '60vh' }}
+              className="max-w-full"
+            />
+          </ReactCrop>
+        </div>
+        <div className="flex justify-end space-x-2">
+          <button
+            onClick={() => {
+              setShowCropModal(false);
+              setImageSrc(null);
+              if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+              }
+            }}
+            className="px-4 py-2 border border-gray-300 rounded-md"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleCropComplete}
+            className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-700"
+          >
+            Apply
+          </button>
+        </div>
+      </Modal>
+    </>
   );
 };
 

@@ -174,6 +174,7 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
                 <p className="text-sm font-medium">{connection.email}</p>
                 <p className="text-xs text-gray-500">Google Calendar</p>
               </div>
+              {/* in future replace X button with a dropdown which consist of two options: i) disconnect ii) mark as primary calendar */}
               <Button
                 variant="destructive"
                 size="sm"

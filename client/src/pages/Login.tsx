@@ -79,7 +79,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
           transition: Bounce,
         });
       }
-      navigate(data.user.isMentor ? "/dashboard" : "/dashboard/mentee");
+      navigate(data.user.isMentor ? "/dashboard" : "/dashboard/mentee/");
     } catch (error) {
       console.error(error);
       toast.error("Bad Credentials!", {

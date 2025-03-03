@@ -125,7 +125,6 @@ function App() {
           <Route element={<ProtectedRoutes allowedUserType="mentee" onLogout={handleLogout} />}>
             <Route path="/dashboard/mentee" element={<MenteeDashboard onLogout={handleLogout} />}>
               <Route index element={<MenteeHome />} />
-              <Route path="home" element={<MenteeHome />} />
               <Route path="meetings" element={<MenteeMeetings />} />
               <Route path="messages" element={<MenteeMessages />} />
               <Route path="settings" element={<MenteeSettings />} />
