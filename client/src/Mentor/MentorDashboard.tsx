@@ -1,5 +1,5 @@
-import React, { useState, ReactNode, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import BACKEND_URL from "../endpoint";
 import defaultImage from "../assets/defautProfilePic.jpg";
 import {
@@ -17,42 +17,45 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import Home from "./Home";
-import Meetings from "./Meetings";
-import Messages from "./Messages";
-import ProfileDetails from "./ProfileDetails";
-import Testimonials from "./Testimonials";
-import Analytics from "./Analytics";
-import Calender from "./Calender";
-import Payments from "./Payments";
-import Services from "./Services";
 import Logo from "../assets/logo.png";
 import { Bounce, toast } from "react-toastify";
+import { MentorDashboardContextProvider } from "./MentorDashboardContext";
+import { CheckAuth } from "../utils/CheckAuth";
+import Spinner from "../components/ui/Spinner";
 
-interface NavItem {
-  name: string;
-  icon: ReactNode;
-  tab: string;
-}
+const navItems = [
+  { name: "Home", icon: <HomeIcon />, path: ".", exact: true },
+  { name: "Messages", icon: <MessageCircle />, path: "messages" },
+  { name: "Bookings", icon: <PhoneCall />, path: "meetings" },
+  { name: "Services", icon: <Building2 />, path: "services" },
+  { name: "Testimonials", icon: <MessageCircleHeart />, path: "testimonials" },
+  { name: "Calendar", icon: <Calendar />, path: "calendar" },
+  { name: "Analytics", icon: <ChartLine />, path: "analytics" },
+  { name: "Payments", icon: <Wallet />, path: "payments" },
+  { name: "Profile", icon: <UserPen />, path: "settings" },
+];
+
+const capitalize = (string: string) => {
+  if (!string) return "";
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+};
 
 interface MentorDashboardProps {
   onLogout: () => void;
 }
 
 const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
-  const [activeTab, setActiveTab] = useState<string>("home");
   const [profilePicture, setProfilePicture] = useState<string>(defaultImage);
-  const [fullName, setFullName] = useState<string>(
-    localStorage.getItem("fullName") || "Mentor"
-  );
+  const [fullName, setFullName] = useState<string>(localStorage.getItem("fullName") || "Mentor");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("userToken") ?? "";
 
-  const refreshDashboardData = async () => {
-    // Fetch updated user data
+  const onProfileUpdate = useCallback(async () => {
     try {
       const response = await fetch(
         `${BACKEND_URL}/api/mentorDetails/${userId}`,
@@ -64,25 +67,28 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
           credentials: "include",
         }
       );
+
+      if (!response.ok) {
+        throw new Error("Failed fetching mentor details");
+      }
+
       const data = await response.json();
-      if (data.profilePicture) setProfilePicture(data.profilePicture);
-      const capitalize = (string: string) => {
-        if (!string) return "";
-        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-      };
-      const newFullName = `${capitalize(data.user.firstName)} ${
-        capitalize(data.user.lastName) || ""
-      }`.trim();
-      localStorage.setItem("fullName", newFullName);
-      setFullName(newFullName);
+
+      if (data.profilePicture) {
+        setProfilePicture(data.profilePicture);
+      }
+
+      const formattedName = `${capitalize(data.user.firstName)} ${capitalize(data.user.lastName) || ""}`.trim();
+      localStorage.setItem("fullName", formattedName);
+      setFullName(formattedName);
     } catch (error) {
-      toast.error(`Error refreshing dashboard data: ${error}`, {
+      toast.error(`${error}`, {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
       });
     }
-  };
+  }, [token, userId]);
 
   const handleLogout = async () => {
     try {
@@ -94,13 +100,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
         credentials: "include",
       });
       if (response.ok) {
-        localStorage.removeItem("userToken");
-        localStorage.removeItem("loggedIn");
-        localStorage.removeItem("isActive");
-        localStorage.removeItem("mentor");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("fullName");
-        localStorage.removeItem("booking-store");
+        localStorage.clear();
         toast.success("Logged out successfully", {
           position: "bottom-right",
           pauseOnHover: false,
@@ -109,11 +109,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
         navigate("/");
       }
       else{
-        toast.error("Error logging out", {
-          position: "bottom-right",
-          pauseOnHover: false,
-          transition: Bounce,
-        });
+        throw new Error("Logout failed");
       }
     } catch (error) {
       console.error("Error logging out:", error);
@@ -126,221 +122,196 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   };
 
   useEffect(() => {
-    refreshDashboardData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      if (localStorage.getItem("loggedIn") === "true") {
+        const auth = CheckAuth({ onLogout, navigate });
+        auth.checkAuthStatus().then((isValid) => {
+          setIsAuthenticated(isValid);
+        });
+      } else {
+        setIsAuthenticated(false);
+      }
+    }, [ navigate, onLogout ]);
 
-  const navItems: NavItem[] = [
-    { name: "Home", icon: <HomeIcon />, tab: "home" },
-    { name: "Messages", icon: <MessageCircle />, tab: "messages" },
-    { name: "Bookings", icon: <PhoneCall />, tab: "meetings" },
-    { name: "Services", icon: <Building2 />, tab: "services" },
-    { name: "Testimonials", icon: <MessageCircleHeart />, tab: "testimonials" },
-    { name: "Calendar", icon: <Calendar />, tab: "calendar" },
-    { name: "Analytics", icon: <ChartLine />, tab: "analytics" },
-    { name: "Payments", icon: <Wallet />, tab: "payments" },
-    { name: "Profile", icon: <UserPen />, tab: "settings" },
-  ];
-
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case "home":
-        return <Home getProfilePicture={setProfilePicture} />;
-      case "messages":
-        return <Messages />;
-      case "meetings":
-        return <Meetings />;
-      case "services":
-        return <Services />;
-      case "testimonials":
-        return <Testimonials />;
-      case "calendar":
-        return <Calender />;
-      case "analytics":
-        return <Analytics />;
-      case "payments":
-        return <Payments />;
-      case "settings":
-        return <ProfileDetails onProfileUpdate={refreshDashboardData} />;
-      default:
-        return <div>404 Not Found...</div>;
+    useEffect(() => {
+      if (localStorage.getItem("loggedIn") === "true") {
+        onProfileUpdate();
+      } else {
+        navigate("/login");
+      }
+    }, [navigate, onProfileUpdate]);
+  
+    if (isAuthenticated === null) {
+      return <Spinner clasName="min-h-screen content-center" />;
     }
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+  
+    const toggleMobileMenu = () => {
+      setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
 
   return (
-    <div>
-      {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 bg-[#08286b] z-30 shadow-md">
-        <div className="flex items-center justify-between p-4">
-          <div className="flex items-center space-x-2">
-            <a href="/">
+    <MentorDashboardContextProvider value = {{ onProfileUpdate }}>
+      <div>
+        {/* Mobile Header */}
+        <div className="md:hidden fixed top-0 left-0 right-0 bg-[#08286b] z-30 shadow-md">
+          <div className="flex items-center justify-between p-4">
+            <div className="flex items-center space-x-2">
+              <a href="/">
+                <img
+                  src={Logo}
+                  alt="Logo"
+                  className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
+                />
+              </a>
+            </div>
+            <div className="flex items-center space-x-2">
               <img
-                src={Logo}
-                alt="Logo"
-                className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
+                src={profilePicture}
+                alt="User Image"
+                className="w-8 h-8 rounded-full"
               />
-            </a>
+              <button
+                className="p-2 text-white rounded-lg"
+                onClick={toggleMobileMenu}
+              >
+                {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <img
-              src={profilePicture}
-              alt="User Image"
-              className="w-8 h-8 rounded-full"
-            />
-            <button
-              className="p-2 text-white rounded-lg"
-              onClick={toggleMobileMenu}
-            >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
-        </div>
-        <div className="px-4 pb-2">
-          <div className="flex justify-between">
-            <h2 className="text-lg text-white font-semibold">
-              {navItems.find((item) => item.tab === activeTab)?.name || "Home"}
-            </h2>
-            <div>
-              <Link to={`/profile/${userId}`}>
+          <div className="px-4 pb-2">
+            <div className="flex justify-between">
+              <h2 className="text-lg text-white font-semibold">
+                {navItems.find((item) => location.pathname.endsWith(item.path))?.name || "Home"}
+              </h2>
+              <div>
+              <NavLink to={`/profile/${userId}`}>
                 <button className="px-2 py-1 text-black bg-white hover:bg-sky-200 rounded-lg flex items-center">
                   <ExternalLink size={20} /> Go to Profile
                 </button>
-              </Link>
+              </NavLink>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="min-h-screen flex flex-col md:flex-row">
-        {/* Sidebar */}
-        <div
-          className={`
-          w-64 bg-sky-200 shadow-md border-r overflow-y-auto
-          fixed md:relative
-          ${isMobileMenuOpen ? "left-0" : "-left-64"}
-          md:left-0
-          top-0 bottom-0
-          transition-all duration-300 ease-in-out
-          z-40 md:z-auto
-        `}
-        >
-          <div className="space-x-2 top-0 z-50 bg-[#08286b] backdrop-blur-md flex items-center p-6 shadow-sm">
-            <div className="flex items-center">
-              {isMobileMenuOpen ? (
-                <h2 className="text-white font-semibold text-lg">
-                  Navigate to:
-                </h2>
-              ) : (
-                <a href="/">
-                  <img
-                    src={Logo}
-                    alt="Logo"
-                    className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
-                  />
-                </a>
-              )}
-            </div>
-          </div>
-          <nav className="p-4">
-            {navItems.map((item) => (
-              <button
-                key={item.tab}
-                onClick={() => {
-                  setActiveTab(item.tab);
-                  setIsMobileMenuOpen(false);
-                }}
-                className={`w-full flex items-center p-3 rounded-lg mb-2 ${
-                  activeTab === item.tab
-                    ? "bg-gray-400 text-black"
-                    : "hover:bg-sky-200 text-gray-900"
-                }`}
-              >
-                {item.icon}
-                <span className="ml-3">{item.name}</span>
-              </button>
-            ))}
-            {isMobileMenuOpen ? (
-              <hr className="my-4 md:my-6 lg:my-8 border-gray-600 sm:mx-auto" />
-            ) : (
-              ""
-            )}
-
-            <Link to={"/"}>
-              <button
-                onClick={() => {
-                  handleLogout();
-                  onLogout();
-                }}
-                className="w-full mt-5 text-red-500 bg-white hover:bg-red-100  rounded-lg"
-              >
-                {isMobileMenuOpen ? (
-                  <span className="ml-3 p-2 flex items-center">
-                    <LogOut size={20} />
-                    Log Out
-                  </span>
-                ) : (
-                  ""
-                )}
-              </button>
-            </Link>
-          </nav>
-        </div>
-
-        {/* Main Content */}
-        <div className="flex-1  relative">
-          {/* Desktop Header */}
-          <div className="hidden md:block p-4 md:p-6 border-b">
-            <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0">
+        <div className="min-h-screen flex flex-col md:flex-row">
+          {/* Sidebar */}
+          <div
+            className={`
+            w-64 bg-sky-200 shadow-md border-r overflow-y-auto
+            fixed md:relative
+            ${isMobileMenuOpen ? "left-0" : "-left-64"}
+            md:left-0
+            top-0 bottom-0
+            transition-all duration-300 ease-in-out
+            z-40 md:z-auto
+          `}
+          >
+            <div className="space-x-2 top-0 z-50 bg-[#08286b] backdrop-blur-md flex items-center p-6 shadow-sm">
               <div className="flex items-center">
-                <img
-                  src={profilePicture}
-                  alt="User Image"
-                  className="object-cover w-16 h-16 md:w-20 md:h-20 rounded-full"
-                />
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-bold p-2">
-                    {fullName}
+                {isMobileMenuOpen ? (
+                  <h2 className="text-white font-semibold text-lg">
+                    Navigate to:
                   </h2>
+                ) : (
+                  <a href="/">
+                    <img
+                      src={Logo}
+                      alt="Logo"
+                      className="h-8 w-24 md:h-10 md:w-28 lg:h-12 lg:w-36"
+                    />
+                  </a>
+                )}
+              </div>
+            </div>
+            <nav className="p-4 flex flex-col h-[calc(100vh-80px)]">
+              <div className="flex-grow">
+                {navItems.map((item) => (
+                  <NavLink
+                    key={item.path}
+                    to={`/dashboard/${item.path}`}
+                    end={item.exact}
+                    className={({ isActive }) =>
+                      `w-full flex items-center p-3 rounded-lg mb-2 ${
+                        isActive ? "bg-gray-400 text-black" : "hover:bg-sky-200 text-gray-900"
+                      }`
+                    }
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.icon}
+                    <span className="ml-3">{item.name}</span>
+                  </NavLink>
+                ))}
+              </div>
+              
+              {isMobileMenuOpen && (
+                <div className="mt-auto">
+                  <hr className="my-4 border-gray-600" />
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      onLogout();
+                    }}
+                    className="w-full p-3 text-red-500 bg-white hover:bg-red-100 rounded-lg flex items-center"
+                  >
+                    <LogOut size={20} />
+                    <span className="ml-3">Log Out</span>
+                  </button>
+                </div>
+              )}
+            </nav>
+          </div>
+
+          <div className="flex-1 relative">
+            {/* Desktop Header */}
+            <div className="hidden md:block p-4 md:p-6 border-b">
+              <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0">
+                <div className="flex items-center">
+                  <img
+                    src={profilePicture}
+                    alt="User Image"
+                    className="object-cover w-16 h-16 md:w-20 md:h-20 rounded-full"
+                  />
+                  <div>
+                    <h2 className="text-2xl md:text-3xl font-bold p-2">
+                      {fullName}
+                    </h2>
+                  </div>
+                </div>
+                <div className="md:absolute md:flex md:justify-between md:space-x-4 md:top-4 md:right-4 space-y-2 md:space-y-0">
+                  <a href={`/profile/${userId}`} className="block">
+                    <button className="w-full md:w-auto text-black px-4 py-2 border-2 border-black rounded-lg flex items-center justify-center space-x-2 hover:transition-all hover:shadow-gray-700 hover:shadow-md hover:text-gray-700">
+                      <ExternalLink className="w-5 h-5" />
+                      <span>Go to Profile</span>
+                    </button>
+                  </a>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      onLogout();
+                    }}
+                    className="w-full md:w-auto text-red-500 px-4 py-2 border-2 border-red-500 rounded-lg flex items-center justify-center space-x-2 hover:transition-all hover:shadow-red-500 hover:shadow-md hover:text-red-500"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span>Log Out</span>
+                  </button>
                 </div>
               </div>
-              <div className="md:absolute md:flex md:justify-between md:space-x-4 md:top-4 md:right-4 space-y-2 md:space-y-0">
-                <a href={`/profile/${userId}`} className="block">
-                  <button className="w-full md:w-auto text-black px-4 py-2 border-2 border-black rounded-lg flex items-center justify-center space-x-2 hover:transition-all hover:shadow-gray-700 hover:shadow-md hover:text-gray-700">
-                    <ExternalLink className="w-5 h-5" />
-                    <span>Go to Profile</span>
-                  </button>
-                </a>
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    onLogout();
-                  }}
-                  className="w-full md:w-auto text-red-500 px-4 py-2 border-2 border-red-500 rounded-lg flex items-center justify-center space-x-2 hover:transition-all hover:shadow-red-500 hover:shadow-md hover:text-red-500"
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span>Log Out</span>
-                </button>
-              </div>
             </div>
+
+            {/* Main Content Area with padding for mobile header */}
+            <div className="mt-28 md:mt-5 p-2 md:p-8"><Outlet/></div>
           </div>
-
-          {/* Main Content Area with padding for mobile header */}
-          <div className="mt-28 md:mt-5 p-2 md:p-8">{renderTabContent()}</div>
         </div>
-      </div>
 
-      {/* Overlay for mobile menu */}
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
-    </div>
+        {/* Overlay for mobile menu */}
+        {isMobileMenuOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+            onClick={toggleMobileMenu}
+          />
+        )}
+      </div>
+    </MentorDashboardContextProvider>
   );
 };
 

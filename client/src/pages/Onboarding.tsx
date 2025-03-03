@@ -181,7 +181,7 @@ const Onboarding: React.FC = () => {
           });
           
           // Redirect to dashboard
-          navigate("/dashboard");
+          navigate("/dashboard/");
         } catch (error) {
           toast.error(`Error: ${error instanceof Error ? error.message : String(error)}`, {
             position: "bottom-right",

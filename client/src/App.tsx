@@ -14,12 +14,26 @@ import Spinner from "./components/ui/Spinner";
 
 // Lazy load secondary/feature-specific pages
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+
+//mentor dashboard pages
 const MentorDashboard = lazy(() => import("./Mentor/MentorDashboard"));
+const MentorHome = lazy(() => import("./Mentor/Home"));
+const MentorMessages = lazy(() => import("./Mentor/Messages"));
+const MentorMeetings = lazy(() => import("./Mentor/Meetings"));
+const MentorServices = lazy(() => import("./Mentor/Services"));
+const MentorTestimonials = lazy(() => import("./Mentor/Testimonials"));
+const MentorCalendar = lazy(() => import("./Mentor/Calender"));
+const MentorAnalytics = lazy(() => import("./Mentor/Analytics"));
+const MentorPayments = lazy(() => import("./Mentor/Payments"));
+const MentorProfileDetails = lazy(() => import("./Mentor/ProfileDetails"));
+
+//mentee dashboard pages
 const MenteeDashboard = lazy(() => import("./Mentee/MenteeDashboard"));
 const MenteeHome = lazy(() => import("./Mentee/Home"));
-const MenteeMeetings = lazy(() => import("./Mentee/Meetings"));
 const MenteeMessages = lazy(() => import("./Mentee/Messages"));
+const MenteeMeetings = lazy(() => import("./Mentee/Meetings"));
 const MenteeSettings = lazy(() => import("./Mentee/ProfileSettings"));
+
 const BookingPage = lazy(() => import("./pages/BookingPage"));
 const CheckAvailability = lazy(() => import("./pages/CheckAvailability"));
 const AboutUs = lazy(() => import("./pages/AboutUs"));
@@ -31,6 +45,7 @@ const AllMentors = lazy(() => import("./pages/AllMentors"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPassword"));
 const BookingSuccessPage = lazy(() => import("./pages/BookingSuccessful"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 // Skeleton loading fallback
 const SkeletonFallback = () => (
@@ -119,14 +134,24 @@ function App() {
           {/* Protected Routes */}
           <Route element={<ProtectedRoutes allowedUserType="mentor" onLogout={handleLogout} />}>
             <Route path="/onboarding" element={<Onboarding />} />
-            <Route path="/dashboard" element={<MentorDashboard onLogout={handleLogout} />} />
+            <Route path="/dashboard" element={<MentorDashboard onLogout={handleLogout} />} >
+              <Route index element={<MentorHome />} />
+              <Route path="messages" element={<MentorMessages />} />
+              <Route path="meetings" element={<MentorMeetings />} />
+              <Route path="services" element={<MentorServices />} />
+              <Route path="testimonials" element={<MentorTestimonials />} />
+              <Route path="calendar" element={<MentorCalendar />} />
+              <Route path="analytics" element={<MentorAnalytics />} />
+              <Route path="payments" element={<MentorPayments />} />
+              <Route path="settings" element={<MentorProfileDetails />} />
+            </Route>
           </Route>
 
           <Route element={<ProtectedRoutes allowedUserType="mentee" onLogout={handleLogout} />}>
             <Route path="/dashboard/mentee" element={<MenteeDashboard onLogout={handleLogout} />}>
               <Route index element={<MenteeHome />} />
-              <Route path="meetings" element={<MenteeMeetings />} />
               <Route path="messages" element={<MenteeMessages />} />
+              <Route path="meetings" element={<MenteeMeetings />} />
               <Route path="settings" element={<MenteeSettings />} />
             </Route>
             {/* Booking Flow Routes */}
@@ -140,6 +165,8 @@ function App() {
               <Route path="/booking/successfull" element={<BookingSuccessPage />} />
             </Route>
           </Route>
+
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </Router>

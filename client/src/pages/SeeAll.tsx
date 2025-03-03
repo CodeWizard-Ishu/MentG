@@ -102,7 +102,7 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
         ) : (
           <div className="space-x-2 md:space-x-4">
             {mentor ? (
-              <Link to="/dashboard">
+              <Link to="/dashboard/">
                 <button className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-black text-sm md:text-base lg:text-base rounded-md hover:bg-gray-300 transition-colors">
                   Dashboard
                 </button>

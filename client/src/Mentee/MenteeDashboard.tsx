@@ -32,6 +32,7 @@ const capitalize = (string: string) => {
 interface MenteeDashboardProps {
   onLogout: () => void;
 }
+
 const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
   const [profilePicture, setProfilePicture] = useState<string>(defaultImage);
   const [fullName, setFullName] = useState<string>(localStorage.getItem("fullName") || "Mentee");
@@ -235,7 +236,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
             </nav>
           </div>
 
-          <div className="flex-1  relative">
+          <div className="flex-1 relative">
             {/* Desktop Header */}
             <div className="hidden md:block p-4 md:p-6 border-b">
               <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0">
