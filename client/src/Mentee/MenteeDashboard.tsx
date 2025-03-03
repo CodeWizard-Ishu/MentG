@@ -15,7 +15,7 @@ import { Bounce, toast } from "react-toastify";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { CheckAuth } from "../utils/CheckAuth";
 import Spinner from "../components/ui/Spinner";
-import { MentorDashboardContextProvider } from "./MenteeDashboardContext";
+import { MenteeDashboardContextProvider } from "./MenteeDashboardContext";
 
 const navItems = [
   { name: "Home", icon: <HomeIcon />, path: ".", exact: true },
@@ -134,7 +134,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
   };
 
   return (
-    <MentorDashboardContextProvider value = {{ onProfileUpdate }}>
+    <MenteeDashboardContextProvider value = {{ onProfileUpdate }}>
       <div>
         {/* Mobile Header */}
         <div className="md:hidden fixed top-0 left-0 right-0 bg-[#08286b] z-30 shadow-md">
@@ -279,7 +279,7 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
           />
         )}
       </div>
-    </MentorDashboardContextProvider>
+    </MenteeDashboardContextProvider>
   );
 };
 

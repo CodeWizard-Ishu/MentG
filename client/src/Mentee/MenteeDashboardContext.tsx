@@ -6,7 +6,7 @@ interface MenteeDashboardContextType {
 
 const MenteeDashboardContext = createContext<MenteeDashboardContextType | undefined>(undefined);
 
-export const MentorDashboardContextProvider = ({ children, value }: { children: React.ReactNode; value: MenteeDashboardContextType }) => (
+export const MenteeDashboardContextProvider = ({ children, value }: { children: React.ReactNode; value: MenteeDashboardContextType }) => (
   <MenteeDashboardContext.Provider value={value}>{children}</MenteeDashboardContext.Provider>
 );
 
