@@ -91,15 +91,15 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
     }
   };
 
-  const handleGoogleSignup = () => {
-    // Implement Google signup logic
-    console.log("Google Signup");
-  };
+  // const handleGoogleSignup = () => {
+  //   // Implement Google signup logic
+  //   console.log("Google Signup");
+  // };
 
-  const handleLinkedInSignup = () => {
-    // Implement LinkedIn signup logic
-    console.log("LinkedIn Signup");
-  };
+  // const handleLinkedInSignup = () => {
+  //   // Implement LinkedIn signup logic
+  //   console.log("LinkedIn Signup");
+  // };
 
   return (
     <div className="min-h-screen bg-sky-200">
@@ -138,7 +138,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
           </div>
 
           {/* Social Signup Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 sm:space-x-4 mb-6">
+          {/* <div className="flex flex-col sm:flex-row gap-4 sm:space-x-4 mb-6">
             <button
               onClick={handleGoogleSignup}
               disabled
@@ -189,7 +189,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
               </svg>
               <span className="ml-2">LinkedIn</span>
             </button>
-          </div>
+          </div> */}
 
           {/* Divider */}
           <div className="flex items-center my-6">

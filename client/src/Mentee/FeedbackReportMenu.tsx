@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
 import BACKEND_URL from "../endpoint";
+import { Bounce, toast } from "react-toastify";
 
 interface FeedbackReportMenuProps {
   mentorId: number;
@@ -64,18 +65,63 @@ const FeedbackReportMenu: React.FC<FeedbackReportMenuProps> = ({
       if (!response.ok) {
         throw new Error("Failed to submit feedback");
       }
-    } catch (error) {
-      console.error("Error submitting feedback:", error);
+
+      toast.success("Feedback submitted successfully", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(`Error submitting feedback: ${error.message}`,{
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
     } finally {
       resetFeedbackForm();
       setFeedbackOpen(false);
     }
   };
 
-  const handleReportSubmit = () => {
-    console.log({ mentorId, report });
-    resetReportForm();
-    setReportOpen(false);
+  const handleReportSubmit = async () => {
+    try {
+      const reportData = {
+        menteeId: menteeId,
+        mentorId,
+        report: report
+      }
+
+      const response = await fetch(`${BACKEND_URL}/api/reportMeeting/${menteeId}`, {
+        method: "POST",
+        headers: {
+          "Authorization": token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reportData),
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit report");
+      }
+
+      toast.success("Report submitted successfully", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(`${error.message}`,{
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+    } finally {
+      resetReportForm();
+      setReportOpen(false);
+    }
   };
 
   return (

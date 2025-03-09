@@ -43,21 +43,29 @@ const ProfilePage: React.FC = () => {
     const fetchProfileData = async () => {
       try {
         const response = await fetch(
-          `${BACKEND_URL}/api/data/mentor/${userId}`
+          `${BACKEND_URL}/api/data/mentor/${userId}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
         );
-        if (!response.ok) throw new Error("Network response was not ok");
+        if (!response.ok) throw new Error("Oops! Mentor not found.");
         const data = await response.json();
         setProfileData(data);
         if (data.profilePicture) setProfilePicture(data.profilePicture);
         setServices(data.services);
       } catch (error) {
-        console.error("Error fetching profile data:", error);
+        toast.error(`${error}`, {
+          position: "bottom-right",
+          pauseOnHover: false,
+          transition: Bounce,
+        })
       }
     };
 
     fetchProfileData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userId]);
 
   const handleBook = () => {
     if (localStorage.getItem("mentor") === "true" || localStorage.getItem("loggedIn") === "false") {

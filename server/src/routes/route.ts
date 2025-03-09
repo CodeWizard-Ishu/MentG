@@ -45,6 +45,7 @@ import {
 import { getAllMentors } from "../controllers/mentors/allMentors";
 import { ContactSubmission } from "../controllers/contactSubmission";
 import { sendReminderEmails } from "../controllers/reminderMail";
+import { reportBooking } from "../controllers/bookings/reportBooking";
 
 const router = express.Router();
 
@@ -99,4 +100,5 @@ router.post("/api/booking/:id", verifyToken, updateBooking);
 
 router.post("/api/rating/:id", verifyToken, submitRating);
 router.get("/api/getRating/:id", verifyToken, getRatingsForMentor);
+router.post("/api/reportMeeting/:id", verifyToken, reportBooking);
 export default router;

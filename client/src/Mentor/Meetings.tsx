@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import BACKEND_URL from "../endpoint"; // Adjust this import based on your project structure
-import { Bounce, toast } from "react-toastify";
+import BACKEND_URL from "../endpoint";
 import ReportMenu from "./ReportMenu";
 import { MeetingsSkeleton } from "../components/ui/Skeletons/MentorDashboardSkeletons";
 
@@ -70,29 +69,23 @@ const Meetings = () => {
           }
         );
         if (!response.ok) {
-          // throw new Error("Failed to fetch meetings");
-          toast.error("Failed to fetch meetings", {
-            position: "bottom-right",
-            pauseOnHover: false,
-            transition: Bounce,
-          });
+          throw new Error("Failed to fetch meetings");
         }
 
         const data = await response.json();
-        setMeetings(data.bookings);
         setMeetings(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           data.bookings.map((meeting: any) => ({
             menteeName: meeting.menteeName,
-            dateTime: formatToIST(meeting.dateTime),  // Format UTC to IST
-            duration: `${meeting.duration} mins`, // Format duration as needed
+            dateTime: formatToIST(meeting.dateTime),
+            duration: `${meeting.duration} mins`,
             status: meeting.status,
             amount: meeting.amount,
             menteeId: meeting.menteeId,
           }))
         );
-        setTotalCount(data.totalBookingsCount); // Adjust based on your API response structure
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setTotalCount(data.totalBookingsCount);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setError(err.message);
       } finally {

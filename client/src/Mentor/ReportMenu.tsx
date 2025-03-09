@@ -9,6 +9,8 @@ import {
 import { Modal } from "../components/ui/modal";
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
+import { Bounce, toast } from "react-toastify";
+import BACKEND_URL from "../endpoint";
 
 interface ReportMenuProps {
   menteeId: number;
@@ -19,14 +21,51 @@ const ReportMenu = ({ menteeId, menteeName }: ReportMenuProps) => {
   const [reportOpen, setReportOpen] = useState(false);
   const [report, setReport] = useState("");
 
+  const mentorId = localStorage.getItem("userId");
+  const token = localStorage.getItem("userToken") ?? "";
+
   const resetForm = () => {
     setReport("");
   };
 
-  const handleSubmit = () => {
-    console.log({ menteeId, report });
-    resetForm();
-    setReportOpen(false);
+  const handleSubmit = async () => {
+    try {
+      const reportData = {
+        menteeId,
+        mentorId: mentorId,
+        report: report
+      }
+
+      const response = await fetch(`${BACKEND_URL}/api/reportMeeting/${mentorId}`, {
+        method: "POST",
+        headers: {
+          "Authorization": token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reportData),
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit report");
+      }
+
+      toast.success("Report submitted successfully", {
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(`Error submitting feedback: ${error.message}`,{
+        position: "bottom-right",
+        pauseOnHover: false,
+        transition: Bounce,
+      });
+    } finally {
+      resetForm();
+      setReportOpen(false);
+    }
   };
 
   return (
