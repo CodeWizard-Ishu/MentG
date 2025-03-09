@@ -192,11 +192,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
           </div> */}
 
           {/* Divider */}
-          <div className="flex items-center my-6">
+          {/* <div className="flex items-center my-6">
             <div className="flex-grow border-t border-gray-400"></div>
             <span className="px-4 text-gray-500 text-xs sm:text-sm">or</span>
             <div className="flex-grow border-t border-gray-400"></div>
-          </div>
+          </div> */}
 
           <Formik
             initialValues={initialValues}
