@@ -9,13 +9,13 @@ import {
   Users,
   ChevronRight,
   CheckCircle,
-  Search,
   ArrowRight,
   TabletSmartphone,
 } from "lucide-react";
 import ProfileCard from "../components/ui/ProfileCard";
 import Footer from "../components/Footer";
 import LandingSkeleton from "../components/ui/Skeletons/LandingSkeleton";
+import SearchBox from "../components/SearchBox";
 
 interface LandingPageProps {
   loggedIn: boolean;
@@ -23,7 +23,6 @@ interface LandingPageProps {
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
-  const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("Technology");
   const [mentorsData, setMentorsData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -105,12 +104,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
     },
   ];
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Searching for:", searchQuery);
-    // Implement actual search logic here
-  };
-
   return (
     <div className="min-h-screen bg-sky-200">
       {/* Sticky Header */}
@@ -169,27 +162,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
           </p>
 
           {/* Search Section */}
-          <form
-            onSubmit={handleSearch}
-            className="max-w-xl mx-auto mb-8 relative"
-          >
-            <div className="flex items-center">
-              <Search className="absolute left-3 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Find experts by name, category, or skill"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-              />
-              <button
-                type="submit"
-                className="ml-2 bg-[#08286b] text-white px-4 py-3 rounded-lg hover:bg-[#08276bcc] transition"
-              >
-                Search
-              </button>
-            </div>
-          </form>
+          <SearchBox />
 
           <div className="flex justify-center space-x-4">
             <a href="/all-mentors">
