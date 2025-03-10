@@ -119,14 +119,16 @@ const BookingSuccessPage: React.FC = () => {
               <p className="text-gray-600 text-base sm:text-lg mb-6">
                 Your booking is successfully created🎉. <br />
                 An email has been sent to your email address with all details.
+                <br /> <br />
+                To provide ratings/feedback to the mentor after scheduled meeting, please go to your Dashboard under meetings tab.
               </p>
 
               <Link
-                to="/"
+                to="/dashboard/mentee/"
                 rel="noopener noreferrer"
                 className="inline-block bg-[#08286b] hover:bg-[#08276bcc] text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-300 ease-in-out mt-4"
               >
-                Go to Home Page
+                Go to Dashboard
               </Link>
             </div>
             
