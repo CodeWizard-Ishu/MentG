@@ -145,7 +145,7 @@ const EnhancedSearchBox: React.FC = () => {
                   Search Results for "{searchQuery}"
                 </h3>
                 {keywords.length > 0 && (
-                  <div className="mt-1 flex flex-wrap gap-1">
+                  <div className="mt-1 flex justify-center flex-wrap gap-1">
                     {keywords.map((keyword, idx) => (
                       <span
                         key={idx}
@@ -157,7 +157,7 @@ const EnhancedSearchBox: React.FC = () => {
                   </div>
                 )}
                 {usedFallback && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 mt-2">
                     Showing related results
                   </p>
                 )}
@@ -176,13 +176,13 @@ const EnhancedSearchBox: React.FC = () => {
                         alt={`${mentor.firstName} ${mentor.lastName || ''}`}
                         className="w-12 h-12 rounded-full object-cover border border-gray-200"
                       />
-                      <div className="ml-4">
+                      <div className="ml-4 text-left">
                         <h4 className="font-medium text-gray-900">
                           {capitalize(mentor.firstName)}{" "}
                           {mentor.lastName ? capitalize(mentor.lastName) : ""}
                         </h4>
                         <p className="text-sm text-gray-500 line-clamp-1">
-                          {mentor.bio || "No bio available."}
+                          {mentor.bio || ""}
                         </p>
                       </div>
                     </div>
