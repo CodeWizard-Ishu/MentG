@@ -17,8 +17,6 @@ const EnhancedSearchBox: React.FC = () => {
   const [searchResults, setSearchResults] = useState<Mentor[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  const [keywords, setKeywords] = useState<string[]>([]);
-  const [usedFallback, setUsedFallback] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -56,8 +54,6 @@ const EnhancedSearchBox: React.FC = () => {
 
       const data = await response.json();
       setSearchResults(data.mentors || []);
-      setKeywords(data.keywords || []);
-      setUsedFallback(data.usedFallback || false);
     } catch (error) {
       console.error("Error searching mentors:", error);
       setSearchResults([]);
@@ -140,28 +136,6 @@ const EnhancedSearchBox: React.FC = () => {
             </div>
           ) : searchResults.length > 0 ? (
             <div>
-              <div className="p-4 bg-gray-50 border-b">
-                <h3 className="text-sm font-medium text-gray-700">
-                  Search Results for "{searchQuery}"
-                </h3>
-                {keywords.length > 0 && (
-                  <div className="mt-1 flex justify-center flex-wrap gap-1">
-                    {keywords.map((keyword, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
-                      >
-                        {keyword}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                {usedFallback && (
-                  <p className="text-xs text-gray-500 mt-2">
-                    Showing related results
-                  </p>
-                )}
-              </div>
               <div className="divide-y divide-gray-100">
                 {searchResults.map((mentor) => (
                   <Link
