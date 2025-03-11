@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Search, X, Loader2 } from "lucide-react";
+import { Search, X, Loader2, AlertCircle } from "lucide-react";
 import defaultImage from "../assets/defautProfilePic.jpg";
 import { Link } from "react-router-dom";
 
@@ -17,8 +17,54 @@ const EnhancedSearchBox: React.FC = () => {
   const [searchResults, setSearchResults] = useState<Mentor[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Validate search query
+  const validateSearchQuery = (query: string): boolean => {
+    // Empty query is technically valid, but we don't want to search with it
+    if (!query.trim()) {
+      return true;
+    }
+    
+    // Check for minimum length (at least 2 characters)
+    if (query.trim().length < 2) {
+      setValidationError("Search term must be at least 2 characters");
+      return false;
+    }
+    
+    // Check for maximum length (prevent excessive queries)
+    if (query.length > 100) {
+      setValidationError("Search term is too long (maximum 100 characters)");
+      return false;
+    }
+    
+    // Regex to allow alphanumeric characters, spaces, and common punctuation
+    const validSearchPattern = /^[a-zA-Z0-9\s.,'-]+$/;
+    if (!validSearchPattern.test(query)) {
+      setValidationError("Search contains invalid characters");
+      return false;
+    }
+    
+    // Check for common SQL injection patterns
+    const sqlInjectionPatterns = [
+      /(\b(select|insert|update|delete|from|drop|alter|exec|execute|union|where|or|and)\b)/i,
+      /(--|;|\/\*|\*\/|@@)/,
+      /('|"|`)\s*(or|and)\s*('|"|`)\s*=\s*('|"|`)/i
+    ];
+    
+    for (const pattern of sqlInjectionPatterns) {
+      if (pattern.test(query)) {
+        setValidationError("Invalid search query");
+        return false;
+      }
+    }
+    
+    // All checks passed
+    setValidationError(null);
+    return true;
+  };
 
   // Capitalize first letter of each word
   const capitalize = (string: string) => {
@@ -26,12 +72,25 @@ const EnhancedSearchBox: React.FC = () => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
+  // Sanitize input before sending to API
+  const sanitizeInput = (input: string): string => {
+    return input.trim();
+  };
+
   // Handle search submission
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
+
+    const sanitizedQuery = sanitizeInput(searchQuery);
     
-    if (!searchQuery.trim()) {
+    if (!sanitizedQuery) {
       setSearchResults([]);
+      setShowResults(false);
+      return;
+    }
+
+    // Validate query before searching
+    if (!validateSearchQuery(sanitizedQuery)) {
       setShowResults(false);
       return;
     }
@@ -45,7 +104,7 @@ const EnhancedSearchBox: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query: searchQuery }),
+        body: JSON.stringify({ query: sanitizedQuery }),
       });
 
       if (!response.ok) {
@@ -53,12 +112,32 @@ const EnhancedSearchBox: React.FC = () => {
       }
 
       const data = await response.json();
-      setSearchResults(data.mentors || []);
+      
+      // Validate response data
+      if (Array.isArray(data.mentors)) {
+        setSearchResults(data.mentors);
+      } else {
+        setSearchResults([]);
+        console.error("Invalid response format:", data);
+      }
     } catch (error) {
       console.error("Error searching mentors:", error);
       setSearchResults([]);
     } finally {
       setIsSearching(false);
+    }
+  };
+
+  // Handle input change with debounce for better UX
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    
+    // Validate as user types, but don't show error immediately for better UX
+    if (value.trim().length >= 2) {
+      validateSearchQuery(value);
+    } else {
+      setValidationError(null);
     }
   };
 
@@ -90,6 +169,7 @@ const EnhancedSearchBox: React.FC = () => {
     setSearchQuery("");
     setSearchResults([]);
     setShowResults(false);
+    setValidationError(null);
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -105,8 +185,12 @@ const EnhancedSearchBox: React.FC = () => {
             type="text"
             placeholder="Find experts by name, skill, or domain"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-10 py-4 border border-gray-300 rounded-l-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#08286b] transition-all text-base"
+            onChange={handleInputChange}
+            className={`w-full pl-12 pr-10 py-4 border ${
+              validationError ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-[#08286b]"
+            } rounded-l-xl shadow-sm focus:outline-none focus:ring-2 transition-all text-base`}
+            aria-invalid={validationError ? "true" : "false"}
+            aria-describedby={validationError ? "search-error" : undefined}
           />
           {searchQuery && (
             <button
@@ -120,11 +204,26 @@ const EnhancedSearchBox: React.FC = () => {
         </div>
         <button
           type="submit"
-          className="bg-[#08286b] text-white px-6 py-4 rounded-r-xl hover:bg-[#08276bcc] transition whitespace-nowrap"
+          className={`${
+            validationError ? "bg-gray-400 cursor-not-allowed" : "bg-[#08286b] hover:bg-[#08276bcc]"
+          } text-white px-6 py-4 rounded-r-xl transition whitespace-nowrap`}
+          disabled={!!validationError || !searchQuery.trim()}
         >
           Search
         </button>
       </form>
+
+      {/* Validation Error Message */}
+      {validationError && (
+        <div 
+          id="search-error" 
+          className="mt-2 text-red-500 text-sm flex items-center"
+          role="alert"
+        >
+          <AlertCircle size={16} className="mr-1" />
+          {validationError}
+        </div>
+      )}
 
       {/* Search Results Dropdown */}
       {showResults && (
@@ -149,6 +248,11 @@ const EnhancedSearchBox: React.FC = () => {
                         src={mentor.profilePicture || defaultImage}
                         alt={`${mentor.firstName} ${mentor.lastName || ''}`}
                         className="w-12 h-12 rounded-full object-cover border border-gray-200"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src = defaultImage;
+                        }}
                       />
                       <div className="ml-4 text-left">
                         <h4 className="font-medium text-gray-900">
