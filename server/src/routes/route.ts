@@ -46,6 +46,7 @@ import { getAllMentors } from "../controllers/mentors/allMentors";
 import { ContactSubmission } from "../controllers/contactSubmission";
 import { sendReminderEmails } from "../controllers/reminderMail";
 import { reportBooking } from "../controllers/bookings/reportBooking";
+import { searchMentors } from "../controllers/searchBox";
 
 const router = express.Router();
 
@@ -61,6 +62,7 @@ cron.schedule('15 20 * * 5', sendReminderEmails);
 
 router.post("/api/contact", ContactSubmission);
 
+router.post("/api/search", searchMentors)
 router.get("/api/mentor/topMentors", topMentorOfDomain);
 
 router.get("/api/mentor/:id", verifyToken, getMentorData);

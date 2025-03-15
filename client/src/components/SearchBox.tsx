@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Search, X, Loader2, AlertCircle } from "lucide-react";
 import defaultImage from "../assets/defautProfilePic.jpg";
 import { Link } from "react-router-dom";
+import BACKEND_URL from "../endpoint";
 
 interface Mentor {
   id: number;
@@ -23,31 +24,22 @@ const EnhancedSearchBox: React.FC = () => {
 
   // Validate search query
   const validateSearchQuery = (query: string): boolean => {
-    // Empty query is technically valid, but we don't want to search with it
     if (!query.trim()) {
       return true;
     }
-    
-    // Check for minimum length (at least 2 characters)
     if (query.trim().length < 2) {
       setValidationError("Search term must be at least 2 characters");
       return false;
     }
-    
-    // Check for maximum length (prevent excessive queries)
     if (query.length > 100) {
       setValidationError("Search term is too long (maximum 100 characters)");
       return false;
     }
-    
-    // Regex to allow alphanumeric characters, spaces, and common punctuation
     const validSearchPattern = /^[a-zA-Z0-9\s.,'-]+$/;
     if (!validSearchPattern.test(query)) {
       setValidationError("Search contains invalid characters");
       return false;
     }
-    
-    // Check for common SQL injection patterns
     const sqlInjectionPatterns = [
       /(\b(select|insert|update|delete|from|drop|alter|exec|execute|union|where|or|and)\b)/i,
       /(--|;|\/\*|\*\/|@@)/,
@@ -61,23 +53,19 @@ const EnhancedSearchBox: React.FC = () => {
       }
     }
     
-    // All checks passed
     setValidationError(null);
     return true;
   };
 
-  // Capitalize first letter of each word
   const capitalize = (string: string) => {
     if (!string) return "";
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
-  // Sanitize input before sending to API
   const sanitizeInput = (input: string): string => {
     return input.trim();
   };
 
-  // Handle search submission
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
 
@@ -89,7 +77,6 @@ const EnhancedSearchBox: React.FC = () => {
       return;
     }
 
-    // Validate query before searching
     if (!validateSearchQuery(sanitizedQuery)) {
       setShowResults(false);
       return;
@@ -99,7 +86,7 @@ const EnhancedSearchBox: React.FC = () => {
     setShowResults(true);
 
     try {
-      const response = await fetch(`https://search-box-iomr.onrender.com/api/search`, {
+      const response = await fetch(`${BACKEND_URL}/api/search`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -128,12 +115,11 @@ const EnhancedSearchBox: React.FC = () => {
     }
   };
 
-  // Handle input change with debounce for better UX
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
     
-    // Validate as user types, but don't show error immediately for better UX
+    // Validate as user types, but don't show error immediately
     if (value.trim().length >= 2) {
       validateSearchQuery(value);
     } else {
@@ -141,7 +127,6 @@ const EnhancedSearchBox: React.FC = () => {
     }
   };
 
-  // Handle outside clicks to close search results
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -158,13 +143,11 @@ const EnhancedSearchBox: React.FC = () => {
     };
   }, []);
 
-  // Clear results when input changes
   useEffect(() => {
     setSearchResults([]);
     setShowResults(false);
   }, [searchQuery]);
 
-  // Clear search
   const clearSearch = () => {
     setSearchQuery("");
     setSearchResults([]);
