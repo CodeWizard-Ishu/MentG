@@ -44,7 +44,8 @@ const Pricing = lazy(() => import("./pages/Pricing"));
 const AllMentors = lazy(() => import("./pages/AllMentors"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPassword"));
 const BookingSuccessPage = lazy(() => import("./pages/BookingSuccessful"));
-const Onboarding = lazy(() => import("./pages/Onboarding"));
+const OnboardingServices = lazy(() => import("./pages/Onboarding/Service"));
+const OnboardingProfile = lazy(() => import("./pages/Onboarding/Profile"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 // Skeleton loading fallback
@@ -133,7 +134,8 @@ function App() {
 
           {/* Protected Routes */}
           <Route element={<ProtectedRoutes allowedUserType="mentor" onLogout={handleLogout} />}>
-            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/onboarding/services" element={<OnboardingServices />} />
+            <Route path="/onboarding/profile" element={<OnboardingProfile />} />
             <Route path="/dashboard" element={<MentorDashboard onLogout={handleLogout} />} >
               <Route index element={<MentorHome />} />
               <Route path="messages" element={<MentorMessages />} />

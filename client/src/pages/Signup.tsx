@@ -125,7 +125,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
       )
 
       if (data.user.isMentor) {
-        navigate("/onboarding");
+        navigate("/onboarding/services");
       } else {
         navigate("/dashboard/mentee/");
       }
