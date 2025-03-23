@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import BACKEND_URL from "../endpoint";
 import ReportMenu from "./ReportMenu";
 import { MeetingsSkeleton } from "../components/ui/Skeletons/MentorDashboardSkeletons";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// Define interfaces for type safety
 interface Meeting {
   menteeName: string;
   dateTime: string;
@@ -31,12 +31,11 @@ const formatToIST = (utcDateStr: string) => {
   return new Intl.DateTimeFormat("en-IN", istOptions).format(date);
 };
 
+const pageSize = 5;
+
 const Meetings = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 5, // Set default page size
-  });
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,11 +43,12 @@ const Meetings = () => {
   const mentorId = localStorage.getItem("userId");
   const token = localStorage.getItem("userToken") ?? "";
 
+  // Calculate total pages
+  const totalPages = Math.ceil(totalCount / pageSize);
+
   useEffect(() => {
     const fetchMeetings = async () => {
-
       if (!mentorId) {
-        // setError("Mentor ID not found in local storage.");
         setError("Something went Wrong!");
         setLoading(false);
         return;
@@ -56,9 +56,7 @@ const Meetings = () => {
 
       try {
         const response = await fetch(
-          `${BACKEND_URL}/api/mentor/${mentorId}/meetings?page=${
-            pagination.pageIndex + 1
-          }&limit=${pagination.pageSize}`,
+          `${BACKEND_URL}/api/mentor/${mentorId}/meetings?page=${currentPage}&limit=${pageSize}`,
           {
             method: "GET",
             headers: {
@@ -94,32 +92,65 @@ const Meetings = () => {
     };
 
     fetchMeetings();
-  }, [mentorId, pagination.pageIndex, pagination.pageSize, token]);
-
-  if (loading) return <MeetingsSkeleton/>;
-  if (error) return <div className="text-2xl font-semibold">{error}</div>;
-
-  // Calculate total pages
-  const totalPages = Math.ceil(totalCount / pagination.pageSize);
+  }, [mentorId, currentPage, token]);
 
   // Handle pagination changes
   const handleNextPage = () => {
-    if (pagination.pageIndex < totalPages - 1) {
-      setPagination((prev) => ({ ...prev, pageIndex: prev.pageIndex + 1 }));
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
     }
   };
 
   const handlePreviousPage = () => {
-    if (pagination.pageIndex > 0) {
-      setPagination((prev) => ({ ...prev, pageIndex: prev.pageIndex - 1 }));
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
     }
   };
 
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      pageNumbers.push(1);
+      
+      let startPage = Math.max(2, currentPage - 1);
+      let endPage = Math.min(totalPages - 1, currentPage + 1);
+      
+      if (startPage === 2) endPage = Math.min(4, totalPages - 1);
+      if (endPage === totalPages - 1) startPage = Math.max(2, totalPages - 3);
+      
+      if (startPage > 2) pageNumbers.push('...');
+      
+      for (let i = startPage; i <= endPage; i++) {
+        pageNumbers.push(i);
+      }
+      
+      if (endPage < totalPages - 1) pageNumbers.push('...');
+      
+      pageNumbers.push(totalPages);
+    }
+    
+    return pageNumbers;
+  };
+
+  if (loading) return <MeetingsSkeleton/>;
+  if (error) return <div className="text-2xl font-semibold">{error}</div>;
+
   return (
-    <div>
+    <div className="p-4 sm:p-6">
       {/* Recent Meetings */}
-      <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 overflow-x-auto">
-        <h1 className="text-xl font-bold mb-4">Recent Meetings</h1>
+      <h1 className="text-xl font-bold mb-4">Recent Meetings</h1>
+      <div className="bg-white shadow-md rounded-lg overflow-x-auto">
         <div className="min-w-full inline-block align-middle">
           <div className="overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">
@@ -180,31 +211,85 @@ const Meetings = () => {
           </div>
         </div>
       </div>
+      
       {/* Pagination Controls */}
-      <div className="flex justify-between items-center mt-4">
-        <button
-          onClick={handlePreviousPage}
-          disabled={pagination.pageIndex === 0}
-          className="px-4 py-2 text-sm md:text-base bg-gray-300 rounded disabled:bg-gray-200"
-        >
-          {"< Previous"}
-        </button>
+      {totalPages > 0 && (
+        <div className="mt-6">
+          {/* Mobile View (Small Screens) */}
+          <div className="sm:hidden flex flex-col gap-2">
+            <div className="flex justify-center gap-14 w-full">
+              <button
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                className="flex p-2 w-28 justify-center text-white text-sm bg-[#08286b] hover:bg-[#08276bcc] rounded disabled:opacity-50 transition-colors duration-300"
+              >
+                <ChevronLeft size={22}/> Previous
+              </button>
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage >= totalPages}
+                className="flex p-2 w-28 justify-center text-white text-sm bg-[#08286b] hover:bg-[#08276bcc] rounded disabled:opacity-50 transition-colors duration-300"
+              >
+                Next <ChevronRight size={22}/>
+              </button>
+            </div>
+            <div className="flex justify-center items-center space-x-2 overflow-x-auto py-2">
+              {getPageNumbers().map((page, index) => (
+                page === '...' ? 
+                <span key={`ellipsis-${index}`} className="px-2">...</span> :
+                <button
+                  key={`page-${page}`}
+                  onClick={() => typeof page === 'number' && handlePageClick(page)}
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    currentPage === page 
+                      ? 'bg-[#08286b] text-white font-semibold transition-colors duration-300' 
+                      : 'bg-gray-400 hover:bg-gray-300 transition-colors duration-300'
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          {/* Desktop View (Medium screens and up) */}
+          <div className="hidden sm:flex items-center justify-center gap-16">
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className="flex p-2 w-28 justify-center text-white text-sm md:text-base bg-[#08286b] hover:bg-[#08276bcc] rounded disabled:opacity-50 transition-colors duration-300"
+            >
+              <ChevronLeft/> Previous
+            </button>
 
-        <span className="text-sm md:text-base">
-          Page{" "}
-          <strong>
-            {pagination.pageIndex + 1} of {totalPages}
-          </strong>
-        </span>
+            <div className="flex items-center space-x-2">
+              {getPageNumbers().map((page, index) => (
+                page === '...' ? 
+                <span key={`ellipsis-${index}`} className="px-2">...</span> :
+                <button
+                  key={`page-${page}`}
+                  onClick={() => typeof page === 'number' && handlePageClick(page)}
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    currentPage === page 
+                      ? 'bg-[#08286b] text-white font-semibold transition-colors duration-300' 
+                      : 'bg-gray-400 hover:bg-gray-500 transition-colors duration-300'
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
 
-        <button
-          onClick={handleNextPage}
-          disabled={pagination.pageIndex >= totalPages - 1}
-          className="px-4 py-2 text-sm md:text-base bg-gray-300 rounded disabled:bg-gray-200"
-        >
-          {"Next >"}
-        </button>
-      </div>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage >= totalPages}
+              className="flex p-2 w-28 justify-center text-white text-sm md:text-base bg-[#08286b] hover:bg-[#08276bcc] rounded disabled:opacity-50 transition-colors duration-300"
+            >
+              Next <ChevronRight/>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

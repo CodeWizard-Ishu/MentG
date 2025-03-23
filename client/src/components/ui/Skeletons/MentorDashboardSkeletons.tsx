@@ -40,62 +40,88 @@ export const CalendarSkeleton = () => {
   );
 };
 
-// Home Skeleton
 export const HomeSkeleton = () => {
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 animate-pulse">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
-        {[...Array(3)].map((_, index) => (
-          <div key={index} className="bg-white shadow-md rounded-lg p-4 sm:p-6 flex items-center">
-            <div className="mr-4 w-6 h-6 bg-gray-300 rounded-full"></div>
-            <div className="min-w-0">
-              <div className="h-4 bg-gray-300 rounded w-24 mb-2"></div>
-              <div className="h-6 bg-gray-300 rounded w-20"></div>
+    <div className="space-y-6 animate-pulse">
+      {/* Welcome Section Skeleton */}
+      <div className="bg-gradient-to-r from-[#C33764] to-[#08286b] rounded-lg shadow-md overflow-hidden">
+        <div className="flex flex-col md:flex-row items-center">
+          <div className="p-6 md:p-8 text-white flex-1">
+            <div className="h-8 bg-white/30 rounded w-64 mb-2"></div>
+            <div className="h-4 bg-white/30 rounded w-full max-w-md mb-4"></div>
+            <div className="flex flex-wrap gap-4 mt-6">
+              <div className="h-10 bg-white/30 rounded-md w-24"></div>
+              <div className="h-10 bg-white/30 rounded-md w-32"></div>
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* Recent Meetings */}
-      <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 overflow-x-auto mb-8">
-        <div className="h-6 bg-gray-300 rounded w-40 mb-4"></div>
-        <div className="min-w-full inline-block align-middle">
-          <div className="overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  {[...Array(4)].map((_, index) => (
-                    <th key={index} className="p-3">
-                      <div className="h-4 bg-gray-300 rounded w-20"></div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {[...Array(3)].map((_, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {[...Array(4)].map((_, colIndex) => (
-                      <td key={colIndex} className="p-3">
-                        {colIndex === 3 ? (
-                          <div className="h-6 bg-gray-300 rounded-full w-16"></div>
-                        ) : (
-                          <div className="h-4 bg-gray-300 rounded w-24"></div>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="hidden md:flex p-8 justify-center items-center">
+            <div className="bg-white/20 backdrop-blur-sm p-5 rounded-full">
+              <div className="w-16 h-16 bg-white/40 rounded-full"></div>
+            </div>
           </div>
+        </div>
+        <div className="bg-blue-700/30 px-6 py-3">
+          <div className="h-4 bg-white/30 rounded w-72"></div>
         </div>
       </div>
 
-      {/* Notifications Section */}
-      <div className="bg-white shadow-md rounded-lg p-4 sm:p-6">
-        <div className="h-6 bg-gray-300 rounded w-36 mb-4"></div>
-        {/* Empty notifications area */}
+      {/* Stats Cards */}
+      <div className="p-6">
+        <div className="h-6 bg-gray-300 rounded w-32 mb-2"></div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {[...Array(3)].map((_, index) => (
+            <div 
+              key={index} 
+              className="bg-white shadow-md rounded-lg p-4 sm:p-6 flex items-center"
+            >
+              <div className="mr-4 w-8 h-8 bg-gray-300 rounded-full"></div>
+              <div className="min-w-0">
+                <div className="h-4 bg-gray-300 rounded w-24 mb-2"></div>
+                <div className="h-6 bg-gray-300 rounded w-20"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Recent Meetings */}
+      <div className="px-6">
+        <div className="h-6 bg-gray-300 rounded w-40 mb-2"></div>
+        <div className="bg-white shadow-md rounded-lg overflow-x-auto">
+          <div className="min-w-full inline-block align-middle">
+            <div className="overflow-hidden">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    {[...Array(4)].map((_, index) => (
+                      <th key={index} className="p-3 text-left">
+                        <div className="h-4 bg-gray-300 rounded w-20"></div>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {[...Array(3)].map((_, rowIndex) => (
+                    <tr key={rowIndex}>
+                      <td className="p-3">
+                        <div className="h-4 bg-gray-300 rounded w-24"></div>
+                      </td>
+                      <td className="p-3">
+                        <div className="h-4 bg-gray-300 rounded w-32"></div>
+                      </td>
+                      <td className="p-3">
+                        <div className="h-4 bg-gray-300 rounded w-16"></div>
+                      </td>
+                      <td className="p-3">
+                        <div className="h-6 bg-gray-300 rounded-full w-20"></div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

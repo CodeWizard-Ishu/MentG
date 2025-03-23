@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import ProfileCard from "../components/ui/ProfileCard";
 import Logo from "../assets/logo.png";
 import DefaultImage from "../assets/defautProfilePic.jpg";
@@ -7,6 +7,7 @@ import BACKEND_URL from "../endpoint";
 import { Bounce, toast } from "react-toastify";
 import Footer from "../components/Footer";
 import GridLoadingSkeleton from "../components/ui/Skeletons/GridLoadingSkeleton";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface AboutUsProps {
   loggedIn: boolean;
@@ -14,25 +15,51 @@ interface AboutUsProps {
 }
 
 const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get current page from URL or default to 1
+  const getPageFromUrl = () => {
+    const searchParams = new URLSearchParams(location.search);
+    const pageParam = searchParams.get('page');
+    return pageParam ? parseInt(pageParam, 10) : 1;
+  };
+
   const [mentors, setMentors] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(getPageFromUrl());
   const [totalPages, setTotalPages] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
   const capitalize = (string: string) => {
     if (!string) return "";
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
+
+  // Update URL when page changes
+  const updatePageUrl = (page: number) => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set('page', page.toString());
+    navigate(`${location.pathname}?${searchParams.toString()}`, { replace: true });
+  };
+
+  useEffect(() => {
+    setCurrentPage(getPageFromUrl());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]);
+
   useEffect(() => {
     fetchMentors();
+    updatePageUrl(currentPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
   const fetchMentors = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch(
         `${BACKEND_URL}/api/allMentors?page=${currentPage}`
       );
       if (!response.ok) {
-        // throw new Error("Network response was not ok");
         toast.error("Network response was not ok", {
           position: "bottom-right",
           pauseOnHover: false,
@@ -50,12 +77,13 @@ const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
       setMentors(sortedMentors);
       setTotalPages(data.totalPages);
     } catch (error) {
-      // console.error("Error fetching mentors:", error);
       toast.error(`${error}`, {
         position: "bottom-right",
         pauseOnHover: false,
         transition: Bounce,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -69,6 +97,42 @@ const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
     if (currentPage > 1) {
       setCurrentPage((prev) => prev - 1);
     }
+  };
+
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      pageNumbers.push(1);
+      
+      let startPage = Math.max(2, currentPage - 1);
+      let endPage = Math.min(totalPages - 1, currentPage + 1);
+      
+      if (startPage === 2) endPage = Math.min(4, totalPages - 1);
+      if (endPage === totalPages - 1) startPage = Math.max(2, totalPages - 3);
+      
+      if (startPage > 2) pageNumbers.push('...');
+      
+      for (let i = startPage; i <= endPage; i++) {
+        pageNumbers.push(i);
+      }
+      
+      if (endPage < totalPages - 1) pageNumbers.push('...');
+      
+      pageNumbers.push(totalPages);
+    }
+    
+    return pageNumbers;
   };
 
   return (
@@ -124,7 +188,7 @@ const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
           </h1>
           <div className="mt-12 md:mt-16 lg:mt-24 ">
             <div className="bg-white/50 backdrop-blur-sm p-6 sm:p-8 md:p-10 rounded-xl shadow-lg">
-              {mentors.length === 0 ? (
+              {isLoading || mentors.length === 0 ? (
                 <GridLoadingSkeleton />
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
@@ -149,29 +213,80 @@ const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
               )}
             </div>
             {totalPages > 0 && (
-              <div className="flex justify-between items-center mt-4">
-                <button
-                  onClick={handlePreviousPage}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 text-sm md:text-base bg-gray-300 rounded disabled:bg-gray-200"
-                >
-                  {"< Previous"}
-                </button>
+              <div className="mt-8">
+                {/* Mobile View (Small Screens) */}
+                <div className="sm:hidden flex flex-col gap-2">
+                  <div className="flex justify-center gap-14 w-full">
+                    <button
+                      onClick={handlePreviousPage}
+                      disabled={currentPage === 1}
+                      className="flex p-2 w-28 justify-center text-white text-sm bg-[#08286b] hover:bg-[#08276bcc] rounded disabled:opacity-50 transition-colors duration-300"
+                    >
+                      <ChevronLeft size={22}/> Previous
+                    </button>
+                    <button
+                      onClick={handleNextPage}
+                      disabled={currentPage >= totalPages}
+                      className="flex p-2 w-28 justify-center text-white text-sm bg-[#08286b] hover:bg-[#08276bcc] rounded disabled:opacity-50 transition-colors duration-300"
+                    >
+                      Next <ChevronRight size={22}/>
+                    </button>
+                  </div>
+                  <div className="flex justify-center items-center space-x-2 overflow-x-auto py-2">
+                    {getPageNumbers().map((page, index) => (
+                      page === '...' ? 
+                      <span key={`ellipsis-${index}`} className="px-2">...</span> :
+                      <button
+                        key={`page-${page}`}
+                        onClick={() => typeof page === 'number' && handlePageClick(page)}
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                          currentPage === page 
+                            ? 'bg-[#08286b] text-white font-semibold transition-colors duration-300' 
+                            : 'bg-gray-400 hover:bg-gray-300 transition-colors duration-300'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Desktop View (Medium screens and up) */}
+                <div className="hidden sm:flex items-center justify-center gap-20">
+                  <button
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1}
+                    className="flex p-2 w-28 justify-center text-white text-sm md:text-base bg-[#08286b] hover:bg-[#08276bcc] rounded disabled:opacity-50 transition-colors duration-300"
+                  >
+                    <ChevronLeft/> Previous
+                  </button>
 
-                <span>
-                  Page{" "}
-                  <strong>
-                    {currentPage} of {totalPages}
-                  </strong>
-                </span>
+                  <div className="flex items-center space-x-2">
+                    {getPageNumbers().map((page, index) => (
+                      page === '...' ? 
+                      <span key={`ellipsis-${index}`} className="px-2">...</span> :
+                      <button
+                        key={`page-${page}`}
+                        onClick={() => typeof page === 'number' && handlePageClick(page)}
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                          currentPage === page 
+                            ? 'bg-[#08286b] text-white font-semibold transition-colors duration-300' 
+                            : 'bg-gray-400 hover:bg-gray-500 transition-colors duration-300'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
 
-                <button
-                  onClick={handleNextPage}
-                  disabled={currentPage >= totalPages}
-                  className="px-4 py-2 text-sm md:text-base bg-gray-300 rounded disabled:bg-gray-200"
-                >
-                  {"Next >"}
-                </button>
+                  <button
+                    onClick={handleNextPage}
+                    disabled={currentPage >= totalPages}
+                    className="flex p-2 w-28 justify-center text-white text-sm md:text-base bg-[#08286b] hover:bg-[#08276bcc] rounded disabled:opacity-50 transition-colors duration-300"
+                  >
+                    Next <ChevronRight/>
+                  </button>
+                </div>
               </div>
             )}
           </div>
