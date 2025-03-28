@@ -17,7 +17,7 @@ import Header from "../components/Header";
 import BACKEND_URL from "../endpoint"; // Adjust your endpoint import
 import Spinner from "../components/ui/Spinner";
 import useBookingStore from "../Hooks/useBookingStore";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 // Types
 type AvailabilitySlot = {
@@ -93,10 +93,11 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
         const result = await response.json();
         setAvailability(result.data);
       } catch (error) {
-        console.error("Error fetching availability:", error);
-        setError(
-          "Failed to load mentor's availability. Please try again later."
-        );
+        toast.error(`Error fetching availability:${error}`, {
+          pauseOnHover: false,
+          draggable: true,
+        })
+        setError("Failed to load mentor's availability. Please try again later.");
       } finally {
         setIsLoading(false);
       }
@@ -219,15 +220,13 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
       setNoteMessage("");
       setMenteeEmail("");
       toast.info("Your Note has been sent successfully!", {
-        position: "top-center",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } catch (error) {
       toast.error(`${error}. Please try again later.`, {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } finally {
       setIsSendingNote(false);

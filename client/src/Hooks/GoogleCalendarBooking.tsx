@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import BACKEND_URL from "../endpoint";
-import { toast, Bounce } from "react-toastify";
+import { toast } from "react-toastify";
 
 interface BookingDetails {
   mentorId: string;
@@ -51,12 +51,10 @@ const useGoogleCalendarBooking = () => {
       return data.meetLink;
 
     } catch (error) {
-      console.error('Error creating calendar event:', error);
-      toast.error('Failed to create calendar event', {
-        position: "bottom-right",
-        transition: Bounce,
+      toast.error(`Error creating calendar event: ${error}`, {
+        pauseOnHover: false,
+        draggable: true,
       });
-      throw error;
     } finally {
       setIsCreatingEvent(false);
     }

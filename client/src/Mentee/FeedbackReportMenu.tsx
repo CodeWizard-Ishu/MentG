@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
 import BACKEND_URL from "../endpoint";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 interface FeedbackReportMenuProps {
   mentorId: number;
@@ -67,16 +67,14 @@ const FeedbackReportMenu: React.FC<FeedbackReportMenuProps> = ({
       }
 
       toast.success("Feedback submitted successfully", {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(`Error submitting feedback: ${error.message}`,{
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } finally {
       resetFeedbackForm();
@@ -107,16 +105,14 @@ const FeedbackReportMenu: React.FC<FeedbackReportMenuProps> = ({
       }
 
       toast.success("Report submitted successfully", {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(`${error.message}`,{
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } finally {
       resetReportForm();

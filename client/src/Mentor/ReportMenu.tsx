@@ -9,7 +9,7 @@ import {
 import { Modal } from "../components/ui/modal";
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import BACKEND_URL from "../endpoint";
 
 interface ReportMenuProps {
@@ -51,16 +51,14 @@ const ReportMenu = ({ menteeId, menteeName }: ReportMenuProps) => {
       }
 
       toast.success("Report submitted successfully", {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(`Error submitting feedback: ${error.message}`,{
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } finally {
       resetForm();

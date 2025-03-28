@@ -6,7 +6,7 @@ import BACKEND_URL from "../endpoint";
 import ReactCrop, { Crop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import Spinner from "../components/ui/Spinner";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import LinkedinImage from "../assets/linkedin.png";
 import InstagramImage from "../assets/instagram.png";
 import TwitterImage from "../assets/twitter.png";
@@ -211,9 +211,8 @@ const ProfileDetails: React.FC = () => {
       setUser(data);
     } catch (error) {
       toast.error(`${error}`, {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     }
   };
@@ -302,9 +301,8 @@ const ProfileDetails: React.FC = () => {
       // Check file size (5MB = 5 * 1024 * 1024 bytes)
       if (file.size > 5 * 1024 * 1024) {
         toast.error("Image size should not exceed 5MB", {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
         // Reset the file input
         if (fileInputRef.current) {
@@ -339,11 +337,9 @@ const ProfileDetails: React.FC = () => {
           fileInputRef.current.value = "";
         }
       } catch (error) {
-        console.error("Error cropping image:", error);
-        toast.error("Failed to process image", {
-          position: "bottom-right",
+        toast.error(`Error to process the image: ${error}`, {
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
       }
     }
@@ -376,16 +372,13 @@ const ProfileDetails: React.FC = () => {
       await onProfileUpdate();
 
       toast.success("Profile details updated successfully", {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+          draggable: true,
       });
     } catch (error) {
-      console.error(error);
       toast.error(`${error}`, {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } finally {
       setSubmitting(false);

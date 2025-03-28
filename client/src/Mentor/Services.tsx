@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import BACKEND_URL from "../endpoint";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Spinner from "../components/ui/Spinner";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "../components/ui/alert";
@@ -62,9 +62,8 @@ const Services: React.FC = () => {
         setServices(Array.isArray(data.services) ? data.services : []);
       } catch (error) {
         toast.error(`${error}`, {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
       } finally {
         setLoading(false);
@@ -100,9 +99,8 @@ const Services: React.FC = () => {
     setSubmitting(true);
     if (domains.length === 0 || services.length === 0) {
       toast.warning("Please select at least one domain and one service.", {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
       setSubmitting(false);
       return;
@@ -132,15 +130,13 @@ const Services: React.FC = () => {
       }
 
       toast.success("Profile updated successfully!", {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } catch (error) {
       toast.error(`Failed to update profile, ${error}`, {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } finally {
       setSubmitting(false);

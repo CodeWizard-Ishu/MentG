@@ -10,7 +10,7 @@ import {
 } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import BACKEND_URL from "../endpoint";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Spinner from "../components/ui/Spinner";
 import CalendarIntegration from "./CalenderConnection";
 import { CalendarSkeleton } from "../components/ui/Skeletons/MentorDashboardSkeletons";
@@ -191,9 +191,8 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
 
       if (!response.ok) {
         toast.error("Failed to fetch availability", {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
         return;
       }
@@ -224,9 +223,8 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
       setSchedule(newSchedule);
     } catch (err) {
       toast.error(`${err}`, {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } finally {
       setLoading(false);
@@ -274,9 +272,8 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
         value <= currentDaySchedule.timeSlot.startTime
       ) {
         toast.warning("End time must be after start time.", {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
         return prev;
       }
@@ -289,9 +286,8 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
         value >= currentDaySchedule.timeSlot.endTime
       ) {
         toast.warning("Start time must be before end time.", {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
         return prev;
       }
@@ -336,9 +332,8 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
 
     if (!isCalendarConnected) {
       toast.error("Please connect your calendar account before saving availability.", {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
       return;
     }
@@ -374,17 +369,15 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
       }
 
       toast.success("Your changes have been saved successfully!", {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (error) {
       toast.error(`Failed to save schedule: ${error}`, {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } finally {
       setSubmitting(false);

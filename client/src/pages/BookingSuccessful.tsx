@@ -6,7 +6,7 @@ import Header from "../components/Header";
 import useBookingStore from "../Hooks/useBookingStore";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Bounce, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import BACKEND_URL from "../endpoint";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -62,9 +62,8 @@ const BookingSuccessPage: React.FC = () => {
 
         if (data.success) {
           toast.success("Thank you for your feedback!", {
-            position: "bottom-right",
             pauseOnHover: false,
-            transition: Bounce,
+            draggable: true,
           });
           resetForm();
         } else {
@@ -72,9 +71,8 @@ const BookingSuccessPage: React.FC = () => {
         }
       } catch (error) {
         toast.error(`Failed to send feedback : ${error}`, {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
       } finally {
         setSubmitting(false);

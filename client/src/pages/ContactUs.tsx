@@ -1,7 +1,7 @@
 import { MapPin, Mail, PhoneCall, Send } from "lucide-react";
 import Footer from "../components/Footer";
 import Spinner from "../components/ui/Spinner";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import contactImage from "../assets/contact-bg-image.png";
 import Header from "../components/Header";
 import { Label } from "../components/ui/label";
@@ -56,20 +56,17 @@ const ContactUs = () => {
 
       if (data.success) {
         toast.success("Your message has been sent successfully!", {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
         resetForm();
       } else {
         toast.error(data.message || "Failed to send message");
       }
     } catch (error) {
-      console.error("Error sending message:", error);
-      toast.error("Failed to send message. Please try again later.", {
-        position: "bottom-right",
+      toast.error(`Failed to send message: ${error}`, {
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } finally {
       setSubmitting(false);

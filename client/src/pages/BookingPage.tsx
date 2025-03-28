@@ -18,7 +18,7 @@ import BACKEND_URL from "../endpoint";
 import useBookingStore from "../Hooks/useBookingStore";
 import useGoogleCalendarBooking from "../Hooks/GoogleCalendarBooking";
 import { useNavigate, useParams } from "react-router-dom";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Spinner from "../components/ui/Spinner";
 
 interface PaymentInfo {
@@ -149,7 +149,10 @@ const BookingPage: React.FC = () => {
         }
         setPaymentInfo(info);
       } catch (error) {
-        console.error("Error fetching payment information:", error);
+        toast.error(`Error fetching payment information: ${error}`, {
+          pauseOnHover: false,
+          draggable: true,
+        })
       } finally {
         setIsLoading(false);
       }
@@ -203,7 +206,6 @@ const BookingPage: React.FC = () => {
       // Creating event with dateTime in IST
       const eventDateTime = new Date(selectedSlot.date);
       eventDateTime.setHours(selectedSlot.startTime.getHours(), selectedSlot.startTime.getMinutes(), 0, 0);
-      console.log(eventDateTime);
 
       const duration = calculateDuration(
         selectedSlot.startTime,
@@ -253,11 +255,9 @@ const BookingPage: React.FC = () => {
       }
       navigate('/booking/successfull', { state: { bookingSuccess: true } })
     } catch (error) {
-      console.error("error creating booking:", error);
-      toast.error("Failed to create booking!", {
-        position: "bottom-right",
+      toast.error(`Failed to create booking: ${error}`, {
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } finally {
       setSubmitting(false);

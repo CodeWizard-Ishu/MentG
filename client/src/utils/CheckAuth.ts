@@ -1,4 +1,4 @@
-import { Bounce, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import BACKEND_URL from '../endpoint';
 
 interface CheckAuthProps {
@@ -41,9 +41,8 @@ export const CheckAuth = ({onLogout, navigate}: CheckAuthProps) => {
         }
 
         toast.info("Your session has expired. Please log in again.", {
-          position: "top-center",
-          pauseOnHover: true,
-          transition: Bounce,
+          pauseOnHover: false,
+          draggable: true,
         });
 
         navigate("/login");
@@ -51,7 +50,10 @@ export const CheckAuth = ({onLogout, navigate}: CheckAuthProps) => {
       }
       return true;
     } catch (error) {
-      console.error("Auth check failed:", error);
+      toast.error(`Auth check failed: ${error}`,{
+        pauseOnHover: false,
+        draggable: true,
+      })
       navigate("/login");
       return false;
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "../components/ui/button";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import BACKEND_URL from "../endpoint";
 import { CalendarDays, ChevronDown, X } from "lucide-react";
 import {
@@ -63,9 +63,14 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
         } else {
           onConnectionChange?.(false);
         }
+      } else{
+        throw new Error("Error fetching calendar connection")
       }
     } catch (error) {
-      console.error("Error fetching calendar connections:", error);
+      toast.error(`${error}`,{
+        pauseOnHover: false,
+        draggable: true,
+      })
     } finally {
       setIsLoading(false);
     }
@@ -80,9 +85,8 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
       window.location.href = `${BACKEND_URL}/api/auth/google/connect?userId=${userId}&redirectUrl=${encodeURIComponent(currentUrl)}`;
     } catch (error) {
       toast.error(`Failed to initiate Google Calendar connection : ${error}`, {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     }
   };
@@ -105,16 +109,14 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
         setConnection(null);
         onConnectionChange?.(false);
         toast.success("Calendar disconnected successfully", {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
       }
     } catch (error) {
       toast.error(`Failed to disconnect calendar : ${error}`, {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     }
   };
@@ -126,7 +128,8 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
     
     if (connectionStatus === 'success') {
       toast.success('Google Calendar Connected Successfully!', {
-        position: 'bottom-right'
+        pauseOnHover: false,
+        draggable: true,
       });
       fetchCalendarConnections();
       
@@ -135,7 +138,8 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
       window.history.replaceState({}, document.title, newUrl);
     } else if (connectionStatus === 'error') {
       toast.error('Failed to connect Google Calendar', {
-        position: 'bottom-right'
+        pauseOnHover: false,
+        draggable: true,
       });
       // Clean up the URL
       const newUrl = window.location.pathname;

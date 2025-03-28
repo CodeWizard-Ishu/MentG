@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BACKEND_URL from "../../endpoint";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Spinner from "../../components/ui/Spinner";
 import { AlertCircle, CheckCircle } from "lucide-react";
 import { Alert, AlertDescription } from "../../components/ui/alert";
@@ -65,9 +65,8 @@ const OnboardingServices: React.FC = () => {
         setServices(Array.isArray(data.services) ? data.services : []);
       } catch (error) {
         toast.error(`${error}`, {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
       } finally {
         setFetchLoading(false);
@@ -99,17 +98,15 @@ const OnboardingServices: React.FC = () => {
   const validateStep1 = () => {
     if (domains.length === 0) {
       toast.warning("Please select at least one domain", {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
       return false;
     }
     if (services.length === 0) {
       toast.warning("Please select at least one service", {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
       return false;
     }
@@ -143,14 +140,10 @@ const OnboardingServices: React.FC = () => {
 
       navigate("/onboarding/profile");
     } catch (error) {
-      toast.error(
-        `Error: ${error instanceof Error ? error.message : String(error)}`,
-        {
-          position: "bottom-right",
-          pauseOnHover: false,
-          transition: Bounce,
-        }
-      );
+      toast.error(`Error: ${error instanceof Error ? error.message : String(error)}`, {
+        pauseOnHover: false,
+        draggable: true,
+      });
     } finally {
       setLoading(false);
     }

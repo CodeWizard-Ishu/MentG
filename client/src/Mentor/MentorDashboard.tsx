@@ -18,7 +18,7 @@ import {
   X,
 } from "lucide-react";
 import Logo from "../assets/logo.png";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { MentorDashboardContextProvider } from "./MentorDashboardContext";
 import { CheckAuth } from "../utils/CheckAuth";
 import Spinner from "../components/ui/Spinner";
@@ -83,9 +83,8 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
       setFullName(formattedName);
     } catch (error) {
       toast.error(`${error}`, {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     }
   }, [token, userId]);
@@ -102,9 +101,8 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
       if (response.ok) {
         localStorage.clear();
         toast.success("Logged out successfully", {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
         navigate("/");
       }
@@ -112,11 +110,9 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
         throw new Error("Logout failed");
       }
     } catch (error) {
-      console.error("Error logging out:", error);
-      toast.error(`Error logging out`, {
-        position: "bottom-right",
+      toast.error(`${error}`, {
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     }
   };

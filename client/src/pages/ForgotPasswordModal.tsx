@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { Bounce, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import BACKEND_URL from '../endpoint';
 import Spinner from '../components/ui/Spinner';
 
@@ -34,9 +34,8 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen, onClo
 
       if (response.ok) {
         toast.success('Password reset link sent to your email!', {
-          position: 'bottom-right',
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
         onClose();
       } else {
@@ -44,9 +43,8 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen, onClo
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to send reset link', {
-        position: 'bottom-right',
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } finally {
       setLoading(false);

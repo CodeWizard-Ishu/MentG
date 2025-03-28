@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import BACKEND_URL from "../endpoint";
 import Logo from "../assets/logo.png";
 import Spinner from "../components/ui/Spinner";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import ForgotPasswordModal from "./ForgotPasswordModal";
 
 interface LoginPageProps {
@@ -62,6 +62,15 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
         credentials: "include",
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(errorData.message || "Something went wrong!", {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
+      }
+
       const data = await response.json();
       onLogin(
         data.token,
@@ -71,22 +80,18 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
         data.user.firstName,
         data.user.lastName
       );
+      toast.success("Login Successful!", {
+        pauseOnHover: false,
+        draggable: true,
+      });
 
-      if (response.ok) {
-        toast.success("Login Successful!", {
-          position: "bottom-right",
-          pauseOnHover: false,
-          transition: Bounce,
-        });
-      }
       navigate(data.user.isMentor ? "/dashboard/" : "/dashboard/mentee/");
     } catch (error) {
-      console.error(error);
-      toast.error("Bad Credentials!", {
-        position: "bottom-right",
+      toast.error(`Network Error: ${error}`, {
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
+    } finally {
       setLoading(false);
     }
   };

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import BACKEND_URL from "../endpoint";
 import TestimonialCard from "../components/ui/TestimonialCard";
 import Spinner from "../components/ui/Spinner";
+import { toast } from "react-toastify";
 
 // Define interfaces for the API response data structure
 interface User {
@@ -55,7 +56,10 @@ const Testimonials = () => {
           setTestimonials(data as Testimonial[]);
         }
       } catch (error) {
-        console.error("Error fetching ratings:", error);
+        toast.error(`${error}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
         setTestimonials([]);
       } finally {
         setLoading(false);

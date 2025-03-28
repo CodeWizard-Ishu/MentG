@@ -4,6 +4,7 @@ import BACKEND_URL from "../endpoint";
 import FeedbackReportMenu from "./FeedbackReportMenu";
 import { MeetingsSkeleton } from "../components/ui/Skeletons/MenteeDashboardSkeletons";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { toast } from "react-toastify";
 
 interface Meeting {
   mentorName: string;
@@ -90,8 +91,7 @@ const MenteeMeetings = () => {
 
         const data = await response.json();
         setMeetings(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          data.bookings.map((meeting: any) => ({
+          data.bookings.map((meeting: Meeting) => ({
             mentorName: meeting.mentorName,
             dateTime: formatToIST(meeting.dateTime),
             duration: `${meeting.duration} mins`,
@@ -114,17 +114,15 @@ const MenteeMeetings = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, pageSize, menteeId, token]);
 
-  if (loading) return <MeetingsSkeleton/>;
-  if (error) return <div className="text-2xl font-semibold">{error}</div>;
-
+  
   const totalPages = Math.ceil(totalCount / pageSize);
-
+  
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
-
+  
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -134,7 +132,7 @@ const MenteeMeetings = () => {
   const handlePageClick = (page: number) => {
     setCurrentPage(page);
   };
-
+  
   const getPageNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
@@ -165,6 +163,12 @@ const MenteeMeetings = () => {
     
     return pageNumbers;
   };
+  
+  if (loading) return <MeetingsSkeleton/>;
+  if (error) {
+    toast.error(`${error}`, { pauseOnHover: false, draggable: true });
+    return null;
+  }
 
   return (
     <div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import BACKEND_URL from "../../endpoint";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Spinner from "../../components/ui/Spinner";
 import ReactCrop, { Crop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -123,17 +123,15 @@ const OnboardingProfile: React.FC = () => {
         localStorage.setItem("fullName", newFullName);
 
         toast.success("Signup Successfull !", {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
 
         navigate("/dashboard/");
       } catch (error) {
         toast.error(`Error: ${error instanceof Error ? error.message : String(error)}`, {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
       } finally {
         setLoading(false);
@@ -164,9 +162,8 @@ const OnboardingProfile: React.FC = () => {
         });
       } catch (error) {
         toast.error(`Error: ${error instanceof Error ? error.message : String(error)}`, {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
       } finally {
         setFetchLoading(false);
@@ -236,9 +233,8 @@ const OnboardingProfile: React.FC = () => {
       // Check file size (5MB = 5 * 1024 * 1024 bytes)
       if (file.size > 5 * 1024 * 1024) {
         toast.error("Image size should not exceed 5MB", {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
         // Reset the file input
         if (fileInputRef.current) {
@@ -273,11 +269,9 @@ const OnboardingProfile: React.FC = () => {
           fileInputRef.current.value = "";
         }
       } catch (error) {
-        console.error("Error cropping image:", error);
-        toast.error("Failed to process image", {
-          position: "bottom-right",
+        toast.error(`Error to process the image: ${error}`, {
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
       }
     }

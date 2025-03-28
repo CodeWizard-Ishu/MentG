@@ -4,7 +4,7 @@ import ProfileCard from "../components/ui/ProfileCard";
 import Logo from "../assets/logo.png";
 import DefaultImage from "../assets/defautProfilePic.jpg";
 import BACKEND_URL from "../endpoint";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Footer from "../components/Footer";
 import GridLoadingSkeleton from "../components/ui/Skeletons/GridLoadingSkeleton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -61,9 +61,8 @@ const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
       );
       if (!response.ok) {
         toast.error("Network response was not ok", {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
       }
       const data = await response.json();
@@ -78,9 +77,8 @@ const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
       setTotalPages(data.totalPages);
     } catch (error) {
       toast.error(`${error}`, {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } finally {
       setIsLoading(false);

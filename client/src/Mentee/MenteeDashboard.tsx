@@ -11,7 +11,7 @@ import {
 import Logo from "../assets/logo.png";
 import defaultImage from "../assets/defautProfilePic.jpg";
 import BACKEND_URL from "../endpoint";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { CheckAuth } from "../utils/CheckAuth";
 import Spinner from "../components/ui/Spinner";
@@ -70,9 +70,8 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
       setFullName(formattedName);
     } catch (error) {
       toast.error(`${error}`, {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       })
     }
   }, [token, userId]);
@@ -89,9 +88,8 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
       if (response.ok) {
         localStorage.clear();
         toast.success("Logged out successfully", {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         });
         navigate("/");
       }
@@ -100,9 +98,8 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
       }
     } catch (error) {
       toast.error(`${error}`, {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     }
   };

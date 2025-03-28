@@ -9,7 +9,7 @@ import Instagram from "../assets/instagram.png";
 import LinkedIn from "../assets/linkedin.png";
 import Twitter from "../assets/twitter.png";
 import defaultImage from "../assets/defautProfilePic.jpg";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import ProfilePageSkeleton from "../components/ui/Skeletons/ProfilePageSkeleton";
 
 interface Services {
@@ -57,9 +57,8 @@ const ProfilePage: React.FC = () => {
         setServices(data.services);
       } catch (error) {
         toast.error(`${error}`, {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true,
         })
       }
     };
@@ -70,9 +69,8 @@ const ProfilePage: React.FC = () => {
   const handleBook = () => {
     if (localStorage.getItem("mentor") === "true" || localStorage.getItem("loggedIn") === "false") {
       toast.error("Login as Mentee to book", {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
       return;
     }
@@ -85,9 +83,8 @@ const ProfilePage: React.FC = () => {
       selectedServiceData?.name === "Webinars"
     ) {
       toast.info("This service is coming soon! Meantime, you can book 1:1 sessions.", {
-        position: "top-center",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
       return;
     }

@@ -4,6 +4,7 @@ import { Calendar, User, IndianRupee } from "lucide-react";
 import BACKEND_URL from "../endpoint";
 import { HomeSkeleton } from "../components/ui/Skeletons/MentorDashboardSkeletons";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 interface Stat {
   icon: ReactNode;
@@ -74,8 +75,7 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
         ]);
 
         setRecentMeetings(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          data.recentMeetings.map((meeting: any) => ({
+          data.recentMeetings.map((meeting: Meeting) => ({
             menteeName: meeting.menteeName,
             dateTime: new Date(meeting.dateTime).toLocaleString(),
             duration: `${meeting.duration} mins`,
@@ -102,7 +102,10 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
   };
 
   if (loading) return <HomeSkeleton/>;
-  if (error) return <div className="text-2xl font-semibold">{error}</div>;
+  if (error) {
+    toast.error(`${error}`, { pauseOnHover: false, draggable: true });
+    return null;
+  }
 
   return (
     <div className="space-y-6 mb-8">
@@ -162,7 +165,7 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
       {/* Recent Meetings */}
       <div className="px-6">
         <h1 className="text-xl font-bold mb-2">Recent Meetings</h1>
-        <div className="bg-white shadow-md rounded-lg overflow-x-auto">
+        <div className="bg-white shadow-md rounded-lg p-2 overflow-x-auto">
           <div className="min-w-full inline-block align-middle">
             <div className="overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200">

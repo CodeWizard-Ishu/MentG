@@ -3,6 +3,7 @@ import BACKEND_URL from "../endpoint";
 import ReportMenu from "./ReportMenu";
 import { MeetingsSkeleton } from "../components/ui/Skeletons/MentorDashboardSkeletons";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { toast } from "react-toastify";
 
 interface Meeting {
   menteeName: string;
@@ -72,8 +73,7 @@ const Meetings = () => {
 
         const data = await response.json();
         setMeetings(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          data.bookings.map((meeting: any) => ({
+          data.bookings.map((meeting: Meeting) => ({
             menteeName: meeting.menteeName,
             dateTime: formatToIST(meeting.dateTime),
             duration: `${meeting.duration} mins`,
@@ -144,13 +144,16 @@ const Meetings = () => {
   };
 
   if (loading) return <MeetingsSkeleton/>;
-  if (error) return <div className="text-2xl font-semibold">{error}</div>;
+  if (error) {
+      toast.error(`${error}`, { pauseOnHover: false, draggable: true });
+      return null;
+    }
 
   return (
     <div className="p-4 sm:p-6">
       {/* Recent Meetings */}
       <h1 className="text-xl font-bold mb-4">Recent Meetings</h1>
-      <div className="bg-white shadow-md rounded-lg overflow-x-auto">
+      <div className="bg-white shadow-md rounded-lg p-2 overflow-x-auto">
         <div className="min-w-full inline-block align-middle">
           <div className="overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">

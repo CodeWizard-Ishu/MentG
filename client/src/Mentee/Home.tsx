@@ -4,7 +4,7 @@ import ProfileCard from "../components/ui/ProfileCard";
 import Dropdown from "../components/ui/Dropdown";
 import BACKEND_URL from "../endpoint";
 import DefaultImage from "../assets/defautProfilePic.jpg";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { Calendar, ChevronLeft, ChevronRight, Clock, Star } from "lucide-react";
 import Spinner from "../components/ui/Spinner";
 
@@ -87,11 +87,7 @@ const Home = () => {
         }
       );
       if (!response.ok) {
-        toast.error("Network response was not ok", {
-          position: "bottom-right",
-          pauseOnHover: false,
-          transition: Bounce,
-        });
+        throw new Error("Network response was not ok")
       }
       const data = await response.json();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -105,9 +101,8 @@ const Home = () => {
       setTotalPages(data.totalPages);
     } catch (error) {
       toast.error(`${error}`, {
-        position: "bottom-right",
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } finally {
       setIsLoading(false);

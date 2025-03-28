@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import BACKEND_URL from "../endpoint";
 import Logo from "../assets/logo.png";
 import Spinner from "../components/ui/Spinner";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 interface SignupPageProps {
   onSignup?: (
@@ -74,10 +74,9 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
   ) => {
 
     if (!acceptTerms) {
-      toast.error("Please accept the terms and privacy policy", {
-        position: "bottom-right",
+      toast.error("Please accept the terms and privacy policy",{
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
       return;
     }
@@ -105,11 +104,9 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.log(errorData.message);
         toast.error(errorData.message || "Something went wrong!", {
-          position: "bottom-right",
           pauseOnHover: false,
-          transition: Bounce,
+        draggable: true,
         });
         return;
       }
@@ -130,11 +127,9 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
         navigate("/dashboard/mentee/");
       }
     } catch (error) {
-      console.error(error);
-      toast.error("Network error. Please try again later.", {
-        position: "bottom-right",
+      toast.error(`Network error: ${error}`, {
         pauseOnHover: false,
-        transition: Bounce,
+        draggable: true,
       });
     } finally {
       setLoading(false);
