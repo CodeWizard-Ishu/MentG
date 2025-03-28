@@ -18,14 +18,87 @@ const mailId = process.env.MAIL_ID ?? "";
 const pass = process.env.MAIL_PASS ?? "";
 const imaphost = process.env.MAIL_IMAPHOST ?? "";
 
+export const sendOTPMail =async (
+    userEmail: string,
+    otp: string,
+) => {
+    const mailOptions = {
+        from: "MentG - Mentoring Simplified <info@mentg.in>",
+        to: userEmail,
+        subject: "Verify your email",
+        html: 
+        `
+            <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+            <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>OTP for Email Verification - MentG</title>
+            </head>
+            <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; line-height: 1.6; color: #777; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f4f4;">
+                    <tr>
+                        <td align="center">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                <tr>
+                                    <td align="center" style="padding: 20px;">
+                                        <h2 style="color: #4CAF50; margin: 0 0 20px 0; font-size: 24px; font-family: Arial, sans-serif;">Your OTP for Email Verification</h2>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0 20px;">
+                                        <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Dear User,</p>
+                                        <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">Your OTP for email verification is: <strong>${otp}</strong></p>
+                                        <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">This OTP will expire in 10 minutes.</p>
+                                        <p style="margin: 0 0 15px 0; font-family: Arial, sans-serif;">If you did not request this OTP, please ignore this email.</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-top: 1px solid #ddd; padding: 20px;" align="center">
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td align="center" style="font-size: 0.9em; color: #777; font-family: Arial, sans-serif;">
+                                                    If you have any questions, feel free to contact us at:<br style="margin: 0;">
+                                                    <a href="mailto:support@mentg.in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">support@mentg.in</a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" style="padding: 20px; font-size: 0.9em; color: #777; font-family: Arial, sans-serif;">
+                                        <p style="margin: 0 0 10px 0;">© ${new Date().getFullYear()} Mentg. All rights reserved.</p>
+                                        <div style="margin-top: 10px;">
+                                            <a href="https://www.linkedin.com/company/mentg" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">LinkedIn</a>
+                                            <span style="color: #ddd; margin: 0;">|</span>
+                                            <a href="https://www.instagram.com/mentg.in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Instagram</a>
+                                            <span style="color: #ddd; margin: 0;">|</span>
+                                            <a href="https://www.youtube.com/@MentG_in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Youtube</a>
+                                            <span style="color: #ddd; margin: 0;">|</span>
+                                            <a href="https://x.com/mentg_in" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">X (Twitter)</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </body>
+            </html>
+        `
+    };
+
+    await transporter.sendMail(mailOptions);
+}
+
 export const sendMentorSignupMail = async (
   userEmail: string,
   fullName: string
 ) => {
   const mailOptions = {
-    from: "Mentg - Mentoring Simplified <info@mentg.in>",
+    from: "MentG - Mentoring Simplified <info@mentg.in>",
     to: userEmail,
-    subject: "Welcome to Mentg!",
+    subject: "Welcome to MentG!",
     html: `
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml">
@@ -111,15 +184,13 @@ export const sendMentorSignupMail = async (
   };
 
   try {
-    // Send mail with defined transport object.
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent:", info.messageId);
 
-    // Now save a copy to Sent folder using IMAP.
     const imap = new Imap({
       user: mailId,
       password: pass,
-      host: imaphost, // Replace with your IMAP server host.
+      host: imaphost,
       port: 993,
       tls: true,
     });
@@ -237,15 +308,13 @@ export const sendMenteeSignupMail = async (
   };
 
   try {
-    // Send mail with defined transport object.
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent:", info.messageId);
 
-    // Now save a copy to Sent folder using IMAP.
     const imap = new Imap({
       user: mailId,
       password: pass,
-      host: imaphost, // Replace with your IMAP server host.
+      host: imaphost,
       port: 993,
       tls: true,
     });

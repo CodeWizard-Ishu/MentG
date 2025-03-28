@@ -1,58 +1,112 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import NodeCache from "node-cache";
+import { randomInt } from "crypto";
 import { getPrismaClient } from "../prisma";
-import { sendMentorSignupMail, sendMenteeSignupMail } from "./mailer";
+import { sendMentorSignupMail, sendMenteeSignupMail, sendOTPMail } from "./mailer";
 
 const prisma = getPrismaClient();
 
-const capitalize = (string: string) => {
-  if (!string) return "";
-  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-};
+const otpCache = new NodeCache({ 
+  stdTTL: 600,
+  checkperiod: 120
+});
 
-// const setCookieOptions = {
-//   httpOnly: true,
-//   secure: true,       // must: make this true when using for production
-//   sameSite: 'none',
-//   maxAge: 7 * 24 * 60 * 60 * 1000,
-//   path: "/",
-//   domain: 'mentg.onrender.com',
-// }
+const capitalize = (string : string) => {
+  return string.toLowerCase().split(' ').map(function(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  }).join(' ');
+}
 
-export const signupMentor = async (req: any, res: any) => {
-  const { firstName, lastName, email, password } = req.body;
+const emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+export const sendOTP = async (req: any, res: any) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ success: false, message: "Email is required" });
+  }
+  if (!emailRegex.test(email)){
+    return res.status(400).json({ success: false, message: "Invalid email format" });
+  }
+
+  const otp = randomInt(100000, 999999).toString();
 
   try {
-    // Validate input data
+    await sendOTPMail(email, otp);
+
+    otpCache.set(email, otp);
+
+    res.status(200).json({ success: true, message: "OTP sent successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Failed to send OTP" });
+  }
+};
+
+export const verifyOTP = async (req: any, res: any) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    return res.status(400).json({ success: false, message: "Email and OTP are required" });
+  }
+  if (!emailRegex.test(email)){
+    return res.status(400).json({ success: false, message: "Invalid email format" });
+  }
+
+  const storedOTP = otpCache.get<string>(email);
+
+  if (!storedOTP) {
+    return res.status(400).json({ success: false, message: "OTP has expired" });
+  }
+
+  if (storedOTP === otp) {
+    otpCache.del(email);
+
+    const secret: any = process.env.JWT_SECRET;
+    const tempToken = jwt.sign({ emailId: email }, secret, { expiresIn: "10m" });
+
+    res.status(200).json({ success: true, message: "OTP verified successfully", tempToken: tempToken });
+  } else {
+    res.status(400).json({ success: false, message: "Invalid OTP" });
+  }
+};
+
+export const signupMentor = async (req: any, res: any) => {
+  const { firstName, lastName, email, password, tempToken } = req.body;
+
+  try {
+    // Verify temporary token
+    const secret: any = process.env.JWT_SECRET;
+    const decoded: any = jwt.verify(tempToken, secret);
+    if (decoded.emailId !== email) {
+      throw new Error("Invalid or expired verification token");
+    }
+
     if (!firstName || !email || !password) {
       throw new Error("First name, email, and password are required");
     }
     if (password.length < 6) {
       throw new Error("Password must be at least 6 characters long");
     }
-    if (!email.includes("@")) {
+    if (!emailRegex.test(email)){
       throw new Error("Invalid email format");
     }
 
-    // Check if the user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
+    const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser && existingUser.isActive) {
-      return res
-        .status(400)
-        .json({ success: false, message: "User already exists" });
+      return res.status(400).json({ success: false, message: "User already exists" });
     }
 
-    // Hash the password
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
+    const formattedFirstName = capitalize(firstName);
+    const formattedLastName = capitalize(lastName);
 
-    // Create the user and MentorProfile
     const user = await prisma.user.create({
       data: {
-        firstName,
-        lastName,
+        firstName: formattedFirstName,
+        lastName: formattedLastName,
         email,
         password: passwordHash,
         isMentor: true,
@@ -75,22 +129,14 @@ export const signupMentor = async (req: any, res: any) => {
       },
     });
 
-    //jwt
-    const secret: any = process.env.JWT_SECRET;
     const token = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
-
-    // res.cookie("token", token, setCookieOptions);
-
     const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
     sendMentorSignupMail(email, formattedName);
 
     res.status(201).json({
       success: true,
       message: "User Created Successfully",
-      user: {
-        ...user,
-        password: undefined,
-      },
+      user: { ...user, password: undefined },
       token,
     });
     console.log(`User signed up as mentor: ${email}`);
@@ -101,39 +147,40 @@ export const signupMentor = async (req: any, res: any) => {
 };
 
 export const signupMentee = async (req: any, res: any) => {
-  try {
-    const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email, password, tempToken } = req.body;
 
-    // Validate input data
+  try {
+    // Verify temporary token
+    const secret: any = process.env.JWT_SECRET;
+    const decoded: any = jwt.verify(tempToken, secret);
+    if (decoded.emailId !== email) {
+      throw new Error("Invalid or expired verification token");
+    }
+
     if (!firstName || !email || !password) {
       throw new Error("First name, email, and password are required");
     }
     if (password.length < 6) {
       throw new Error("Password must be at least 6 characters long");
     }
-    if (!email.includes("@")) {
+    if (!emailRegex.test(email)){
       throw new Error("Invalid email format");
     }
 
-    // Check if the user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
-    if (existingUser && existingUser.isActive == true) {
-      return res
-        .status(400)
-        .json({ success: false, message: "User already exists" });
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser && existingUser.isActive) {
+      return res.status(400).json({ success: false, message: "User already exists" });
     }
 
-    // Hash the password
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
+    const formattedFirstName = capitalize(firstName);
+    const formattedLastName = capitalize(lastName);
 
-    // Create the user and mentee profile
     const user = await prisma.user.create({
       data: {
-        firstName,
-        lastName,
+        firstName: formattedFirstName,
+        lastName: formattedLastName,
         email,
         password: passwordHash,
         isMentor: false,
@@ -150,22 +197,14 @@ export const signupMentee = async (req: any, res: any) => {
       },
     });
 
-    //jwt
-    const secret: any = process.env.JWT_SECRET;
     const token = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
-
-    // res.cookie("token", token, setCookieOptions);
-
     const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
     sendMenteeSignupMail(email, formattedName);
 
     res.status(201).json({
       success: true,
       message: "User Created Successfully",
-      user: {
-        ...user,
-        password: undefined,
-      },
+      user: { ...user, password: undefined },
       token,
     });
     console.log(`User signed up as mentee: ${email}`);
@@ -183,7 +222,7 @@ export const login = async (req: any, res: any) => {
     if (!email || !password) {
       throw new Error("Email and password are required");
     }
-    if (!email.includes("@")) {
+    if (!emailRegex.test(email)){
       throw new Error("Invalid email format");
     }
 
@@ -192,24 +231,18 @@ export const login = async (req: any, res: any) => {
       where: { email },
     });
     if (!user || user.isActive == false) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid credentials" });
+      return res.status(400).json({ success: false, message: "User does not exist" });
     }
 
     // Check if password is correct
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Email/Password not matched!" });
+      return res.status(400).json({ success: false, message: "Email/Password not matched!" });
     }
 
     //jwt
     const secret: any = process.env.JWT_SECRET;
-    const token = jwt.sign({ id: user.id }, secret, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
 
     // res.cookie("token", token, setCookieOptions);
 
@@ -234,9 +267,7 @@ export const checkAuth = async (req: any, res: any) => {
     let token = req.header("Authorization");
 
     if (!token) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Unauthorized - No token found" });
+      return res.status(401).json({ success: false, message: "Unauthorized - No token found" });
     }
 
     if (token.startsWith("Bearer ")) {

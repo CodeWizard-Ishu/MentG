@@ -6,6 +6,7 @@ import BACKEND_URL from "../endpoint";
 import Logo from "../assets/logo.png";
 import Spinner from "../components/ui/Spinner";
 import { toast } from "react-toastify";
+import OTPInput from "../components/OTPInput";
 
 interface SignupPageProps {
   onSignup?: (
@@ -23,6 +24,15 @@ interface SignupFormValues {
   lastName: string;
   email: string;
   password: string;
+}
+
+interface EmailVerificationEffectProps {
+  email: string;
+  verifiedEmail: string;
+  setEmailVerified: (verified: boolean) => void;
+  setShowOTPInput: (show: boolean) => void;
+  setOtp: (otp: string) => void;
+  setTempToken: (token: string) => void;
 }
 
 const validationSchema = Yup.object().shape({
@@ -48,10 +58,37 @@ const validationSchema = Yup.object().shape({
     .required("Password is required"),
 });
 
+const EmailVerificationEffect: React.FC<EmailVerificationEffectProps> = ({
+  email,
+  verifiedEmail,
+  setEmailVerified,
+  setShowOTPInput,
+  setOtp,
+  setTempToken,
+}) => {
+  useEffect(() => {
+    if (email !== verifiedEmail) {
+      setEmailVerified(false);
+      setShowOTPInput(false);
+      setOtp("");
+      setTempToken("");
+    }
+  }, [email, verifiedEmail, setEmailVerified, setShowOTPInput, setOtp, setTempToken]);
+
+  return null;
+};
+
 const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
   const [loadingMentor, setLoadingMentor] = useState(false);
   const [loadingMentee, setLoadingMentee] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [showOTPInput, setShowOTPInput] = useState(false);
+  const [, setOtp] = useState("");
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [sendingOTP, setSendingOTP] = useState(false);
+  const [tempToken, setTempToken] = useState("");
+  const [verifiedEmail, setVerifiedEmail] = useState("");
   const navigate = useNavigate();
 
   const initialValues: SignupFormValues = {
@@ -62,19 +99,94 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
   };
 
   useEffect(() => {
-      if (localStorage.getItem("loggedIn") === "true") {
-        navigate("/");
+    if (localStorage.getItem("loggedIn") === "true") {
+      navigate("/");
+    }
+  }, [navigate]);
+
+  const handleSendOTP = async (email: string) => {
+    setSendingOTP(true);
+    try {
+      const response = await fetch(`${BACKEND_URL}/auth/send-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(errorData.message || "Failed to send OTP", {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+      setShowOTPInput(true);
+      toast.success("OTP sent successfully", {
+        pauseOnHover: false,
+        draggable: true,
+      });
+    } catch (error) {
+      toast.error(`Network error: ${error}`,{
+        pauseOnHover: false,
+        draggable: true,
+      });
+    } finally {
+      setSendingOTP(false);
+    }
+  };
 
-  const handleSubmit = async (
-    values: SignupFormValues,
-    isMentor: boolean,
-  ) => {
+  const handleVerifyOTP = async (email: string, otp: string) => {
+    if (!otp || otp.length !== 6) {
+      toast.error("Please enter a valid 6-digit OTP", {
+        pauseOnHover: false,
+        draggable: true,
+      });
+      return;
+    }
+    setVerifying(true);
+    try {
+      const response = await fetch(`${BACKEND_URL}/auth/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(errorData.message || "Invalid OTP", {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
+      }
+      const data = await response.json();
+      setTempToken(data.tempToken);
+      setEmailVerified(true);
+      setVerifiedEmail(email);
+      toast.success("Email verified successfully", {
+        pauseOnHover: false,
+        draggable: true,
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Network error. Please try again later.", {
+        pauseOnHover: false,
+        draggable: true,
+      });
+    } finally {
+      setVerifying(false);
+    }
+  };
 
+  const handleSubmit = async (values: SignupFormValues, isMentor: boolean) => {
     if (!acceptTerms) {
-      toast.error("Please accept the terms and privacy policy",{
+      toast.error("Please accept the terms and privacy policy", {
+        pauseOnHover: false,
+        draggable: true,
+      });
+      return;
+    }
+    if (!emailVerified) {
+      toast.error("Please verify your email first", {
         pauseOnHover: false,
         draggable: true,
       });
@@ -89,14 +201,13 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
         `${BACKEND_URL}/auth/signup/${isMentor ? "mentor" : "mentee"}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...values,
             firstName: values.firstName.trim(),
             lastName: values.lastName.trim(),
             email: values.email.trim().toLowerCase(),
+            tempToken,
           }),
           credentials: "include",
         }
@@ -106,7 +217,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
         const errorData = await response.json();
         toast.error(errorData.message || "Something went wrong!", {
           pauseOnHover: false,
-        draggable: true,
+          draggable: true,
         });
         return;
       }
@@ -179,144 +290,210 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
             validateOnBlur={true}
           >
             {({ values, touched, errors }) => (
-              <Form className="space-y-4 sm:space-y-5 md:space-y-6">
-                <div className="flex flex-row gap-4 sm:space-x-4">
-                  <div className="relative w-full sm:w-1/2">
+              <>
+                <EmailVerificationEffect
+                  email={values.email}
+                  verifiedEmail={verifiedEmail}
+                  setEmailVerified={setEmailVerified}
+                  setShowOTPInput={setShowOTPInput}
+                  setOtp={setOtp}
+                  setTempToken={setTempToken}
+                />
+                <Form className="space-y-4 sm:space-y-5 md:space-y-6">
+                  <div className="flex flex-row gap-4 sm:space-x-4">
+                    <div className="relative w-full sm:w-1/2">
+                      <label
+                        htmlFor="firstName"
+                        className="text-sm mb-1 ml-1 font-semibold"
+                      >
+                        First Name *
+                      </label>
+                      <Field
+                        type="text"
+                        name="firstName"
+                        placeholder="First Name"
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base ${
+                          touched.firstName && errors.firstName
+                            ? "border-red-500"
+                            : "border-gray-300"
+                        }`}
+                      />
+                      <ErrorMessage
+                        name="firstName"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                      />
+                    </div>
+
+                    <div className="relative w-full sm:w-1/2">
+                      <label
+                        htmlFor="lastName"
+                        className="text-sm mb-1 ml-1 font-semibold"
+                      >
+                        Last Name
+                      </label>
+                      <Field
+                        type="text"
+                        name="lastName"
+                        placeholder="Last Name"
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base ${
+                          touched.lastName && errors.lastName
+                            ? "border-red-500"
+                            : "border-gray-300"
+                        }`}
+                      />
+                      <ErrorMessage
+                        name="lastName"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="relative">
                     <label
-                      htmlFor="firstName"
+                      htmlFor="email"
                       className="text-sm mb-1 ml-1 font-semibold"
                     >
-                      First Name *
+                      Email *
+                    </label>
+                    <div className="flex items-center">
+                      <Field
+                        type="email"
+                        name="email"
+                        placeholder="Email address"
+                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base ${
+                          touched.email && errors.email
+                            ? "border-red-500"
+                            : "border-gray-300"
+                        }`}
+                      />
+                      {!errors.email && values.email && (
+                        <button
+                          type="button"
+                          onClick={() => handleSendOTP(values.email)}
+                          disabled={sendingOTP || emailVerified}
+                          className={`ml-2 px-4 py-2 rounded-lg transition-colors text-sm sm:text-base ${
+                            emailVerified
+                              ? "bg-green-600 text-white cursor-not-allowed"
+                              : sendingOTP
+                              ? "bg-blue-400 text-white cursor-not-allowed"
+                              : "bg-blue-600 text-white hover:bg-blue-500"
+                          }`}
+                        >
+                          {emailVerified
+                            ? "Verified"
+                            : sendingOTP
+                            ? "Sending..."
+                            : "Verify"}
+                        </button>
+                      )}
+                    </div>
+                    <ErrorMessage
+                      name="email"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                    {emailVerified && (
+                      <div className="text-green-500 text-sm mt-1 ml-2">
+                        Email verified successfully
+                      </div>
+                    )}
+                  </div>
+
+                  {showOTPInput && !emailVerified && (
+                    <div className="relative mt-4">
+                      <div className="text-center mb-4">
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          Verify Your Email
+                        </h3>
+                        <p className="text-sm text-gray-600 mt-2">
+                          Enter the 6-digit verification code sent to {values.email}
+                        </p>
+                      </div>
+                      <OTPInput
+                        length={6}
+                        onComplete={(otpValue: string) => {
+                          handleVerifyOTP(values.email, otpValue);
+                        }}
+                        isVerifying={verifying}
+                        onResend={() => handleSendOTP(values.email)}
+                      />
+                    </div>
+                  )}
+
+                  <div className="relative">
+                    <label
+                      htmlFor="password"
+                      className="text-sm mb-1 ml-1 font-semibold"
+                    >
+                      Password *
                     </label>
                     <Field
-                      type="text"
-                      name="firstName"
-                      placeholder="First Name"
+                      type="password"
+                      name="password"
+                      placeholder="Password"
                       className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base ${
-                        touched.firstName && errors.firstName
+                        touched.password && errors.password
                           ? "border-red-500"
                           : "border-gray-300"
                       }`}
                     />
                     <ErrorMessage
-                      name="firstName"
+                      name="password"
                       component="div"
                       className="text-red-500 text-sm mt-1"
                     />
                   </div>
 
-                  <div className="relative w-full sm:w-1/2">
+                  <div className="flex items-start sm:items-center space-x-2 px-1">
+                    <input
+                      type="checkbox"
+                      id="terms"
+                      checked={acceptTerms}
+                      onChange={(e) => setAcceptTerms(e.target.checked)}
+                      className="w-4 h-4 mt-1 sm:mt-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
                     <label
-                      htmlFor="lastName"
-                      className="text-sm mb-1 ml-1 font-semibold"
+                      htmlFor="terms"
+                      className="text-sm sm:text-base text-gray-600"
                     >
-                      Last Name
+                      I accept the{" "}
+                      <a href="/privacy" className="underline">
+                        terms & privacy policy
+                      </a>{" "}
+                      of MentG *
                     </label>
-                    <Field
-                      type="text"
-                      name="lastName"
-                      placeholder="Last Name"
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base ${
-                        touched.lastName && errors.lastName
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    <ErrorMessage
-                      name="lastName"
-                      component="div"
-                      className="text-red-500 text-sm mt-1"
-                    />
                   </div>
-                </div>
 
-                <div className="relative">
-                  <label
-                    htmlFor="email"
-                    className="text-sm mb-1 ml-1 font-semibold"
-                  >
-                    Email *
-                  </label>
-                  <Field
-                    type="email"
-                    name="email"
-                    placeholder="Email address"
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base ${
-                      touched.email && errors.email
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </div>
-
-                <div className="relative">
-                  <label
-                    htmlFor="password"
-                    className="text-sm mb-1 ml-1 font-semibold"
-                  >
-                    Password *
-                  </label>
-                  <Field
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base ${
-                      touched.password && errors.password
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </div>
-
-                <div className="flex items-start sm:items-center space-x-2 px-1">
-                  <input
-                    type="checkbox"
-                    id="terms"
-                    checked={acceptTerms}
-                    onChange={(e) => setAcceptTerms(e.target.checked)}
-                    className="w-4 h-4 mt-1 sm:mt-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  />
-                  <label
-                    htmlFor="terms"
-                    className="text-sm sm:text-base text-gray-600"
-                  >
-                    I accept the{" "}
-                    <a href="/privacy" className="underline">
-                      terms & privacy policy
-                    </a>{" "}
-                    of MentG *
-                  </label>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-4 sm:space-x-4">
-                  <button
-                    type="button"
-                    onClick={() => handleSubmit(values, false)}
-                    disabled={loadingMentee}
-                    className="w-full bg-[#08286b] text-white py-3 rounded-lg hover:bg-[#08276bcc] transition-colors font-semibold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {loadingMentee ? <Spinner /> : "Join as Mentee"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSubmit(values, true)}
-                    disabled={loadingMentor}
-                    className="w-full bg-white text-[#08286b] py-3 rounded-lg hover:bg-[#08276b2b] border-2 border-[#08286b] transition-colors font-bold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {loadingMentor ? <Spinner /> : "Join as Mentor"}
-                  </button>
-                </div>
-              </Form>
+                  <div className="flex flex-row gap-4 sm:space-x-4">
+                    <button
+                      type="button"
+                      onClick={() => handleSubmit(values, false)}
+                      disabled={loadingMentee || !emailVerified}
+                      className={`w-full bg-[#08286b] text-white py-3 rounded-lg transition-colors font-semibold text-sm sm:text-base ${
+                        emailVerified
+                          ? "hover:bg-[#08276bcc]"
+                          : "opacity-50 cursor-not-allowed"
+                      }`}
+                    >
+                      {loadingMentee ? <Spinner /> : "Join as Mentee"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSubmit(values, true)}
+                      disabled={loadingMentor || !emailVerified}
+                      className={`w-full bg-[#08286b] text-white py-3 rounded-lg transition-colors font-semibold text-sm sm:text-base ${
+                        emailVerified
+                          ? "hover:bg-[#08276bcc]"
+                          : "opacity-50 cursor-not-allowed"
+                      }`}
+                    >
+                      {loadingMentor ? <Spinner /> : "Join as Mentor"}
+                    </button>
+                  </div>
+                </Form>
+              </>
             )}
           </Formik>
 
@@ -324,9 +501,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
             <p className="text-sm sm:text-base text-gray-600">
               Already have an account?{" "}
               <Link to="/login">
-                <button
-                  className="text-black hover:underline ml-1 font-semibold"
-                >
+                <button className="text-black hover:underline ml-1 font-semibold">
                   Login
                 </button>
               </Link>

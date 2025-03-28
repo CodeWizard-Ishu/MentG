@@ -28,6 +28,7 @@
     "express": "^4.21.1",
     "googleapis": "^144.0.0",
     "jsonwebtoken": "^9.0.2",
+    "node-cache": "^5.1.2",
     "node-cron": "^3.0.3",
     "node-imap": "^0.9.6",
     "nodemailer": "^6.9.16",

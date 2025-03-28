@@ -1,5 +1,5 @@
 import express from "express";
-import { checkAuth, login, logout, signupMentee, signupMentor } from "../controllers/auth";
+import { sendOTP, verifyOTP, signupMentor, signupMentee, login, checkAuth, logout } from "../controllers/auth";
 import { forgotPassword, resetPassword } from '../controllers/auth.controller';
 import cron from 'node-cron';
 import { cleanupExpiredTokens } from '../controllers/auth.controller'
@@ -51,6 +51,8 @@ import { searchMentors } from "../controllers/searchBox";
 const router = express.Router();
 
 router.get("/auth/verify/:id", checkAuth);
+router.post("/auth/send-otp", sendOTP);
+router.post("/auth/verify-otp", verifyOTP);
 router.post("/auth/signup/mentor", signupMentor);
 router.post("/auth/signup/mentee", signupMentee);
 router.post("/auth/login", login);
