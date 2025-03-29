@@ -85,7 +85,7 @@ const OTPInput: React.FC<OTPInputProps> = ({
           <input
             key={index}
             ref={(el) => inputRefs.current[index] = el}
-            type="text"
+            type="tel"
             maxLength={1}
             value={digit}
             onChange={(e) => handleChange(index, e)}
