@@ -145,6 +145,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
     }
     setVerifying(true);
     try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
       const response = await fetch(`${BACKEND_URL}/auth/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

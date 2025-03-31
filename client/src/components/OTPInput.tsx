@@ -34,11 +34,6 @@ const OTPInput: React.FC<OTPInputProps> = ({
     if (value && index < length - 1) {
       inputRefs.current[index + 1]?.focus();
     }
-
-    // Check if OTP is complete
-    if (newOtp.every(digit => digit !== '')) {
-      onComplete(newOtp.join(''));
-    }
   };
 
   const handleKeyDown = (
@@ -71,12 +66,16 @@ const OTPInput: React.FC<OTPInputProps> = ({
       setOtp(newOtp);
 
       inputRefs.current[pastedDigits.length - 1]?.focus();
-
-      if (newOtp.every(digit => digit !== '')) {
-        onComplete(newOtp.join(''));
-      }
     }
   };
+
+  const handleVerify = () => {
+    if (otp.every(digit => digit !== '')) {
+      onComplete(otp.join(''));
+    }
+  };
+
+  const isOtpComplete = otp.every(digit => digit !== '');
 
   return (
     <div className="w-full">
@@ -92,8 +91,8 @@ const OTPInput: React.FC<OTPInputProps> = ({
             onKeyDown={(e) => handleKeyDown(index, e)}
             onPaste={handlePaste}
             className={`
-              w-10 h-12 sm:w-12 sm:h-14 
-              text-center text-xl sm:text-2xl 
+              w-8 h-10 sm:w-10 sm:h-12 
+              text-center text-md 
               border-2 rounded-lg 
               focus:outline-none focus:ring-2 
               transition-all duration-300
@@ -106,6 +105,26 @@ const OTPInput: React.FC<OTPInputProps> = ({
           />
         ))}
       </div>
+      
+      <div className="flex justify-center mt-4 mb-4">
+        <button
+          type="button"
+          onClick={handleVerify}
+          disabled={!isOtpComplete || isVerifying}
+          className={`
+            w-full sm:w-auto px-6 py-2 
+            bg-blue-600 text-white 
+            rounded-lg font-medium
+            transition-all duration-300
+            ${(!isOtpComplete || isVerifying) 
+              ? 'opacity-50 cursor-not-allowed' 
+              : 'hover:bg-blue-700'}
+          `}
+        >
+          {isVerifying ? 'Verifying...' : 'Verify OTP'}
+        </button>
+      </div>
+      
       <div className="flex justify-center items-center space-x-4 text-sm">
         <button
           type="button"
