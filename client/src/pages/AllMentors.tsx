@@ -30,10 +30,11 @@ const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
   const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
-  const capitalize = (string: string) => {
-    if (!string) return "";
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-  };
+  const capitalize = (string : string) => {
+    return string.toLowerCase().split(' ').map(function(word) {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }).join(' ');
+  }
 
   // Update URL when page changes
   const updatePageUrl = (page: number) => {
