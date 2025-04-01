@@ -22,10 +22,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           src={imageUrl}
           alt={`${name}'s profile`}
           className="w-full h-full object-cover"
+          title={`${name}`}
         />
       </div>
       <div className="pl-4 pr-4 pb-4">
-        <h3 className="text-sm sm:text-md lg:text-lg font-bold text-gray-800 mb-1 truncate">
+        <h3 className="text-sm sm:text-md lg:text-lg font-bold text-gray-800 mb-1 truncate" title={name}>
           {name}
         </h3>
         <p className="text-xs text-gray-600 line-clamp-2">{desc}</p>

@@ -1,21 +1,15 @@
 import Logo from "../assets/logo.png";
 import { Instagram, Linkedin, MapPin, Twitter, Youtube } from "lucide-react";
 import { Button } from "../components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../components/ui/dialog";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
-import { Bounce, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import BACKEND_URL from "../endpoint";
 import Spinner from "../components/ui/Spinner";
+import { Modal } from "./ui/modal";
 
 interface FeedbackFromValues {
   name: string;
@@ -24,7 +18,7 @@ interface FeedbackFromValues {
 }
 
 const Footer = () => {
-  const [open, setOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
@@ -62,27 +56,29 @@ const Footer = () => {
 
         if (data.success) {
           toast.success("Thank you for your feedback!", {
-            position: "bottom-right",
             pauseOnHover: false,
-            transition: Bounce,
+            draggable: true
           });
           resetForm();
-          setOpen(false);
+          setIsModalOpen(false);
         } else {
           toast.error(data.message || "Failed to send feedback");
         }
       } catch (error) {
-        console.error("Error sending feedback:", error);
-        toast.error("Failed to send feedback. Please try again later.", {
-          position: "bottom-right",
+        toast.error(`Failed to send feedback: ${error}`, {
           pauseOnHover: false,
-          transition: Bounce,
+          draggable: true
         });
       } finally {
         setSubmitting(false);
       }
     },
   });
+
+  const handleClose = useCallback(() => {
+    formik.resetForm();
+    setIsModalOpen(false);
+  }, [formik]);
 
   return (
     <div>
@@ -185,82 +181,80 @@ const Footer = () => {
                   <Youtube size={20} />
                 </a>
               </div>
-              <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger asChild>
+              <Button 
+                variant="outline"
+                size="sm"
+                className="bg-white text-black text-sm hover:bg-gray-100 hover:text-black font-medium rounded-md md:mr-6 md:order-1"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Feedback
+              </Button>
+              <Modal 
+                isOpen={isModalOpen} 
+                onClose={handleClose}
+                title="Send Feedback"
+              >
+                <form onSubmit={formik.handleSubmit} className="space-y-4">
+                  <div>
+                    <Input
+                      id="name"
+                      placeholder="Your Name"
+                      {...formik.getFieldProps('name')}
+                      className={`${
+                        formik.touched.name && formik.errors.name
+                          ? "border-2 border-red-500"
+                          : ""
+                      }`}
+                    />
+                    {formik.touched.name && formik.errors.name && (
+                      <p className="text-sm text-red-500 mt-1">{formik.errors.name}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Your Email"
+                      {...formik.getFieldProps('email')}
+                      className={`${
+                        formik.touched.email && formik.errors.email
+                          ? "border-2 border-red-500"
+                          : ""
+                      }`}
+                    />
+                    {formik.touched.email && formik.errors.email && (
+                      <p className="text-sm text-red-500 mt-1">{formik.errors.email}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Textarea
+                      id="message"
+                      rows={5}
+                      placeholder="Your Message"
+                      {...formik.getFieldProps('message')}
+                      className={`${
+                        formik.touched.message && formik.errors.message
+                          ? "border-2 border-red-500"
+                          : ""
+                      }`}
+                    />
+                    {formik.touched.message && formik.errors.message && (
+                      <p className="text-sm text-red-500 mt-1">{formik.errors.message}</p>
+                    )}
+                  </div>
                   <Button 
-                    variant="outline"
-                    size="sm"
-                    className="bg-white text-black text-sm hover:bg-gray-100 hover:text-black font-medium rounded-md md:mr-6 md:order-1"
+                    type="submit" 
+                    className="w-full"
+                    disabled={formik.isSubmitting}
                   >
-                    Feedback
+                    {formik.isSubmitting ? (
+                      <Spinner />
+                    ) : (
+                      "Submit Feedback"
+                    )}
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle>Send Feedback</DialogTitle>
-                  </DialogHeader>
-                  <form onSubmit={formik.handleSubmit} className="space-y-4">
-                    <div>
-                      <Input
-                        id="name"
-                        placeholder="Your Name"
-                        {...formik.getFieldProps('name')}
-                        className={`${
-                          formik.touched.name && formik.errors.name
-                            ? "border-2 border-red-500"
-                            : ""
-                        }`}
-                      />
-                      {formik.touched.name && formik.errors.name && (
-                        <p className="text-sm text-red-500 mt-1">{formik.errors.name}</p>
-                      )}
-                    </div>
-                    <div>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="Your Email"
-                        {...formik.getFieldProps('email')}
-                        className={`${
-                          formik.touched.email && formik.errors.email
-                            ? "border-2 border-red-500"
-                            : ""
-                        }`}
-                      />
-                      {formik.touched.email && formik.errors.email && (
-                        <p className="text-sm text-red-500 mt-1">{formik.errors.email}</p>
-                      )}
-                    </div>
-                    <div>
-                      <Textarea
-                        id="message"
-                        rows={5}
-                        placeholder="Your Message"
-                        {...formik.getFieldProps('message')}
-                        className={`${
-                          formik.touched.message && formik.errors.message
-                            ? "border-2 border-red-500"
-                            : ""
-                        }`}
-                      />
-                      {formik.touched.message && formik.errors.message && (
-                        <p className="text-sm text-red-500 mt-1">{formik.errors.message}</p>
-                      )}
-                    </div>
-                    <Button 
-                      type="submit" 
-                      className="w-full"
-                      disabled={formik.isSubmitting}
-                    >
-                      {formik.isSubmitting ? (
-                        <Spinner />
-                      ) : (
-                        "Submit Feedback"
-                      )}
-                    </Button>
-                  </form>
-                </DialogContent>
-              </Dialog>
+                </form>
+              </Modal>
             </div>
           </div>
         </div>
