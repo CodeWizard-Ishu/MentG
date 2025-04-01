@@ -87,7 +87,7 @@ const Footer = () => {
   return (
     <div>
       <footer className="bg-[#08286b] text-white">
-        <div className="mx-auto w-full max-w-screen-2xl p-4 py-4 md:py-6 lg:py-8">
+        <div className="mx-auto max-w-screen-3xl p-4 py-4 md:py-6 lg:py-8">
           <div className="md:flex md:justify-between">
             <div className="mb-6 md:mb-0">
               <div className="flex items-center">
@@ -108,18 +108,18 @@ const Footer = () => {
                 <h2 className="mb-4 md:mb-6 text-sm font-semibold uppercase">
                   Company
                 </h2>
-                <ul className="text-white text-sm md:text-base font-medium">
-                  <li className="mb-1">
+                <ul className="text-gray-400 text-sm md:text-base font-medium">
+                  <li className="mb-1 hover:text-white">
                     <a href="/about" className="hover:underline">
                       About Us
                     </a>
                   </li>
-                  <li className="mb-1">
+                  <li className="mb-1 hover:text-white">
                     <a href="/contact" className="hover:underline">
                       Contact
                     </a>
                   </li>
-                  <li className="mb-1">
+                  <li className="mb-1 hover:text-white">
                     <a href="/privacy" className="hover:underline">
                       Terms & Privacy
                     </a>
@@ -130,18 +130,18 @@ const Footer = () => {
                 <h2 className="mb-4 md:mb-6 text-sm font-semibold uppercase">
                   Platform
                 </h2>
-                <ul className="text-white text-sm md:text-base font-medium">
-                  <li className="mb-1">
+                <ul className="text-gray-400 text-sm md:text-base font-medium">
+                  <li className="mb-1 hover:text-white">
                     <a href="/pricing" className="hover:underline">
                       Pricing
                     </a>
                   </li>
-                  <li className="mb-1">
+                  <li className="mb-1 hover:text-white">
                     <a href="#" className="hover:underline">
                       Blog
                     </a>
                   </li>
-                  <li className="mb-1">
+                  <li className="mb-1 hover:text-white">
                     <a href="#" className="hover:underline">
                       Community
                     </a>
@@ -150,9 +150,9 @@ const Footer = () => {
               </div>
             </div>
           </div>
-          <hr className="my-2 md:my-4 lg:my-8 border-gray-200 sm:mx-auto" />
+          <hr className="my-2 md:my-4 lg:my-8 border-gray-500 sm:mx-auto" />
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0">
-            <span className="text-xs md:text-sm text-gray-400 text-left">
+            <span className="text-xs md:text-sm text-gray-300 text-left">
               © 2025{" "}
               <a href="/" className="hover:underline">
                 MentG™

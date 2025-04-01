@@ -132,7 +132,7 @@ const ContactUs = () => {
                           htmlFor="email"
                           className="flex justify-start mb-2"
                         >
-                          Your Name
+                          Name
                         </Label>
                         <Field
                           type="text"
@@ -156,7 +156,7 @@ const ContactUs = () => {
                           htmlFor="email"
                           className="flex justify-start mb-2"
                         >
-                          Your Email Address
+                          Email Address
                         </Label>
                         <Field
                           type="email"
@@ -180,7 +180,7 @@ const ContactUs = () => {
                           htmlFor="email"
                           className="flex justify-start mb-2"
                         >
-                          Your Message
+                          Message
                         </Label>
                         <Field
                           as="textarea"
