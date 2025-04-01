@@ -153,11 +153,8 @@ const Footer = () => {
           <hr className="my-2 md:my-4 lg:my-8 border-gray-500 sm:mx-auto" />
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0">
             <span className="text-xs md:text-sm text-gray-300 text-left">
-              © 2025{" "}
-              <a href="/" className="hover:underline">
-                MentG™
-              </a>
-              . All Rights Reserved.
+              © 2025 MentG™, Vashistha 360 Consulting Private Limited. <br />
+              All Rights Reserved. | CIN: U62020UP2025PTC219721
             </span>
             <div className="flex justify-between md:justify-end items-center">
               <div className="flex space-x-4 md:space-x-6 md:order-2">
