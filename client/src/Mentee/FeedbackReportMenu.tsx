@@ -11,6 +11,7 @@ import {
 } from "../components/ui/dropdown-menu";
 import BACKEND_URL from "../endpoint";
 import { toast } from "react-toastify";
+import Spinner from "../components/ui/Spinner";
 
 interface FeedbackReportMenuProps {
   mentorId: number;
@@ -29,6 +30,7 @@ const FeedbackReportMenu: React.FC<FeedbackReportMenuProps> = ({
   const [hoveredRating, setHoveredRating] = useState<number>(0);
   const [feedback, setFeedback] = useState("");
   const [report, setReport] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const menteeId = localStorage.getItem("userId");
   const token = localStorage.getItem("userToken") ?? "";
@@ -50,7 +52,7 @@ const FeedbackReportMenu: React.FC<FeedbackReportMenuProps> = ({
       score: rating,
       feedback: feedback,
     };
-
+    setLoading(true);
     try {
       const response = await fetch(`${BACKEND_URL}/api/rating/${menteeId}`, {
         method: "POST",
@@ -79,17 +81,18 @@ const FeedbackReportMenu: React.FC<FeedbackReportMenuProps> = ({
     } finally {
       resetFeedbackForm();
       setFeedbackOpen(false);
+      setLoading(false);
     }
   };
 
   const handleReportSubmit = async () => {
+    const reportData = {
+      menteeId: menteeId,
+      mentorId,
+      report: report
+    }
+    setLoading(true);
     try {
-      const reportData = {
-        menteeId: menteeId,
-        mentorId,
-        report: report
-      }
-
       const response = await fetch(`${BACKEND_URL}/api/reportMeeting/${menteeId}`, {
         method: "POST",
         headers: {
@@ -117,12 +120,12 @@ const FeedbackReportMenu: React.FC<FeedbackReportMenuProps> = ({
     } finally {
       resetReportForm();
       setReportOpen(false);
+      setLoading(false);
     }
   };
 
   return (
     <>
-      {/* Dropdown Menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -162,7 +165,6 @@ const FeedbackReportMenu: React.FC<FeedbackReportMenuProps> = ({
         description={`Meeting on ${new Date(meetingDateTime).toLocaleString()}`}
       >
         <div className="space-y-6 py-4">
-          {/* Star Rating */}
           <div className="space-y-3">
             <label className="text-sm font-medium sm:text-base">Rating</label>
             <div className="flex justify-center gap-2">
@@ -187,7 +189,6 @@ const FeedbackReportMenu: React.FC<FeedbackReportMenuProps> = ({
             </div>
           </div>
 
-          {/* Feedback Text */}
           <div className="space-y-3">
             <label htmlFor="feedback" className="text-sm font-medium sm:text-base">
               Your Feedback
@@ -201,7 +202,6 @@ const FeedbackReportMenu: React.FC<FeedbackReportMenuProps> = ({
             />
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-end gap-3 pt-4">
             <Button
               variant="outline"
@@ -213,9 +213,9 @@ const FeedbackReportMenu: React.FC<FeedbackReportMenuProps> = ({
             <Button
               onClick={handleFeedbackSubmit}
               disabled={rating === 0}
-              className="px-4 py-2 text-sm sm:text-base"
+              className="px-4 py-2 text-sm sm:text-base w-36"
             >
-              Submit Feedback
+              {loading ? <Spinner /> : "Submit Feedback"}
             </Button>
           </div>
         </div>
@@ -256,9 +256,9 @@ const FeedbackReportMenu: React.FC<FeedbackReportMenuProps> = ({
             <Button
               onClick={handleReportSubmit}
               disabled={!report.trim()}
-              className="px-4 py-2 text-sm sm:text-base"
+              className="px-4 py-2 text-sm sm:text-base w-36"
             >
-              Submit Report
+              {loading ? <Spinner /> : "Submit Report"}
             </Button>
           </div>
         </div>

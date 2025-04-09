@@ -65,7 +65,8 @@ export const createCalendarEvent = async (req: any, res: any) => {
     const calendarEvent = await calendar.events.insert({
       calendarId: "primary",
       conferenceDataVersion: 1,
-      sendUpdates: 'all'
+      sendUpdates: 'all',
+      requestBody: event
     });
 
     // Send confirmation emails

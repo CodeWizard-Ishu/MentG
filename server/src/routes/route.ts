@@ -103,6 +103,6 @@ router.post("/api/calendar/create-event/:id", verifyToken, createCalendarEvent);
 router.post("/api/booking/:id", verifyToken, updateBooking);
 
 router.post("/api/rating/:id", verifyToken, submitRating);
-router.get("/api/getRating/:id", verifyToken, getRatingsForMentor);
+router.get("/api/getRating/:id", getRatingsForMentor);
 router.post("/api/reportMeeting/:id", verifyToken, reportBooking);
 export default router;

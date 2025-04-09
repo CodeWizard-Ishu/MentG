@@ -19,7 +19,7 @@ const ProfilePageSkeleton: React.FC = () => {
       <div className="min-h-full flex justify-center items-center p-4">
         <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl grid grid-cols-1 md:grid-cols-3 overflow-hidden">
           {/* Sidebar Profile Section Skeleton */}
-          <div className="col-span-1 bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-4 md:p-8 relative">
+          <div className="col-span-1 bg-gradient-to-br from-[#C33764] to-[#08286b] text-white p-4 md:p-8 relative">
             <div className="flex flex-col items-center">
               <div className="flex flex-col items-center">
                 {/* Profile picture skeleton */}
@@ -47,7 +47,8 @@ const ProfilePageSkeleton: React.FC = () => {
               
               {/* Connect section skeleton */}
               <div className="flex mb-4 space-x-2">
-                <div className="h-4 w-24 bg-white/30 rounded animate-pulse mt-1"></div>
+                <div className="h-4 w-24 bg-white/30 rounded animate-pulse mt-2"></div>
+                <div className="w-8 h-8 bg-white/30 rounded-full animate-pulse"></div>
                 <div className="w-8 h-8 bg-white/30 rounded-full animate-pulse"></div>
                 <div className="w-8 h-8 bg-white/30 rounded-full animate-pulse"></div>
               </div>
@@ -83,7 +84,7 @@ const ProfilePageSkeleton: React.FC = () => {
           </div>
 
           {/* Main Content Area Skeleton */}
-          <div className="col-span-1 md:col-span-2 bg-white">
+          <div className="col-span-1 md:col-span-2 p-2 bg-white">
             {/* Tabs skeleton */}
             <div className="border-b">
               <div className="flex">
@@ -99,21 +100,38 @@ const ProfilePageSkeleton: React.FC = () => {
             </div>
 
             {/* Tab Content skeleton - Services tab as default */}
-            <div className="p-4 md:p-8">
-              <div className="h-6 md:h-7 w-40 md:w-48 bg-gray-200 rounded animate-pulse mb-4 md:mb-6"></div>
+              <div className="p-2 sm:p-6">
+                <div className="h-6 md:h-7 w-40 md:w-48 bg-gray-200 rounded animate-pulse mb-4 md:mb-6"></div>
 
-              {/* Service items skeleton */}
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="mb-4 md:mb-8">
-                  <div className="w-full h-16 md:h-20 bg-sky-100 rounded-xl animate-pulse"></div>
+                {/* Service items skeleton */}
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="mb-4 md:mb-8">
+                    <div className="flex items-center justify-between w-full p-3 md:p-4 rounded-xl bg-sky-100">
+                      <div className="flex items-center space-x-3 md:space-x-4">
+                        {/* Icon container skeleton */}
+                        <div className="bg-indigo-100 p-2 md:p-3 rounded-full">
+                          <div className="w-5 h-5 md:w-6 md:h-6 bg-gray-300 rounded animate-pulse"></div>
+                        </div>
+                        {/* Service text skeleton */}
+                        <div className="text-left">
+                          <div className="h-3 md:h-4 w-16 md:w-20 bg-gray-300 rounded animate-pulse mb-1"></div>
+                          <div className="h-2 md:h-3 w-24 md:w-32 bg-gray-200 rounded animate-pulse"></div>
+                        </div>
+                      </div>
+                      {/* Price skeleton */}
+                      <div className="flex flex-col items-end">
+                        <div className="h-3 md:h-4 w-12 md:w-16 bg-gray-300 rounded animate-pulse mb-1"></div>
+                        <div className="h-2 md:h-3 w-16 md:w-20 bg-gray-200 rounded animate-pulse"></div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Book button skeleton */}
+                <div className="p-4 md:p-8">
+                  <div className="w-full h-10 md:h-12 bg-[#08286b]/70 rounded-xl animate-pulse"></div>
                 </div>
-              ))}
-
-              {/* Book button skeleton */}
-              <div className="p-4 md:p-8">
-                <div className="w-full h-10 md:h-12 bg-[#08286b]/70 rounded-xl animate-pulse"></div>
               </div>
-            </div>
           </div>
         </div>
       </div>

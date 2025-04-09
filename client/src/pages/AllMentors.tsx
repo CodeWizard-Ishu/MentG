@@ -31,7 +31,7 @@ const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const capitalize = (string : string) => {
-    return string.toLowerCase().split(' ').map(function(word) {
+    return string?.toLowerCase().split(' ').map(function(word) {
       return word.charAt(0).toUpperCase() + word.slice(1);
     }).join(' ');
   }

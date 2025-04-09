@@ -11,6 +11,7 @@ import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
 import { toast } from "react-toastify";
 import BACKEND_URL from "../endpoint";
+import Spinner from "../components/ui/Spinner";
 
 interface ReportMenuProps {
   menteeId: number;
@@ -20,6 +21,7 @@ interface ReportMenuProps {
 const ReportMenu = ({ menteeId, menteeName }: ReportMenuProps) => {
   const [reportOpen, setReportOpen] = useState(false);
   const [report, setReport] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const mentorId = localStorage.getItem("userId");
   const token = localStorage.getItem("userToken") ?? "";
@@ -29,13 +31,13 @@ const ReportMenu = ({ menteeId, menteeName }: ReportMenuProps) => {
   };
 
   const handleSubmit = async () => {
+    const reportData = {
+      menteeId,
+      mentorId: mentorId,
+      report: report
+    }
+    setLoading(true);
     try {
-      const reportData = {
-        menteeId,
-        mentorId: mentorId,
-        report: report
-      }
-
       const response = await fetch(`${BACKEND_URL}/api/reportMeeting/${mentorId}`, {
         method: "POST",
         headers: {
@@ -63,12 +65,12 @@ const ReportMenu = ({ menteeId, menteeName }: ReportMenuProps) => {
     } finally {
       resetForm();
       setReportOpen(false);
+      setLoading(false);
     }
   };
 
   return (
     <>
-      {/* Dropdown Menu - Responsive sizing */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -101,7 +103,6 @@ const ReportMenu = ({ menteeId, menteeName }: ReportMenuProps) => {
         description="Please describe the issue you'd like to report"
       >
         <div className="space-y-4 sm:space-y-6 py-2 sm:py-4">
-          {/* Report Details - Responsive sizing */}
           <div className="space-y-2 sm:space-y-3">
             <label
               htmlFor="report"
@@ -118,7 +119,6 @@ const ReportMenu = ({ menteeId, menteeName }: ReportMenuProps) => {
             />
           </div>
 
-          {/* Buttons - Responsive spacing */}
           <div className="flex justify-end gap-2 sm:gap-3 pt-2 sm:pt-4">
             <Button
               variant="outline"
@@ -132,7 +132,7 @@ const ReportMenu = ({ menteeId, menteeName }: ReportMenuProps) => {
               disabled={!report.trim()}
               className="text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
             >
-              Submit Report
+              { loading ? <Spinner/> : "Submit Report" }
             </Button>
           </div>
         </div>

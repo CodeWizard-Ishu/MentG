@@ -124,6 +124,10 @@ const BookingSuccessPage: React.FC = () => {
               <Link
                 to="/dashboard/mentee/"
                 rel="noopener noreferrer"
+                onClick={() => {
+                  clearBooking();
+                  localStorage.removeItem("bookingComplete");
+                }}
                 className="inline-block bg-[#08286b] hover:bg-[#08276bcc] text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-300 ease-in-out mt-4"
               >
                 Go to Dashboard
