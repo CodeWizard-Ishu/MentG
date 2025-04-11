@@ -13,19 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
 
-interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  isMentor: boolean;
-  isActive: boolean;
-}
-
-interface Mentee {
-  user: User;
-}
-
 interface Testimonial {
   id: number;
   mentorId: number;
@@ -33,7 +20,12 @@ interface Testimonial {
   score: number;
   feedback: string;
   createdAt: string;
-  mentee: Mentee;
+  mentee: {
+    user: {
+      firstName: string;
+      lastName: string;
+    }
+  };
 }
 
 interface PaginatedResponse {
@@ -58,7 +50,7 @@ const Testimonials = () => {
   const [filterRating, setFilterRating] = useState<number | null>(null);
   const [sortOrder, setSortOrder] = useState<string>("most-recent");
 
-  const userId = localStorage.getItem("userId");
+  const username = localStorage.getItem("username");
   const token = localStorage.getItem("userToken") ?? "";
   const limit = 10;
 
@@ -76,33 +68,33 @@ const Testimonials = () => {
       }
       
       const response = await fetch(
-        `${BACKEND_URL}/api/getRating/${userId}?${queryParams.toString()}`, 
+        `${BACKEND_URL}/api/getRating/${username}?${queryParams.toString()}`, 
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
         }
       );
+
+      if(!response.ok){
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
+      }
       
       const data: PaginatedResponse = await response.json();
 
-      if (!response.ok) {
-        setTestimonials([]);
-        setTotalPages(0);
-        setTotalRatings(0);
-      } else {
-        setTestimonials(data.ratings);
-        setTotalPages(data.totalPages);
-        setTotalRatings(data.totalRatings);
-      }
+      setTestimonials(data.ratings);
+      setTotalPages(data.totalPages);
+      setTotalRatings(data.totalRatings);
     } catch (error) {
-      toast.error(`${error}`, {
+      toast.error(`Error, Check your Connection: ${error}`, {
         pauseOnHover: false,
         draggable: true,
       });
-      setTestimonials([]);
-      setTotalPages(0);
-      setTotalRatings(0);
     } finally {
       setLoading(false);
     }
@@ -111,7 +103,7 @@ const Testimonials = () => {
   useEffect(() => {
     fetchRatings();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, userId, page, filterRating, sortOrder, limit]);
+  }, [token, username, page, filterRating, sortOrder, limit]);
 
   const handlePrevPage = () => {
     if (page > 1) {

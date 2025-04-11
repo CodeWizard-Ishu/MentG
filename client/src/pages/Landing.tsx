@@ -26,10 +26,21 @@ import ProfileCard from "../components/ui/ProfileCard";
 import Footer from "../components/Footer";
 import LandingSkeleton from "../components/ui/Skeletons/LandingSkeleton";
 import SearchBox from "../components/SearchBox";
+import { toast } from "react-toastify";
 
 interface LandingPageProps {
   loggedIn: boolean;
   mentor: boolean;
+}
+
+interface Mentor{
+  id : number,
+  userId : number,
+  firstName : string,
+  lastName : string,
+  username: string,
+  bio : string,
+  profilePicture : string
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
@@ -56,12 +67,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fetchTopMentors = async (selectedDomainNames: any) => {
     try {
-      const response = await fetch(
-        `${BACKEND_URL}/api/mentor/topMentors?domainNames=${selectedDomainNames.join(
-          ","
-        )}`
-      );
-      if (!response.ok) throw new Error("Network response was not ok");
+      const response = await fetch(`${BACKEND_URL}/api/mentor/topMentors?domainNames=${selectedDomainNames.join(",")}`);
+      if (!response.ok){
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
+      }
       const data = await response.json();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const sortedMentors = data[0].mentors.sort((a: any, b: any) => {
@@ -75,8 +89,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
       } else {
         setMentorsData([]);
       }
-    } catch (error) {
-      console.error("Error fetching top mentors:", error);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
+        pauseOnHover: false,
+        draggable: true,
+      });
     } finally {
       setLoading(false);
     }
@@ -386,18 +404,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
               <div className="flex grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 overflow-x-auto scrollbar-hide">
                 <div className="flex space-x-4">
                   {mentorsData.length === 0 && loading ? <LandingSkeleton/> : (
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    mentorsData.map((mentor: any) => (
+                    mentorsData.map((mentor: Mentor) => (
                       <div 
                         key={mentor.id} 
                         className="w-40 sm:w-48 md:w-44"
                       >
                         <a
-                          href={`/profile/${mentor.userId}`}
+                          href={`/profile/${mentor.username}`}
                           style={{ textDecoration: "none" }}
                         >
                           <ProfileCard
-                            key={mentor.id}
+                            key={mentor.userId}
                             name={`${capitalize(mentor.firstName)} ${capitalize(mentor.lastName)}`}
                             imageUrl={mentor.profilePicture || defaultImage}
                             desc={mentor.bio || "No bio available."}

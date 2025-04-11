@@ -20,6 +20,21 @@ const capitalize = (string : string) => {
 
 const emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
+const generateUniqueUsername = async (firstName: string, lastName: string | null | undefined): Promise<string> => {
+  const baseUsername = firstName + (lastName || '');
+  let username = baseUsername + Math.floor(Math.random() * 1000);
+  
+  const existingUser = await prisma.user.findUnique({
+    where: { username }
+  });
+  
+  if (existingUser) {
+    return generateUniqueUsername(firstName, lastName);
+  }
+  
+  return username;
+}
+
 export const sendOTP = async (req: any, res: any) => {
   const { email } = req.body;
 
@@ -102,6 +117,7 @@ export const signupMentor = async (req: any, res: any) => {
     const passwordHash = await bcrypt.hash(password, salt);
     const formattedFirstName = capitalize(firstName);
     const formattedLastName = capitalize(lastName);
+    const username = await generateUniqueUsername(formattedFirstName, formattedLastName);
 
     const user = await prisma.user.create({
       data: {
@@ -111,6 +127,7 @@ export const signupMentor = async (req: any, res: any) => {
         password: passwordHash,
         isMentor: true,
         isActive: true,
+        username: username,
       },
     });
     await prisma.mentorProfile.create({
@@ -176,6 +193,7 @@ export const signupMentee = async (req: any, res: any) => {
     const passwordHash = await bcrypt.hash(password, salt);
     const formattedFirstName = capitalize(firstName);
     const formattedLastName = capitalize(lastName);
+    const username = await generateUniqueUsername(formattedFirstName, formattedLastName);
 
     const user = await prisma.user.create({
       data: {
@@ -185,6 +203,7 @@ export const signupMentee = async (req: any, res: any) => {
         password: passwordHash,
         isMentor: false,
         isActive: true,
+        username: username,
       },
     });
     await prisma.menteeProfile.create({
@@ -218,7 +237,6 @@ export const login = async (req: any, res: any) => {
   const { email, password } = req.body;
 
   try {
-    // Validate input data
     if (!email || !password) {
       throw new Error("Email and password are required");
     }
@@ -226,7 +244,6 @@ export const login = async (req: any, res: any) => {
       throw new Error("Invalid email format");
     }
 
-    // Check if user exists
     const user = await prisma.user.findUnique({
       where: { email },
     });
@@ -234,17 +251,13 @@ export const login = async (req: any, res: any) => {
       return res.status(400).json({ success: false, message: "User does not exist" });
     }
 
-    // Check if password is correct
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ success: false, message: "Email/Password not matched!" });
     }
 
-    //jwt
     const secret: any = process.env.JWT_SECRET;
     const token = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
-
-    // res.cookie("token", token, setCookieOptions);
 
     res.status(200).json({
       success: true,
@@ -263,7 +276,6 @@ export const login = async (req: any, res: any) => {
 
 export const checkAuth = async (req: any, res: any) => {
   try {
-    // const token = req.cookies.token;
     let token = req.header("Authorization");
 
     if (!token) {
@@ -294,6 +306,5 @@ export const checkAuth = async (req: any, res: any) => {
 };
 
 export const logout = async (req: any, res: any) => {
-  // res.clearCookie("token");
   res.status(200).json({ success: true, message: "Logged out successfully" });
 };

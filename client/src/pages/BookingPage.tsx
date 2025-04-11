@@ -36,12 +36,10 @@ interface FormValues {
 }
 
 interface Mentee {
+  email: string;
+  firstName: string;
+  lastName: string | null;
   phoneNumber: string | null;
-  user: {
-    email: string;
-    firstName: string;
-    lastName: string | null;
-  };
 }
 
 const validationSchema = Yup.object({
@@ -74,9 +72,8 @@ const BookingPage: React.FC = () => {
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [mentee, setMentee] = useState<Mentee | null>();
-  const [mentorEmail, setMentorEmail] = useState("");
-  const { mentorId } = useParams();
-
+  
+  const { username } = useParams();
   const menteeId = localStorage.getItem("userId");
   const token = localStorage.getItem("userToken") ?? "";
   
@@ -91,46 +88,17 @@ const BookingPage: React.FC = () => {
 
   useEffect(() => {
     if (!selectedService || !selectedSlot || !mentorDetails) {
-      navigate(`/profile/${mentorId}`);
+      navigate(`/profile/${username}`);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedService, selectedSlot, mentorDetails]);
 
   useEffect(() => {
-    const getMentorEmail = async () => {
-      const response = await fetch(`${BACKEND_URL}/api/mentorEmail/${menteeId}/${mentorId}`,
-        {
-          method: "GET",
-          headers: {
-            "Authorization": token,
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-      const email = await response.json();
-      setMentorEmail(email);
-    };
     const getFormData = async () => {
-      const response = await fetch(
-        `${BACKEND_URL}/api/bookingform/${menteeId}`,
-        {
-          method: "GET",
-          headers: {
-            "Authorization": token,
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-      const data = await response.json();
-      setMentee(data);
-    };
-    const getPaymentInfo = async () => {
       try {
         const serviceName = selectedService?.name ?? ""
         const response = await fetch(
-          `${BACKEND_URL}/api/service/${menteeId}/${mentorId}/${serviceName}`,
+          `${BACKEND_URL}/api/bookingData/${menteeId}/${username}/${serviceName}`,
           {
             method: "GET",
             headers: {
@@ -140,16 +108,27 @@ const BookingPage: React.FC = () => {
             credentials: "include",
           }
         )
+
+        if(!response.ok){
+          const errorData = await response.json();
+          toast.error(`${errorData.message}`, {
+            pauseOnHover: false,
+            draggable: true,
+          });
+          return;
+        }
+
         const data = await response.json();
         const info : PaymentInfo = {
-          sessionFees: data.data.price,
+          sessionFees: data.service.price,
           platformFees: 0,
-          discount: -data.data.price,
+          discount: -data.service.price,
           total: 0,
         }
+        setMentee(data.Mentee);
         setPaymentInfo(info);
       } catch (error) {
-        toast.error(`Error fetching payment information: ${error}`, {
+        toast.error(`Error, Check your Connection: ${error}`, {
           pauseOnHover: false,
           draggable: true,
         })
@@ -157,16 +136,13 @@ const BookingPage: React.FC = () => {
         setIsLoading(false);
       }
     };
-    getMentorEmail();
     getFormData();
-    getPaymentInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [menteeId, selectedService?.name, token, username]);
 
   const initialValues: FormValues = {
     name: localStorage.getItem("fullName") || "",
     phone: mentee?.phoneNumber || "",
-    email: mentee?.user.email || "",
+    email: mentee?.email || "",
     sessionDetails: "",
   };
 
@@ -212,15 +188,14 @@ const BookingPage: React.FC = () => {
         selectedSlot.endTime
       );
 
-      // Create calendar event
+      // Creating calendar event and getting meeting link in return
       const meetLink = await createCalendarEvent({
-        mentorId: mentorId!,
+        mentorUsername: username!,
         menteeId: menteeId!,
         dateTime: eventDateTime,
         duration: duration,
         serviceName: selectedService?.name ?? "",
         serviceDescription: values.sessionDetails,
-        mentorEmail: mentorEmail,
         menteeEmail: values.email,
         mentorName: mentorDetails?.name ?? "",
         menteeName: values.name,
@@ -230,7 +205,7 @@ const BookingPage: React.FC = () => {
       const bookingDateTime = convertISTtoUTC(selectedSlot.date, selectedSlot.startTime);
 
       const bookingData = {
-        mentorId: mentorId,
+        mentorUsername: username,
         dateTime: bookingDateTime,
         duration: duration,
         payment: paymentInfo?.total,
@@ -251,11 +226,17 @@ const BookingPage: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Booking failed");
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
+
       navigate('/booking/successfull', { state: { bookingSuccess: true } })
     } catch (error) {
-      toast.error(`Failed to create booking: ${error}`, {
+      toast.error(`Error, Check your Connection: ${error}`, {
         pauseOnHover: false,
         draggable: true,
       });

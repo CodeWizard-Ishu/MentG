@@ -47,7 +47,9 @@ const getMentorsOfDomain = async (domain: any, page: any, limit: any) => {
         profilePicture: mentor.profilePicture,
         bio: mentor.bio,
         firstName: mentor.user.firstName,
-        lastName: mentor.user.lastName,}
+        lastName: mentor.user.lastName,
+        username: mentor.user.username,
+      }
     });
 
     return {

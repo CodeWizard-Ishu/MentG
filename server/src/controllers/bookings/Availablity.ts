@@ -3,18 +3,22 @@ import { sendNote } from "../mailer";
 
 const prisma = getPrismaClient();
 
+const emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
 export const getBookingAvailablity = async (req: any, res: any) => {
-  const {mentorId} = req.params;
+  const { username } = req.params;
 
   try {
-    const parsedMentorId = parseInt(mentorId);
-    const mProfile = await prisma.mentorProfile.findUnique({
-      where: { userId: parsedMentorId },
+    const parsedUsername = String(username);
+    const mProfile = await prisma.user.findUnique({
+      where: { username: parsedUsername },
     });
-    const userId = mProfile?.userId;
+    if(!mProfile){
+      return res.status(404).json({ success: false, message: "User not Found!"})
+    }
 
     const availability = await prisma.availability.findMany({
-      where: { mentorId: userId },
+      where: { mentorId: mProfile.id },
     });
 
     // Transform times to Date objects
@@ -30,41 +34,30 @@ export const getBookingAvailablity = async (req: any, res: any) => {
       };
     });
 
-    res.status(200).json({ data: transformedAvailability });
+    res.status(200).json({ success: true, data: transformedAvailability });
   } catch (error) {
     console.error("Error retrieving availability:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while retrieving availability." });
+    res.status(500).json({ success: false, message: "Error retrieving availability" });
   }
 };
 
 export const sendMentorNote = async (req: any, res: any) => {
-  const { mentorId, menteeId, message, menteeEmail } = req.body;
+  const { mentorUsername, menteeId, message, menteeEmail } = req.body;
 
   try {
-    if(!mentorId || !menteeId) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid request",
-      });
+    if(!mentorUsername || !menteeId) {
+      return res.status(400).json({ success: false, message: "Invalid request" });
     }
     if (!menteeEmail || !message) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide all required fields",
-      });
+      return res.status(400).json({ success: false, message: "Please provide all required fields" });
     }
-    if (!menteeEmail.includes("@")) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid email format",
-      });
+    if (emailRegex.test(menteeEmail)) {
+      return res.status(400).json({ success: false, message: "Invalid email format" });
     }
 
     // Fetch mentor's profile with associated user
     const mentorProfile = await prisma.user.findUnique({
-      where: { id: parseInt(mentorId, 10) },
+      where: { username: String(mentorUsername) },
     });
 
     // Fetch mentee's profile with associated user
@@ -74,7 +67,7 @@ export const sendMentorNote = async (req: any, res: any) => {
 
     // Validate profiles
     if (!mentorProfile || !menteeProfile) {
-      return res.status(404).json({ error: "Mentor or Mentee not found" });
+      return res.status(404).json({ success: false, message: "Mentor or Mentee not found" });
     }
 
     const mentorName = `${mentorProfile.firstName} ${mentorProfile.lastName}`;
@@ -82,9 +75,9 @@ export const sendMentorNote = async (req: any, res: any) => {
 
     sendNote(mentorProfile.email, menteeEmail, mentorName, menteeName, message);
 
-    res.status(200).json({ message: "Note sent successfully" });
+    res.status(200).json({ success: true, message: "Note sent successfully" });
   } catch (error) {
     console.error("Error sending mentor note:", error);
-    res.status(500).json({ error: "Failed to send note" });
+    res.status(500).json({ success: false, message: "Failed to send note" });
   }
 };

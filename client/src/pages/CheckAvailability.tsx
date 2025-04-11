@@ -36,7 +36,6 @@ type TimeSlot = {
 };
 
 type AvailabilityProps = {
-  // onSubmit?: (date: Date, timeSlot: TimeSlot) => void; // Made optional
   maxBookingDays?: number;
 };
 
@@ -62,7 +61,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
   const token = localStorage.getItem("userToken") ?? "";
 
   const navigate = useNavigate();
-  const { mentorId } = useParams(); // Get mentorId from URL parameters
+  const { username } = useParams(); // Get mentorUsername from URL parameters
 
   // Email validation function
   const isValidEmail = (email: string) => {
@@ -75,7 +74,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
       setIsLoading(true);
       try {
         const response = await fetch(
-          `${BACKEND_URL}/api/availability/${menteeId}/${mentorId}`,
+          `${BACKEND_URL}/api/availability/${menteeId}/${username}`,
           {
             method: "GET",
             headers: {
@@ -87,24 +86,29 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
         );
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          const errorData = await response.json();
+          toast.error(`${errorData.message}`, {
+            pauseOnHover: false,
+            draggable: true,
+          });
+          return;
         }
 
         const result = await response.json();
         setAvailability(result.data);
-      } catch (error) {
-        toast.error(`Error fetching availability:${error}`, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error:any) {
+        toast.error(`Error, Check your Connection: ${error.message}`, {
           pauseOnHover: false,
           draggable: true,
-        })
-        setError("Failed to load mentor's availability. Please try again later.");
+        });
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchAvailability();
-  }, [menteeId, mentorId, token]); // Fetch availability whenever mentorId changes
+  }, [menteeId, username, token]);
 
   // Calculate date bounds
   const dateBounds = useMemo(() => {
@@ -204,7 +208,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          mentorId,
+          username,
           menteeId,
           message: noteMessage,
           menteeEmail,
@@ -213,7 +217,12 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
       });
 
       if (!response.ok) {
-        throw new Error("Failed to send note");
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
 
       setNoteSent(true);
@@ -223,8 +232,9 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
         pauseOnHover: false,
         draggable: true,
       });
-    } catch (error) {
-      toast.error(`${error}. Please try again later.`, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });
@@ -247,7 +257,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
     });
 
     setSubmitting(false);
-    navigate(`/booking/${mentorId}`);
+    navigate(`/booking/${username}`);
   };
 
   // Helper function to format time

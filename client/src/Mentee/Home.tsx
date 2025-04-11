@@ -24,6 +24,7 @@ const Home = () => {
     userId : number,
     firstName : string,
     lastName : string,
+    username: string,
     bio : string,
     profilePicture : string
   }
@@ -86,9 +87,16 @@ const Home = () => {
           credentials: "include",
         }
       );
+
       if (!response.ok) {
-        throw new Error("Network response was not ok")
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
+
       const data = await response.json();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const sortedMentors = data.mentors.sort((a: any, b: any) => {
@@ -99,8 +107,9 @@ const Home = () => {
 
       setMentors(sortedMentors);
       setTotalPages(data.totalPages);
-    } catch (error) {
-      toast.error(`${error}`, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });
@@ -239,12 +248,12 @@ const Home = () => {
               mentors.map((mentor: Mentor) => (
                 <Link
                   key={mentor.id}
-                  to={`/profile/${mentor.userId}`}
+                  to={`/profile/${mentor.username}`}
                   style={{ textDecoration: "none" }}
                   className="transform transition-transform duration-300 hover:scale-105"
                 >
                   <ProfileCard
-                    key={mentor.id}
+                    key={mentor.userId}
                     name={`${capitalize(mentor.firstName)} ${capitalize(mentor.lastName)}`}
                     imageUrl={mentor.profilePicture || DefaultImage}
                     desc={mentor.bio || "No bio available."}

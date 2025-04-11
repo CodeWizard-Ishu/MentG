@@ -3,12 +3,19 @@ import { getPrismaClient } from "../../prisma";
 const prisma = getPrismaClient();
 
 export const getProfileData = async (req: any, res: any) => {
-  const {id} = req.params;
-  const mentorId = parseInt(id, 10);
+  const { username } = req.params;
+  const mentorUsername = String(username);
 
   try {
+    const user = await prisma.user.findUnique({
+      where: { username : mentorUsername}
+    })
+    if(!user){
+      return res.status(404).json({ success: false, message: "Username not found!" })
+    }
+
     const mentorProfile = await prisma.mentorProfile.findUnique({
-      where: { userId: mentorId },
+      where: { userId: user.id },
       include: {
         user: {
           select: {
@@ -24,7 +31,7 @@ export const getProfileData = async (req: any, res: any) => {
     });
 
     if (!mentorProfile) {
-      return res.status(404).json({ error: "Mentor not found" });
+      return res.status(404).json({ success: false, message: "Mentor not found!" });
     }
 
     // Calculate unique mentees and completed sessions
@@ -46,6 +53,7 @@ export const getProfileData = async (req: any, res: any) => {
 
     // Prepare response data
     const responseData = {
+      userId: mentorProfile.userId,
       fullName: `${mentorProfile.user.firstName} ${mentorProfile.user.lastName}`,
       bio: mentorProfile.bio,
       linkedin: mentorProfile.linkedin,
@@ -67,8 +75,6 @@ export const getProfileData = async (req: any, res: any) => {
     return res.json(responseData);
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ error: "An error occurred while fetching mentor profile" });
+    return res.status(500).json({ success: false, message: "An error occurred while fetching mentor profile" });
   }
 };

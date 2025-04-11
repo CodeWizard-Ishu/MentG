@@ -38,6 +38,7 @@ const getTopMentors = async (domainNames: any) => {
         bio: mentor.bio,
         firstName: mentor.user.firstName,
         lastName: mentor.user.lastName,
+        username: mentor.user.username,
       };
     });
 
@@ -48,7 +49,7 @@ const getTopMentors = async (domainNames: any) => {
 };
 
 export const topMentorOfDomain = async (req: any, res: any) => {
-  const { domainNames } = req.query; // Expecting domain names as a query parameter
+  const { domainNames } = req.query;
   const domainsArray = Array.isArray(domainNames) ? domainNames : [domainNames];
   try {
     const mentors = await getTopMentors(domainsArray);

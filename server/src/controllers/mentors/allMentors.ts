@@ -21,6 +21,7 @@ const getMentors = async (page: any, limit: any) => {
         bio: mentor.bio,
         firstName: mentor.user.firstName,
         lastName: mentor.user.lastName,
+        username: mentor.user.username,
       }
     })
 

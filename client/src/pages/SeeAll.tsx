@@ -14,6 +14,16 @@ interface AboutUsProps {
   mentor: boolean;
 }
 
+interface Mentor{
+  id : number,
+  userId : number,
+  firstName : string,
+  lastName : string,
+  username: string,
+  bio : string,
+  profilePicture : string
+}
+
 const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
   const { domain } = useParams();
   const domainName: string = domain || "";
@@ -61,10 +71,12 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
         `${BACKEND_URL}/api/getMentors?domain=${domain}&page=${currentPage}`
       );
       if (!response.ok) {
-        toast.error("Network response was not ok", {
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
           pauseOnHover: false,
-        draggable: true,
+          draggable: true,
         });
+        return;
       }
       const data = await response.json();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -76,8 +88,9 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
 
       setMentors(sortedMentors);
       setTotalPages(data.totalPages);
-    } catch (error) {
-      toast.error(`${error}`, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });
@@ -191,15 +204,14 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                   {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    mentors.map((mentor: any, idx: any) => (
+                    mentors.map((mentor: Mentor) => (
                       <Link
-                        key={idx}
-                        to={`/profile/${mentor.userId}`}
+                        key={mentor.id}
+                        to={`/profile/${mentor.username}`}
                         style={{ textDecoration: "none" }}
                       >
                         <ProfileCard
-                          key={idx}
+                          key={mentor.userId}
                           name={`${capitalize(mentor.firstName)} ${capitalize(mentor.lastName)}`}
                           imageUrl={mentor.profilePicture || DefaultImage}
                           desc={mentor.bio || "No bio available."}

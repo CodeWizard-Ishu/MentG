@@ -13,20 +13,6 @@ import { toast } from "react-toastify";
 import ProfilePageSkeleton from "../components/ui/Skeletons/ProfilePageSkeleton";
 import TestimonialCard from "../components/ui/TestimonialCard";
 
-interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  isMentor: boolean;
-  isActive: boolean;
-}
-
-interface Mentee {
-  user: User;
-}
-
 interface Testimonial {
   id: number;
   mentorId: number;
@@ -34,7 +20,12 @@ interface Testimonial {
   score: number;
   feedback: string;
   createdAt: string;
-  mentee: Mentee;
+  mentee: {
+    user: {
+      firstName: string;
+      lastName: string;
+    }
+  };
 }
 
 interface PaginatedTestimonials {
@@ -52,6 +43,7 @@ interface Services {
 }
 
 interface ProfileData {
+  userId: number,
   fullName : string,
   bio : string,
   linkedin : string,
@@ -83,7 +75,7 @@ const ProfilePage: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<string>("most-recent");
   const { setSelectedService, setMentorDetails } = useBookingStore();
   
-  const { userId } = useParams();
+  const { username } = useParams();
   const navigate = useNavigate();
   
   const formatCurrency = (amount: number): string => {
@@ -105,35 +97,43 @@ const ProfilePage: React.FC = () => {
     const fetchProfileData = async () => {
       try {
         const response = await fetch(
-          `${BACKEND_URL}/api/data/mentor/${userId}`, {
+          `${BACKEND_URL}/api/data/mentor/${username}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
             },
           }
         );
-        if (!response.ok) throw new Error("Oops! Mentor not found.");
+        if (!response.ok){
+          const errorData = await response.json();
+          toast.error(`${errorData.message}`, {
+            pauseOnHover: false,
+            draggable: true,
+          });
+          return;
+        }
         const data = await response.json();
         setProfileData(data);
         if (data.profilePicture) setProfilePicture(data.profilePicture);
         setServices(data.services);
-      } catch (error) {
-        toast.error(`${error}`, {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error:any) {
+        toast.error(`Error, Check your Connection: ${error.message}`, {
           pauseOnHover: false,
           draggable: true,
-        })
+        });
       }
     };
 
     fetchProfileData();
-  }, [userId]);
+  }, [username]);
 
   useEffect(() => {
     if (activeTab === "reviews") {
       fetchRatings();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, activeTab, currentPage, ratingFilter, sortOrder]);
+  }, [username, activeTab, currentPage, ratingFilter, sortOrder]);
 
   const fetchRatings = async () => {
     setLoading(true);
@@ -153,36 +153,29 @@ const ProfilePage: React.FC = () => {
       }
       
       const response = await fetch(
-        `${BACKEND_URL}/api/getRating/${userId}?${queryParams.toString()}`, 
+        `${BACKEND_URL}/api/getRating/${username}?${queryParams.toString()}`, 
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
         }
       );
+
+      if(!response.ok){
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
+      }
       
       const data = await response.json();
-
-      if (response.ok) {
-        setTestimonialData(data);
-      } else {
-        setTestimonialData({
-          ratings: [],
-          totalPages: 0,
-          currentPage: 1,
-          totalRatings: 0
-        });
-      }
+      setTestimonialData(data);
     } catch (error) {
       toast.error(`${error}`, {
         pauseOnHover: false,
         draggable: true,
-      });
-      setTestimonialData({
-        ratings: [],
-        totalPages: 0,
-        currentPage: 1,
-        totalRatings: 0
       });
     } finally {
       setLoading(false);
@@ -255,7 +248,7 @@ const ProfilePage: React.FC = () => {
       });
     }
     if (localStorage.getItem("loggedIn") === "true")
-      navigate(`/availability/${userId}`);
+      navigate(`/availability/${username}`);
     else navigate(`/login`);
     setLoading(false);
   };

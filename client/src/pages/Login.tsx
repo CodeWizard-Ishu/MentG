@@ -15,7 +15,8 @@ interface LoginPageProps {
     isActive: boolean,
     userId: string,
     firstName: string,
-    lastName: string
+    lastName: string,
+    username: string,
   ) => void;
 }
 
@@ -47,8 +48,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
     if (localStorage.getItem("loggedIn") === "true") {
       navigate("/");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigate]);
 
   const handleLogin = async (values: LoginFormValues) => {
     setLoading(true);
@@ -78,7 +78,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
         data.user.isActive,
         data.user.id,
         data.user.firstName,
-        data.user.lastName
+        data.user.lastName,
+        data.user.username,
       );
       toast.success("Login Successful!", {
         pauseOnHover: false,
@@ -86,8 +87,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin = () => {} }) => {
       });
 
       navigate(data.user.isMentor ? "/dashboard/" : "/dashboard/mentee/");
-    } catch (error) {
-      toast.error(`Network Error: ${error}`, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

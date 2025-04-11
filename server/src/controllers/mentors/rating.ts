@@ -10,12 +10,11 @@ export const submitRating = async (req: any, res: any) => {
     const menteeProfile = await prisma.menteeProfile.findUnique({
       where: { userId: menteeId },
     });
-
     if (!menteeProfile) {
-      return res.status(400).json({ error: "Mentee does not exist" });
+      return res.status(404).json({ success: false, message: "User not found!" });
     }
     if (score < 1 || score > 5) {
-      return res.status(400).json({ error: "Score must be between 1 and 5." });
+      return res.status(400).json({ success: false, message: "Score must be between 1 and 5." });
     }
 
     const newRating = await prisma.rating.create({
@@ -27,10 +26,10 @@ export const submitRating = async (req: any, res: any) => {
       },
     });
 
-    return res.status(201).json(newRating);
+    return res.status(201).json({ success: true, newRating });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "An error occurred while submitting the rating." });
+    return res.status(500).json({ success: false, message: "An error occurred while submitting the rating." });
   }
 };
 
@@ -39,9 +38,8 @@ const getRatings = async (mentorId: number, page: number, limit: number, rating:
     const mentorProfile = await prisma.mentorProfile.findUnique({
       where: { userId: mentorId },
     });
-    
     if (!mentorProfile) {
-      throw new Error("Mentor does not exist");
+      throw new Error("User not found!");
     }
     
     const whereCondition: any = { mentorId: mentorProfile.userId };
@@ -58,19 +56,28 @@ const getRatings = async (mentorId: number, page: number, limit: number, rating:
       orderBy = { score: "asc" };
     }
     
-    const ratings = await prisma.rating.findMany({
+    const data = await prisma.rating.findMany({
       where: whereCondition,
-      include: {
-        mentee: {
-          select: {
-            user: true,
-          },
-        },
-      },
+      include: { mentee: { select: { user: true} }},
       orderBy: orderBy,
       skip: (page - 1) * limit,
       take: Number(limit),
     });
+
+    const ratings = data.map((rating) => ({
+      id: rating.id,
+      mentorId: rating.mentorId,
+      menteeId: rating.menteeId,
+      score: rating.score,
+      feedback: rating.feedback || "",
+      createdAt: rating.createdAt.toISOString(),
+      mentee: {
+        user: {
+          firstName: rating.mentee.user.firstName,
+          lastName: rating.mentee.user.lastName || ""
+        }
+      }
+    }));
     
     const totalRatings = await prisma.rating.count({
       where: whereCondition,
@@ -89,18 +96,26 @@ const getRatings = async (mentorId: number, page: number, limit: number, rating:
 };
 
 export const getRatingsForMentor = async (req: any, res: any) => {
-  const { id } = req.params;
+  const { username } = req.params;
   const { page = 1, limit = 10, rating = null, sort = "most-recent" } = req.query;
-  const parsedId = parseInt(id, 10);
+  const parsedUsername = String(username);
   const parsedPage = parseInt(String(page), 10);
   const parsedLimit = parseInt(String(limit), 10);
   const parsedRating = rating !== null ? parseInt(String(rating), 10) : null;
 
   try {
-    const result = await getRatings(parsedId, parsedPage, parsedLimit, parsedRating, String(sort));
+    const userId = await prisma.user.findUnique({
+      where: { username: parsedUsername }
+    });
+    if(!userId){
+      return res.status(404).json({ success: false, message: "User not found!" })
+    }
+
+    const result = await getRatings(userId.id, parsedPage, parsedLimit, parsedRating, String(sort));
     
     if (result.ratings.length === 0 && parsedPage === 1) {
       return res.status(200).json({ 
+        success: true,
         message: "No ratings found for this mentor.",
         ratings: [],
         totalPages: 0,
@@ -112,9 +127,9 @@ export const getRatingsForMentor = async (req: any, res: any) => {
     return res.status(200).json(result);
   } catch (error: any) {
     console.error(error);
-    if (error.message === "Mentor does not exist") {
-      return res.status(400).json({ error: error.message });
+    if (error.message === "User not found!") {
+      return res.status(400).json({ success: false, message: error.message });
     }
-    return res.status(500).json({ error: "An error occurred while fetching ratings." });
+    return res.status(500).json({ status: false, message: "An error occurred while fetching ratings." });
   }
 };

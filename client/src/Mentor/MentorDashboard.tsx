@@ -52,8 +52,9 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("userToken") ?? "";
+  const userId = localStorage.getItem("userId");
+  const username = localStorage.getItem("username");
 
   const onProfileUpdate = useCallback(async () => {
     try {
@@ -69,7 +70,12 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
       );
 
       if (!response.ok) {
-        throw new Error("Failed fetching mentor details");
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
 
       const data = await response.json();
@@ -81,8 +87,9 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
       const formattedName = `${capitalize(data.user.firstName)} ${capitalize(data.user.lastName) || ""}`.trim();
       localStorage.setItem("fullName", formattedName);
       setFullName(formattedName);
-    } catch (error) {
-      toast.error(`${error}`, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });
@@ -179,7 +186,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
                 {navItems.find((item) => location.pathname.endsWith(item.path))?.name || "Home"}
               </h2>
               <div>
-              <NavLink to={`/profile/${userId}`}>
+              <NavLink to={`/profile/${username}`}>
                 <button className="px-2 py-1 text-black bg-white hover:bg-sky-200 rounded-lg flex items-center">
                   <ExternalLink size={20} /> Go to Profile
                 </button>
@@ -274,21 +281,19 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
                   </div>
                 </div>
                 <div className="md:absolute md:flex md:justify-between md:space-x-4 md:top-4 md:right-4 space-y-2 md:space-y-0">
-                  <a href={`/profile/${userId}`} className="block">
-                    <button className="w-full md:w-auto text-black px-4 py-2 border-2 border-black rounded-lg flex items-center justify-center space-x-2 hover:transition-all hover:shadow-gray-700 hover:shadow-md hover:text-gray-700">
-                      <ExternalLink className="w-5 h-5" />
-                      <span>Go to Profile</span>
+                  <NavLink to={`/profile/${username}`}>
+                    <button className="w-full md:w-auto text-black px-4 py-2 border-2 border-black rounded-lg flex items-center justify-center gap-1 hover:transition-all hover:shadow-gray-700 hover:shadow-md hover:text-gray-700">
+                      <ExternalLink className="w-5 h-5" /> Go to Profile
                     </button>
-                  </a>
+                  </NavLink>
                   <button
                     onClick={() => {
                       handleLogout();
                       onLogout();
                     }}
-                    className="w-full md:w-auto text-red-500 px-4 py-2 border-2 border-red-500 rounded-lg flex items-center justify-center space-x-2 hover:transition-all hover:shadow-red-500 hover:shadow-md hover:text-red-500"
+                    className="w-full md:w-auto text-red-500 px-4 py-2 border-2 border-red-500 rounded-lg flex items-center justify-center gap-1 hover:transition-all hover:shadow-red-500 hover:shadow-md hover:text-red-500"
                   >
-                    <LogOut className="w-5 h-5" />
-                    <span>Log Out</span>
+                    <LogOut className="w-5 h-5" /> Log Out
                   </button>
                 </div>
               </div>

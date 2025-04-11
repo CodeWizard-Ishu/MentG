@@ -30,13 +30,7 @@ export const CheckAuth = ({onLogout, navigate}: CheckAuthProps) => {
           credentials: "include",
         });
         if (logoutResponse.ok) {
-          localStorage.removeItem("userToken");
-          localStorage.removeItem("loggedIn");
-          localStorage.removeItem("isActive");
-          localStorage.removeItem("mentor");
-          localStorage.removeItem("userId");
-          localStorage.removeItem("fullName");
-          localStorage.removeItem("booking-store");
+          localStorage.clear();
           onLogout();
         }
 

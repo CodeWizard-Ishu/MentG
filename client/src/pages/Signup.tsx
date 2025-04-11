@@ -15,7 +15,8 @@ interface SignupPageProps {
     isActive: boolean,
     userId: string,
     firstName: string,
-    lastName: string
+    lastName: string,
+    username: string,
   ) => void;
 }
 
@@ -168,8 +169,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
         draggable: true,
       });
     } catch (error) {
-      console.error(error);
-      toast.error("Network error. Please try again later.", {
+      toast.error(`Network error: ${error}`, {
         pauseOnHover: false,
         draggable: true,
       });
@@ -230,7 +230,8 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
         data.user.isActive,
         data.user.id,
         data.user.firstName,
-        data.user.lastName
+        data.user.lastName,
+        data.user.username,
       )
 
       if (data.user.isMentor) {
@@ -238,8 +239,9 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
       } else {
         navigate("/dashboard/mentee/");
       }
-    } catch (error) {
-      toast.error(`Network error: ${error}`, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

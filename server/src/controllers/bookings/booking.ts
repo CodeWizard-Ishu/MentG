@@ -4,44 +4,46 @@ import { getPrismaClient } from "../../prisma";
 const prisma = getPrismaClient();
 
 export const updateBooking = async (req: any, res: any) => {
-  const mentorId = parseInt(req.body.mentorId, 10); // Convert mentorId to an integer
-  const {id} = req.params;
-  const menteeId = parseInt(id); // Convert id to an integer
-  const dateTime = new Date(req.body.dateTime); // DateTime will already be in UTC from the frontend
-  const duration = req.body.duration; // Duration should already be a number
-  const payment = req.body.payment; // Payment should already be a number
-  const serviceName = req.body.serviceName; // Service name as string
-  const serviceDescription = req.body.serviceDescription; // Service description as string
-  const servicePrice = req.body.servicePrice; // Service price as number
-  const meetLink = req.body.meetLink;  //google meet link as string
+  const { id } = req.params;
+  const {
+    mentorUsername,
+    dateTime,
+    duration,
+    payment,
+    serviceName,
+    serviceDescription,
+    servicePrice,
+    meetLink
+  } = req.body;
 
-  if(serviceName === "Quick Chat" || serviceName === "Priority DMs" || serviceName === "Webinars" || !meetLink){
-    throw new Error("Service cannot be booked");
+  const parsedMentorUsername = String(mentorUsername);
+  const parsedMenteeId = parseInt(id, 10);
+  const parsedDateTime = new Date(dateTime);
+
+  if(serviceName === "Quick Chat" || serviceName === "Priority DMs" || serviceName === "Webinars" || !meetLink || !parsedMenteeId){
+    return res.status(404).json({ success: false, message: "Service cannot be booked!"});
   }
 
   try {
+    const mentor = await prisma.user.findUnique({
+      where: { username: parsedMentorUsername },
+    });
+    if(!mentor) return res.status(404).json({ success: false, message: "Mentor not found!"});
     const mentorProfile = await prisma.mentorProfile.findUnique({
-      where: { userId: mentorId },
-    });
-    const menteeProfile = await prisma.menteeProfile.findUnique({
-      where: { userId: menteeId },
-    });
-
+      where: { userId : mentor.id }
+    })
     if (!mentorProfile) {
-      return res.status(400).json({ error: "Mentor does not exist" });
+      return res.status(404).json({ success: false, message: "Mentor not found!"});
     }
 
-    if (!menteeProfile) {
-      return res.status(400).json({ error: "Mentee does not exist" });
-    }
     const booking = await prisma.booking.create({
       data: {
         mentorId: mentorProfile.userId,
-        menteeId: menteeProfile.userId,
-        dateTime,
+        menteeId: parsedMenteeId,
+        dateTime: parsedDateTime,
         duration,
         payment,
-        status: BookingStatus.CONFIRMED, // Initial status can be PENDING
+        status: BookingStatus.CONFIRMED,
         serviceName,
         serviceDescription,
         servicePrice,
@@ -49,11 +51,9 @@ export const updateBooking = async (req: any, res: any) => {
       },
     });
 
-    res.status(201).json({ message: "Booking created successfully", booking });
+    res.status(201).json({ success: true, message: "Booking created successfully!"});
   } catch (error) {
     console.error("Error creating booking:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while creating the booking" });
+    res.status(500).json({ success: false, message: "An error occurred while creating the booking" });
   }
 };

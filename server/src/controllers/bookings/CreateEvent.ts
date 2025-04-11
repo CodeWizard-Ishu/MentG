@@ -8,30 +8,34 @@ const prisma = getPrismaClient();
 export const createCalendarEvent = async (req: any, res: any) => {
   try {
     const {
-      mentorId,
+      mentorUsername,
       dateTime,
       duration,
       serviceName,
       serviceDescription,
-      mentorEmail,
       menteeEmail,
       mentorName,
       menteeName,
     } = req.body;
 
     if(serviceName === "Quick Chat" || serviceName === "Priority DMs" || serviceName === "Webinars"){
-      throw new Error("Service cannot be booked");
+      return res.status(400).json({ success: false, message: "Service cannot be booked!"});
     }
 
-    const oauth2Client = await getAuthenticatedGoogleClient(parseInt(mentorId));
+    const mentor = await prisma.user.findUnique({
+      where: { username: mentorUsername}
+    })
+    if(!mentor) return res.status(404).json({ success: false, message: "Mentor not found!"});
+
+    const oauth2Client = await getAuthenticatedGoogleClient(parseInt(String(mentor.id), 10));
 
     const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
-    // Create calendar event
+    // Creating calendar event
     const endTime = new Date(new Date(dateTime).getTime() + duration * 60000);
 
     const event = {
-      summary: `MentG : ${serviceName}`,
+      summary: `MentG - ${serviceName}`,
       description: serviceDescription,
       start: {
         dateTime: new Date(dateTime).toISOString(),
@@ -43,7 +47,7 @@ export const createCalendarEvent = async (req: any, res: any) => {
       },
       attendees: [
         {email: menteeEmail, responseStatus: 'needsAction'},
-        {email: mentorEmail, responseStatus: 'needsAction', organizer: true}
+        {email: mentor.email, responseStatus: 'needsAction', organizer: true}
       ],
       conferenceData: {
         createRequest: {
@@ -53,7 +57,7 @@ export const createCalendarEvent = async (req: any, res: any) => {
       },
 
       organizer: {
-        email: mentorEmail,
+        email: mentor.email,
         self: true
       },
 
@@ -69,9 +73,9 @@ export const createCalendarEvent = async (req: any, res: any) => {
       requestBody: event
     });
 
-    // Send confirmation emails
+    // Send confirmation emails to mentor & mentee
     sendBookingDetails(
-      mentorEmail,
+      mentor.email,
       menteeEmail,
       serviceName,
       serviceDescription,
@@ -82,12 +86,9 @@ export const createCalendarEvent = async (req: any, res: any) => {
       calendarEvent.data.hangoutLink
     );
 
-    res.status(200).json({
-      message: "Calendar event created successfully",
-      meetLink: calendarEvent.data.hangoutLink,
-    });
+    res.status(200).json({ message: "Event created successfully!", meetLink: calendarEvent.data.hangoutLink });
   } catch (error) {
     console.error("Error creating calendar event:", error);
-    res.status(500).json({ error: "Failed to create calendar event" });
+    res.status(500).json({ status:false, message: "Failed to create calendar event" });
   }
 };

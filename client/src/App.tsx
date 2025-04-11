@@ -53,6 +53,11 @@ const SkeletonFallback = () => (
   <Spinner clasName="min-h-screen content-center" />
 );
 
+const capitalize = (string: string) => {
+  if (!string) return "";
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+};
+
 function App() {
   injectSpeedInsights();
   inject();
@@ -70,19 +75,16 @@ function App() {
     isActive: boolean,
     userId: string,
     firstName: string,
-    lastName: string
+    lastName: string,
+    username: string,
   ) => {
     localStorage.setItem("userToken", `Bearer ${token}`);
     localStorage.setItem("loggedIn", "true");
     localStorage.setItem("mentor", isMentor ? "true" : "false");
     localStorage.setItem("isActive", isActive ? "true" : "false");
     localStorage.setItem("userId", userId);
-    const capitalize = (string: string) => {
-      if (!string) return "";
-      return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-    };
-    const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
-    localStorage.setItem("fullName", formattedName);
+    localStorage.setItem("fullName", `${capitalize(firstName)} ${capitalize(lastName)}`);
+    localStorage.setItem("username", username);
     setLoggedIn(true);
     setMentor(isMentor);
   };
@@ -93,19 +95,16 @@ function App() {
     isActive: boolean,
     userId: string,
     firstName: string,
-    lastName: string
+    lastName: string,
+    username: string,
   ) => {
     localStorage.setItem("userToken", `Bearer ${token}`);
     localStorage.setItem("loggedIn", "true");
     localStorage.setItem("mentor", isMentor ? "true" : "false");
     localStorage.setItem("isActive", isActive ? "true" : "false");
     localStorage.setItem("userId", userId);
-    const capitalize = (string: string) => {
-      if (!string) return "";
-      return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-    };
-    const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
-    localStorage.setItem("fullName", formattedName);
+    localStorage.setItem("fullName", `${capitalize(firstName)} ${capitalize(lastName)}`);
+    localStorage.setItem("username", username);
     setLoggedIn(true);
     setMentor(isMentor);
   };
@@ -129,7 +128,7 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/all-mentors" element={<AllMentors loggedIn={loggedIn} mentor={mentor} />} />
-          <Route path="/profile/:userId" element={<ProfilePage />} />
+          <Route path="/profile/:username" element={<ProfilePage />} />
           <Route path="/see-all/:domain" element={<SeeAll loggedIn={loggedIn} mentor={mentor} />} />
 
           {/* Protected Routes */}
@@ -158,10 +157,10 @@ function App() {
             </Route>
             {/* Booking Flow Routes */}
             <Route element={<ProtectedBookingRoutes requireService={true} onLogout={handleLogout} />}>
-              <Route path="/availability/:mentorId" element={<CheckAvailability />} />
+              <Route path="/availability/:username" element={<CheckAvailability />} />
             </Route>
             <Route element={<ProtectedBookingRoutes requireService={true} requireSlot={true} onLogout={handleLogout} />}>
-              <Route path="/booking/:mentorId" element={<BookingPage />} />
+              <Route path="/booking/:username" element={<BookingPage />} />
             </Route>
             <Route element={<ProtectedBookingRoutes requireService={true} requireSlot={true} onLogout={handleLogout} />}>
               <Route path="/booking/successfull" element={<BookingSuccessPage />} />

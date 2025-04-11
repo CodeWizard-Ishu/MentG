@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/client"
 }
 
 datasource db {
@@ -16,6 +17,7 @@ model User {
   password      String
   isMentor      Boolean
   isActive      Boolean
+  username      String         @unique @db.VarChar
   menteeProfile MenteeProfile? @relation("UserMenteeProfile")
   mentorProfile MentorProfile? @relation("UserMentorProfile")
   resetTokens   ResetToken[]   @relation("UserResetToken")

@@ -3,13 +3,12 @@ import BACKEND_URL from "../endpoint";
 import { toast } from "react-toastify";
 
 interface BookingDetails {
-  mentorId: string;
+  mentorUsername: string;
   menteeId: string;
   dateTime: Date;
   duration: number;
   serviceName: string;
   serviceDescription: string;
-  mentorEmail: string;
   menteeEmail: string;
   mentorName: string;
   menteeName: string;
@@ -30,12 +29,11 @@ const useGoogleCalendarBooking = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          mentorId: bookingDetails.mentorId,
+          mentorUsername: bookingDetails.mentorUsername,
           dateTime: bookingDetails.dateTime.toISOString(),
           duration: bookingDetails.duration,
           serviceName: bookingDetails.serviceName,
           serviceDescription: bookingDetails.serviceDescription,
-          mentorEmail: bookingDetails.mentorEmail,
           menteeEmail: bookingDetails.menteeEmail,
           mentorName: bookingDetails.mentorName,
           menteeName: bookingDetails.menteeName
@@ -44,14 +42,19 @@ const useGoogleCalendarBooking = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create calendar event');
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
 
       const data = await response.json();
       return data.meetLink;
 
     } catch (error) {
-      toast.error(`Error creating calendar event: ${error}`, {
+      toast.error(`Error, Check your Connection: ${error}`, {
         pauseOnHover: false,
         draggable: true,
       });
