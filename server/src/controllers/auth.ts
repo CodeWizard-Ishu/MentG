@@ -21,8 +21,10 @@ const capitalize = (string : string) => {
 const emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
 const generateUniqueUsername = async (firstName: string, lastName: string | null | undefined): Promise<string> => {
-  const baseUsername = firstName + (lastName || '');
-  let username = baseUsername + Math.floor(Math.random() * 1000);
+  const sanitizedFirstName = firstName.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+  const sanitizedLastName = lastName ? lastName.toLowerCase().replace(/[^a-zA-Z0-9]/g, '') : '';
+  
+  let username = sanitizedFirstName + sanitizedLastName + Math.floor(Math.random() * 1000);
   
   const existingUser = await prisma.user.findUnique({
     where: { username }
