@@ -12,16 +12,18 @@ export const getAllMeetings = async (req: any, res: any) => {
 
   // Validate page and limit
   if (pageNumber < 1 || pageSize < 1) {
-    return res
-      .status(400)
-      .json({ error: "Page and limit must be greater than 0" });
+    return res.status(400).json({ success: false, message: "Page and limit must be greater than 0" });
   }
 
   try {
     const mProfile = await prisma.mentorProfile.findUnique({
       where: { userId: Number(id) },
     });
-    const parsedId = mProfile?.userId;
+    if(!mProfile){
+      return res.status(404).json({ success: false, message: "Mentor not found!" });
+    }
+
+    const parsedId = mProfile.userId;
     // Fetch total count of bookings for pagination
     const totalBookingsCount = await prisma.booking.count({
       where: { mentorId: Number(parsedId) },
@@ -62,6 +64,6 @@ export const getAllMeetings = async (req: any, res: any) => {
     res.json(responseData);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

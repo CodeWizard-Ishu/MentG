@@ -8,12 +8,12 @@ export const getMenteeDetails = async (req: any, res: any) => {
   try {
     const userId = parseInt(id, 10);
     if (isNaN(userId)) {
-      return res.status(400).json({ error: "Invalid mentee ID" });
+      return res.status(400).json({ success: false, message: "Invalid mentee ID" });
     }
 
     const Mentee = await prisma.menteeProfile.findUnique({
       where: {
-        userId: userId, // Use the integer value here
+        userId: userId,
       },
       include: {
         user: {
@@ -27,13 +27,13 @@ export const getMenteeDetails = async (req: any, res: any) => {
     });
 
     if (!Mentee) {
-      return res.status(404).json({ error: "Mentee not found" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     return res.json(Mentee);
-  } catch (err: any) {
-    console.error(err);
-    return res.status(500).json({ error: "Internal server error" });
+  } catch (error: any) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -53,19 +53,18 @@ export const updateMenteeDetails = async (req: any, res: any) => {
   try {
     const userId = parseInt(id, 10);
     if (isNaN(userId)) {
-      return res.status(400).json({ error: "Invalid mentor ID" });
+      return res.status(400).json({ success: false, message: "Invalid mentor ID" });
     }
 
-    // Update the mentor profile
     const menteeProfile = await prisma.menteeProfile.update({
       where: { userId: userId },
       data: {
-        profilePicture, // Update profile picture (can be null or base64 string)
+        profilePicture,
         phoneNumber,
         goals,
         linkedin,
         twitter,
-        instagram, // Update phone number (can be null)
+        instagram,
         user: {
           update: {
             firstName,
@@ -79,9 +78,8 @@ export const updateMenteeDetails = async (req: any, res: any) => {
   } catch (error: any) {
     console.error(error);
     if (error.code === "P2025") {
-      // Record not found error code in Prisma
-      return res.status(404).json({ message: "Mentee profile not found" });
+      return res.status(404).json({ success: false, message: "Mentee profile not found" });
     }
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

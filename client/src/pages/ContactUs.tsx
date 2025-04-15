@@ -52,19 +52,24 @@ const ContactUs = () => {
         body: JSON.stringify(values),
       });
 
-      const data = await response.json();
-
-      if (data.success) {
-        toast.success("Your message has been sent successfully!", {
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
           pauseOnHover: false,
           draggable: true,
         });
-        resetForm();
-      } else {
-        toast.error(data.message || "Failed to send message");
+        return;
       }
-    } catch (error) {
-      toast.error(`Failed to send message: ${error}`, {
+
+      toast.success("Your message has been sent successfully!", {
+        pauseOnHover: false,
+        draggable: true,
+      });
+      resetForm();
+      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

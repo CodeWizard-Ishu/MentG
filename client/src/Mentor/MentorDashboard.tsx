@@ -59,8 +59,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
   const onProfileUpdate = useCallback(async () => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/mentorDetails/${userId}`,
-        {
+        `${BACKEND_URL}/api/mentorDetails/${userId}`, {
           headers: {
             "Authorization": token,
             "Content-Type": "application/json",
@@ -105,19 +104,24 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ onLogout }) => {
         },
         credentials: "include",
       });
-      if (response.ok) {
-        localStorage.clear();
-        toast.success("Logged out successfully", {
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
           pauseOnHover: false,
           draggable: true,
         });
-        navigate("/");
+        return;
       }
-      else{
-        throw new Error("Logout failed");
-      }
-    } catch (error) {
-      toast.error(`${error}`, {
+
+      localStorage.clear();
+      toast.success("Logged out successfully", {
+        pauseOnHover: false,
+        draggable: true,
+      });
+      navigate("/");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

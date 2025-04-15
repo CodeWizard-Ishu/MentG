@@ -98,8 +98,7 @@ const BookingPage: React.FC = () => {
       try {
         const serviceName = selectedService?.name ?? ""
         const response = await fetch(
-          `${BACKEND_URL}/api/bookingData/${menteeId}/${username}/${serviceName}`,
-          {
+          `${BACKEND_URL}/api/bookingData/${menteeId}/${username}/${serviceName}`,{
             method: "GET",
             headers: {
               "Authorization": token,
@@ -127,11 +126,13 @@ const BookingPage: React.FC = () => {
         }
         setMentee(data.Mentee);
         setPaymentInfo(info);
-      } catch (error) {
-        toast.error(`Error, Check your Connection: ${error}`, {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error:any) {
+        toast.error(`Error, Check your Connection: ${error.message}`, {
           pauseOnHover: false,
           draggable: true,
-        })
+        });
       } finally {
         setIsLoading(false);
       }
@@ -235,8 +236,9 @@ const BookingPage: React.FC = () => {
       }
 
       navigate('/booking/successfull', { state: { bookingSuccess: true } })
-    } catch (error) {
-      toast.error(`Error, Check your Connection: ${error}`, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

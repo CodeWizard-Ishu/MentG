@@ -67,9 +67,7 @@ const AllMentors: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
   const fetchMentors = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `${BACKEND_URL}/api/allMentors?page=${currentPage}`
-      );
+      const response = await fetch(`${BACKEND_URL}/api/allMentors?page=${currentPage}`);
       if (!response.ok) {
         const errorData = await response.json();
         toast.error(`${errorData.message}`, {

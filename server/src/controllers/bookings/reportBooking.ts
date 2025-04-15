@@ -11,7 +11,7 @@ export const reportBooking = async (req: any, res: any) => {
   const parsedMenteeId = parseInt(menteeId);
   try {
     if(!mentorId || !menteeId || !report) {
-        return res.status(400).json({ error: "Please provide all required fields" });
+        return res.status(400).json({ success: false, message: "Please provide all required fields" });
     }
 
     const user = await prisma.user.findUnique({
@@ -24,7 +24,7 @@ export const reportBooking = async (req: any, res: any) => {
       where: { id: parsedMenteeId },
     });
     if (!user || !Mentor || !Mentee) {
-        return res.status(400).json({ message: "User does not exist" });
+        return res.status(400).json({ success: false, message: "User not found" });
     }
 
     const mentor = {
@@ -45,6 +45,6 @@ export const reportBooking = async (req: any, res: any) => {
     return res.status(201).json({ success: true, message: "Report submitted successfully" });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "An error occurred while submitting the report." });
+    return res.status(500).json({ success: false, message: "An error occurred while submitting the report." });
   }
 };

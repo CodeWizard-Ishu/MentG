@@ -67,9 +67,8 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
   const fetchMentors = async (domain: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `${BACKEND_URL}/api/getMentors?domain=${domain}&page=${currentPage}`
-      );
+      const response = await fetch(`${BACKEND_URL}/api/getMentors?domain=${domain}&page=${currentPage}`);
+      
       if (!response.ok) {
         const errorData = await response.json();
         toast.error(`${errorData.message}`, {
@@ -78,6 +77,7 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
         });
         return;
       }
+
       const data = await response.json();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const sortedMentors = data.mentors.sort((a: any, b: any) => {
@@ -85,9 +85,9 @@ const SeeAll: React.FC<AboutUsProps> = ({ loggedIn, mentor }) => {
         const bHasPicture = b.profilePicture !== null;
         return aHasPicture === bHasPicture ? 0 : aHasPicture ? -1 : 1;
       });
-
       setMentors(sortedMentors);
       setTotalPages(data.totalPages);
+      
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error:any) {
       toast.error(`Error, Check your Connection: ${error.message}`, {

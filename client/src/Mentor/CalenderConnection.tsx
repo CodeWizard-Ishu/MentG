@@ -51,26 +51,33 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
         }
       );
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.googleConnection) {
-          setConnection({
-            provider: "google",
-            email: data.googleConnection.email,
-            profilePicture: data.googleConnection.profilePicture,
-          });
-          onConnectionChange?.(true);
-        } else {
-          onConnectionChange?.(false);
-        }
-      } else{
-        throw new Error("Error fetching calendar connection")
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
-    } catch (error) {
-      toast.error(`${error}`,{
+
+      const data = await response.json();
+      if (data.googleConnection) {
+        setConnection({
+          provider: "google",
+          email: data.googleConnection.email,
+          profilePicture: data.googleConnection.profilePicture,
+        });
+        onConnectionChange?.(true);
+      } else {
+        onConnectionChange?.(false);
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
-      })
+      });
     } finally {
       setIsLoading(false);
     }
@@ -105,16 +112,25 @@ const CalendarIntegration: React.FC<CalendarIntegrationProps> = ({
         credentials: "include",
       });
 
-      if (response.ok) {
-        setConnection(null);
-        onConnectionChange?.(false);
-        toast.success("Calendar disconnected successfully", {
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
           pauseOnHover: false,
           draggable: true,
         });
+        return;
       }
-    } catch (error) {
-      toast.error(`Failed to disconnect calendar : ${error}`, {
+
+      setConnection(null);
+      onConnectionChange?.(false);
+      toast.success("Calendar disconnected successfully", {
+        pauseOnHover: false,
+        draggable: true,
+      });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

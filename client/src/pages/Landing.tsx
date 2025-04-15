@@ -68,6 +68,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
   const fetchTopMentors = async (selectedDomainNames: any) => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/mentor/topMentors?domainNames=${selectedDomainNames.join(",")}`);
+
       if (!response.ok){
         const errorData = await response.json();
         toast.error(`${errorData.message}`, {
@@ -76,6 +77,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ loggedIn, mentor }) => {
         });
         return;
       }
+      
       const data = await response.json();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const sortedMentors = data[0].mentors.sort((a: any, b: any) => {

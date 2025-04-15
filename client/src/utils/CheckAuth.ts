@@ -43,12 +43,13 @@ export const CheckAuth = ({onLogout, navigate}: CheckAuthProps) => {
         return false;
       }
       return true;
-    } catch (error) {
-      toast.error(`Auth check failed: ${error}`,{
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`,{
         pauseOnHover: false,
         draggable: true,
       })
-      navigate("/login");
+      // navigate("/login");
       return false;
     }
   };

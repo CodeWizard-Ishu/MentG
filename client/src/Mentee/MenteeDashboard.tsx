@@ -55,8 +55,13 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
         credentials: "include",
       });
   
-      if(!response.ok) {
-        throw new Error("Failed fetching mentee details");
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
   
       const data = await response.json();
@@ -68,11 +73,12 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
       const formattedName = `${capitalize(data.user.firstName)} ${capitalize(data.user.lastName)}`;
       localStorage.setItem("fullName", formattedName);
       setFullName(formattedName);
-    } catch (error) {
-      toast.error(`${error}`, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
-      })
+      });
     }
   }, [token, userId]);
 
@@ -85,19 +91,24 @@ const MenteeDashboard: React.FC<MenteeDashboardProps> = ({ onLogout }) => {
         },
         credentials: "include",
       });
-      if (response.ok) {
-        localStorage.clear();
-        toast.success("Logged out successfully", {
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
           pauseOnHover: false,
           draggable: true,
         });
-        navigate("/");
+        return;
       }
-      else{
-        throw new Error("Logout failed");
-      }
-    } catch (error) {
-      toast.error(`${error}`, {
+
+      localStorage.clear();
+      toast.success("Logged out successfully", {
+        pauseOnHover: false,
+        draggable: true,
+      });
+      navigate("/");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

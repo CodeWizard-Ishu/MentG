@@ -41,7 +41,8 @@ export const getBookingFormData = async (req: any, res:any) => {
       }
     })
   } catch (error) {
-    
+    console.log("Error while getting Booking form Data: ", error);
+    res.status(500).json({ success: false, message: "Internal server error" })
   }
 
 }

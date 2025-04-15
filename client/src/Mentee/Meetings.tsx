@@ -48,8 +48,7 @@ const MenteeMeetings = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [currentPage, setCurrentPage] = useState(getPageFromUrl());
   const [totalCount, setTotalCount] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const menteeId = localStorage.getItem("userId");
   const token = localStorage.getItem("userToken") ?? "";
@@ -67,12 +66,7 @@ const MenteeMeetings = () => {
 
   useEffect(() => {
     const fetchMeetings = async () => {
-      if (!menteeId) {
-        setError("Something went Wrong!");
-        setLoading(false);
-        return;
-      }
-
+      setLoading(true);
       try {
         const response = await fetch(
           `${BACKEND_URL}/api/mentee/${menteeId}/meetings?page=${currentPage}&limit=${pageSize}`,
@@ -85,8 +79,14 @@ const MenteeMeetings = () => {
             credentials: "include",
           }
         );
+
         if (!response.ok) {
-          throw new Error("Failed to fetch meetings");
+          const errorData = await response.json();
+          toast.error(`${errorData.message}`, {
+            pauseOnHover: false,
+            draggable: true,
+          });
+          return;
         }
 
         const data = await response.json();
@@ -101,9 +101,12 @@ const MenteeMeetings = () => {
           }))
         );
         setTotalCount(data.totalBookingsCount);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (err: any) {
-        setError(err.message);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error:any) {
+        toast.error(`Error, Check your Connection: ${error.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
       } finally {
         setLoading(false);
       }
@@ -165,10 +168,6 @@ const MenteeMeetings = () => {
   };
   
   if (loading) return <MeetingsSkeleton/>;
-  if (error) {
-    toast.error(`${error}`, { pauseOnHover: false, draggable: true });
-    return null;
-  }
 
   return (
     <div>

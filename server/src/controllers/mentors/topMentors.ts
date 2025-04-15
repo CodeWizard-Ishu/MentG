@@ -56,6 +56,6 @@ export const topMentorOfDomain = async (req: any, res: any) => {
     res.json(mentors);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };

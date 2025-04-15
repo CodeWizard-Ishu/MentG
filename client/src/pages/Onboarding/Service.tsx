@@ -47,8 +47,7 @@ const OnboardingServices: React.FC = () => {
     const fetchServices = async () => {
       try {
         const response = await fetch(
-          `${BACKEND_URL}/api/mentor/services/${userId}`,
-          {
+          `${BACKEND_URL}/api/mentor/services/${userId}`,{
             method: "GET",
             headers: {
               Authorization: token,
@@ -57,14 +56,23 @@ const OnboardingServices: React.FC = () => {
             credentials: "include",
           }
         );
+
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          const errorData = await response.json();
+          toast.error(`${errorData.message}`, {
+            pauseOnHover: false,
+            draggable: true,
+          });
+          return;
         }
+
         const data = await response.json();
         setDomains(Array.isArray(data.domains) ? data.domains : []);
         setServices(Array.isArray(data.services) ? data.services : []);
-      } catch (error) {
-        toast.error(`${error}`, {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error:any) {
+        toast.error(`Error, Check your Connection: ${error.message}`, {
           pauseOnHover: false,
           draggable: true,
         });
@@ -119,8 +127,7 @@ const OnboardingServices: React.FC = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/mentor/update/${userId}`,
-        {
+        `${BACKEND_URL}/api/mentor/update/${userId}`,{
           method: "PUT",
           headers: {
             Authorization: token,
@@ -135,12 +142,18 @@ const OnboardingServices: React.FC = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to save domains and services");
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
 
       navigate("/onboarding/profile");
-    } catch (error) {
-      toast.error(`Error: ${error instanceof Error ? error.message : String(error)}`, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

@@ -1,8 +1,8 @@
 import express from "express";
 import { sendOTP, verifyOTP, signupMentor, signupMentee, login, checkAuth, logout } from "../controllers/auth";
-import { forgotPassword, resetPassword } from '../controllers/auth.controller';
+import { forgotPassword, resetPassword } from '../controllers/resetPassword';
 import cron from 'node-cron';
-import { cleanupExpiredTokens } from '../controllers/auth.controller'
+import { cleanupExpiredTokens } from '../controllers/resetPassword'
 import { topMentorOfDomain } from "../controllers/mentors/topMentors";
 import { getMentorData } from "../controllers/mentors/mentorDashboardData";
 import { getAllMeetings } from "../controllers/mentors/meetingsData";
@@ -78,9 +78,9 @@ router.get("/api/mentorDetails/:id", verifyToken, getMentorDetails);
 router.put("/api/updateMentorDetails/:id", verifyToken, updateMentorDetails);
 
 // <---------MENTEE DASHBOARD--------->
-router.get("/api/menteeDetails/:id", verifyToken, getMenteeDetails);
 router.get("/api/mentee/getMentors/:id", verifyToken, getMentors);
 router.get("/api/mentee/:id/meetings", verifyToken, getAllMenteeMeetings);
+router.get("/api/menteeDetails/:id", verifyToken, getMenteeDetails);
 router.put("/api/updateMenteeDetails/:id", verifyToken, updateMenteeDetails);
 
 // <---------AVAILABILITY PAGE--------->

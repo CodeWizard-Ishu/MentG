@@ -186,7 +186,7 @@ export const getCalendarConnections = async (req: any, res: any) => {
     });
 
     if (!mProfile) {
-      return res.status(404).json({ error: "Mentor profile not found" });
+      return res.status(404).json({ success: false, message: "Mentor not found!" });
     }
 
     const googleConnection = mProfile.calendarConnections[0];
@@ -212,7 +212,7 @@ export const getCalendarConnections = async (req: any, res: any) => {
     });
   } catch (error) {
     console.error("Fetch Connections Error:", error);
-    res.status(500).json({ error: "Failed to fetch connections" });
+    res.status(500).json({ success: false, message: "Failed to fetch connection!" });
   }
 };
 
@@ -228,7 +228,7 @@ export const disconnectCalendar = async (req: any, res: any) => {
     });
 
     if (!mProfile) {
-      return res.status(404).json({ error: "Mentor profile not found" });
+      return res.status(404).json({ success: false, message: "Mentor not found!" });
     }
 
     const googleConnection = mProfile.calendarConnections.find(
@@ -256,7 +256,7 @@ export const disconnectCalendar = async (req: any, res: any) => {
     res.json({ success: true });
   } catch (error) {
     console.error("Disconnect Calendar Error:", error);
-    res.status(500).json({ error: "Failed to disconnect calendar" });
+    res.status(500).json({ success: false, message: "Failed to disconnect calendar" });
   }
 };
 

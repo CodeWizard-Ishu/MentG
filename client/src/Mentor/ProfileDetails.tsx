@@ -203,14 +203,20 @@ const ProfileDetails: React.FC = () => {
         }
       );
 
-      if(!response.ok) {
-        throw new Error("Failed to fetch mentee details");
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
 
       const data = await response.json();
       setUser(data);
-    } catch (error) {
-      toast.error(`${error}`, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });
@@ -362,7 +368,12 @@ const ProfileDetails: React.FC = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to save changes");
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
 
       await getMentorDetails();
@@ -375,8 +386,9 @@ const ProfileDetails: React.FC = () => {
         pauseOnHover: false,
           draggable: true,
       });
-    } catch (error) {
-      toast.error(`${error}`, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

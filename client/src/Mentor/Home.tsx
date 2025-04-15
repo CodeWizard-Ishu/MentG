@@ -26,8 +26,7 @@ interface DashboardProps {
 const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
   const [stats, setStats] = useState<Stat[]>([]);
   const [recentMeetings, setRecentMeetings] = useState<Meeting[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const mentorId = localStorage.getItem("userId");
   const token = localStorage.getItem("userToken") ?? "";
@@ -35,12 +34,7 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!mentorId) {
-        setError("Something went wrong!");
-        setLoading(false);
-        return;
-      }
-
+      setLoading(true);
       try {
         const response = await fetch(`${BACKEND_URL}/api/mentor/${mentorId}`, {
           method: "GET",
@@ -50,8 +44,14 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
           },
           credentials: "include",
         });
+
         if (!response.ok) {
-          throw new Error("Failed to fetch mentor data");
+          const errorData = await response.json();
+          toast.error(`${errorData.message}`, {
+            pauseOnHover: false,
+            draggable: true,
+          });
+          return;
         }
 
         const data = await response.json();
@@ -83,16 +83,19 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
           }))
         );
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (err: any) {
-        setError(err.message);
+      } catch (error:any) {
+        toast.error(`Error, Check your Connection: ${error.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mentorId, token]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -102,10 +105,6 @@ const Home: React.FC<DashboardProps> = ({ getProfilePicture = () => {} }) => {
   };
 
   if (loading) return <HomeSkeleton/>;
-  if (error) {
-    toast.error(`${error}`, { pauseOnHover: false, draggable: true });
-    return null;
-  }
 
   return (
     <div className="space-y-6 mb-8">

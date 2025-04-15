@@ -74,8 +74,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
       setIsLoading(true);
       try {
         const response = await fetch(
-          `${BACKEND_URL}/api/availability/${menteeId}/${username}`,
-          {
+          `${BACKEND_URL}/api/availability/${menteeId}/${username}`,{
             method: "GET",
             headers: {
               "Authorization": token,
@@ -96,6 +95,7 @@ const CheckAvailability: React.FC<AvailabilityProps> = ({
 
         const result = await response.json();
         setAvailability(result.data);
+        
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error:any) {
         toast.error(`Error, Check your Connection: ${error.message}`, {

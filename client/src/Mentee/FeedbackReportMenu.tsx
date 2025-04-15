@@ -65,16 +65,22 @@ const FeedbackReportMenu: React.FC<FeedbackReportMenuProps> = ({
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit feedback");
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
 
       toast.success("Feedback submitted successfully", {
         pauseOnHover: false,
         draggable: true,
       });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      toast.error(`Error submitting feedback: ${error.message}`,{
+      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });
@@ -104,16 +110,22 @@ const FeedbackReportMenu: React.FC<FeedbackReportMenuProps> = ({
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit report");
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
 
       toast.success("Report submitted successfully", {
         pauseOnHover: false,
         draggable: true,
       });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      toast.error(`${error.message}`,{
+      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

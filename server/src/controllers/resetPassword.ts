@@ -8,10 +8,11 @@ const prisma = getPrismaClient();
 
 
 const validatePasswordReset = (email: string) => {
+  const emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
   if (!email) {
     return "Email is required.";
   }
-  if (!email.includes("@")) {
+  if (!emailRegex.test(email)){
     return "Invalid email format.";
   }
   return null;
@@ -23,7 +24,7 @@ export const forgotPassword = async (req: any, res: any) => {
 
     const validationError = validatePasswordReset(email);
     if (validationError) {
-      return res.status(400).json({ message: validationError });
+      return res.status(400).json({ success: false, message: validationError });
     }
 
     // Find user by email
@@ -32,7 +33,7 @@ export const forgotPassword = async (req: any, res: any) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ success: false, message: 'User not found' });
     }
 
     // Generate reset token
@@ -60,15 +61,11 @@ export const forgotPassword = async (req: any, res: any) => {
 
     sendforgotpasswordmail(email, resetUrl);
 
-    res.status(200).json({
-      message: `Password reset link sent to: ${email}`,
-    });
+    res.status(200).json({ success: true, message: `Password reset link sent to: ${email}` });
     console.log(`Password reset link sent to: ${email}`);
   } catch (error) {
     console.error("Error sending password reset email:", error);
-    res.status(500).json({
-      message: "Error sending password reset email",
-    });
+    res.status(500).json({ success: false, message: "Error sending password reset email" });
   }
 };
 
@@ -78,9 +75,7 @@ export const resetPassword = async (req: any, res: any) => {
 
     // Validate password
     if (!newPassword || newPassword.length < 6) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 6 characters long." });
+      return res.status(400).json({ success: false, message: "Password must be at least 6 characters long." });
     }
 
     // Hash the token from the URL
@@ -100,9 +95,13 @@ export const resetPassword = async (req: any, res: any) => {
     });
 
     if (!resetToken) {
-      return res.status(400).json({
-        message: "Invalid or expired reset token",
-      });
+      return res.status(400).json({success: false, message: "Invalid or expired reset token" });
+    }
+
+    // Check if new passsword is matching with old password
+    const isMatch = await bcrypt.compare(newPassword, resetToken.user.password);
+    if (isMatch) {
+      return res.status(400).json({ success: false, message: "New password should de different from the old passowrd!" });
     }
 
     // Hash new password
@@ -120,19 +119,15 @@ export const resetPassword = async (req: any, res: any) => {
       }),
     ]);
 
-    res.status(200).json({
-      message: "Password reset successful",
-    });
-    console.log(`Password reset completed for user ID: ${resetToken.userId}`);
+    res.status(200).json({ success: true, message: "Password reset successful" });
+    console.log(`Password reset completed for user ID: ${resetToken.user.email}`);
   } catch (error) {
     console.error("Reset password error:", error);
-    res.status(500).json({
-      message: "Failed to reset password",
-    });
+    res.status(500).json({ success: false, message: "Failed to reset password" });
   }
 };
 
-// Optional: Cleanup expired tokens (can be run as a scheduled job)
+// Cleanup expired tokens (will be running as a cron job)
 export const cleanupExpiredTokens = async () => {
   try {
     await prisma.resetToken.deleteMany({

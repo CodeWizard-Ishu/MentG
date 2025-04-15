@@ -53,8 +53,9 @@ const useGoogleCalendarBooking = () => {
       const data = await response.json();
       return data.meetLink;
 
-    } catch (error) {
-      toast.error(`Error, Check your Connection: ${error}`, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

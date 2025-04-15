@@ -8,12 +8,12 @@ export const getMentorDetails = async (req: any, res: any) => {
   try {
     const userId = parseInt(id, 10);
     if (isNaN(userId)) {
-      return res.status(400).json({ error: "Invalid mentor ID" });
+      return res.status(400).json({ success: false, message: "Invalid Mentor Id!" });
     }
 
     const Mentor = await prisma.mentorProfile.findUnique({
       where: {
-        userId: userId, // Use the integer value here
+        userId: userId,
       },
       include: {
         user: {
@@ -26,9 +26,8 @@ export const getMentorDetails = async (req: any, res: any) => {
       },
     });
 
-    // Check if Mentor was found
-    if (!Mentor) {
-      return res.status(404).json({ error: "Mentor not found" });
+    if(!Mentor){
+      return res.status(404).json({ success: false, message: "Mentor not found!" });
     }
 
     return res.json(Mentor);

@@ -178,8 +178,7 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
   const fetchAvailability = async () => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/mentor/getAvailability/${userId}`,
-        {
+        `${BACKEND_URL}/api/mentor/getAvailability/${userId}`, {
           method: "GET",
           headers: {
             "Authorization": token,
@@ -190,7 +189,8 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
       );
 
       if (!response.ok) {
-        toast.error("Failed to fetch availability", {
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
           pauseOnHover: false,
           draggable: true,
         });
@@ -201,9 +201,7 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
       const data: ApiTimeSlot[] = responseData.data;
 
       if (!Array.isArray(data)) {
-        throw new Error(
-          "Expected an array in the 'data' field of the response."
-        );
+        throw new Error("Expected an array in the 'data' field of the response.");
       }
 
       const newSchedule = { ...initialSchedule };
@@ -221,8 +219,9 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
       });
 
       setSchedule(newSchedule);
-    } catch (err) {
-      toast.error(`${err}`, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });
@@ -350,8 +349,7 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
       );
 
       const response = await fetch(
-        `${BACKEND_URL}/api/mentor/updateAvailability/${userId}`,
-        {
+        `${BACKEND_URL}/api/mentor/updateAvailability/${userId}`, {
           method: "POST",
           headers: {
             "Authorization": token,
@@ -365,7 +363,12 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
       );
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
 
       toast.success("Your changes have been saved successfully!", {
@@ -374,8 +377,10 @@ const Calendar: React.FC<CalendarProps> = ({ onCalendarConnectionChange }) => {
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
-    } catch (error) {
-      toast.error(`Failed to save schedule: ${error}`, {
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

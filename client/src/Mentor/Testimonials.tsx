@@ -68,8 +68,7 @@ const Testimonials = () => {
       }
       
       const response = await fetch(
-        `${BACKEND_URL}/api/getRating/${username}?${queryParams.toString()}`, 
-        {
+        `${BACKEND_URL}/api/getRating/${username}?${queryParams.toString()}`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -90,8 +89,9 @@ const Testimonials = () => {
       setTestimonials(data.ratings);
       setTotalPages(data.totalPages);
       setTotalRatings(data.totalRatings);
-    } catch (error) {
-      toast.error(`Error, Check your Connection: ${error}`, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

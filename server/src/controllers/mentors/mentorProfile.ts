@@ -11,7 +11,7 @@ export const getProfileData = async (req: any, res: any) => {
       where: { username : mentorUsername}
     })
     if(!user){
-      return res.status(404).json({ success: false, message: "Username not found!" })
+      return res.status(404).json({ success: false, message: "User not found!" })
     }
 
     const mentorProfile = await prisma.mentorProfile.findUnique({
@@ -34,13 +34,11 @@ export const getProfileData = async (req: any, res: any) => {
       return res.status(404).json({ success: false, message: "Mentor not found!" });
     }
 
-    // Calculate unique mentees and completed sessions
     const uniqueMentees = new Set(
       mentorProfile.bookings.map((booking) => booking.menteeId)
     ).size;
     const completedSessions = mentorProfile.bookings.length;
 
-    // Calculate average rating
     const averageRating =
       mentorProfile.ratings.length > 0
         ? (
@@ -51,7 +49,6 @@ export const getProfileData = async (req: any, res: any) => {
           ).toFixed(2)
         : 0;
 
-    // Prepare response data
     const responseData = {
       userId: mentorProfile.userId,
       fullName: `${mentorProfile.user.firstName} ${mentorProfile.user.lastName}`,

@@ -116,7 +116,12 @@ const OnboardingProfile: React.FC = () => {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to save profile details");
+          const errorData = await response.json();
+          toast.error(`${errorData.message}`, {
+            pauseOnHover: false,
+            draggable: true,
+          });
+          return;
         }
 
         const newFullName = `${values.firstName} ${values.lastName || ""}`.trim();
@@ -128,8 +133,9 @@ const OnboardingProfile: React.FC = () => {
         });
 
         navigate("/dashboard/");
-      } catch (error) {
-        toast.error(`Error: ${error instanceof Error ? error.message : String(error)}`, {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error:any) {
+        toast.error(`Error, Check your Connection: ${error.message}`, {
           pauseOnHover: false,
           draggable: true,
         });
@@ -150,9 +156,16 @@ const OnboardingProfile: React.FC = () => {
           },
           credentials: "include",
         });
+
         if (!response.ok) {
-          throw new Error("Failed to fetch user info");
+          const errorData = await response.json();
+          toast.error(`${errorData.message}`, {
+            pauseOnHover: false,
+            draggable: true,
+          });
+          return;
         }
+
         const data = await response.json();
         formik.setValues({
           ...formik.values,
@@ -160,8 +173,9 @@ const OnboardingProfile: React.FC = () => {
           lastName: data.user.lastName || "",
           email: data.user.email || "",
         });
-      } catch (error) {
-        toast.error(`Error: ${error instanceof Error ? error.message : String(error)}`, {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error:any) {
+        toast.error(`Error, Check your Connection: ${error.message}`, {
           pauseOnHover: false,
           draggable: true,
         });
@@ -171,8 +185,7 @@ const OnboardingProfile: React.FC = () => {
     };
 
     fetchUserInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, token]);
+  }, [userId, token, formik]);
 
   // Function to get the cropped image
   const getCroppedImg = (image: HTMLImageElement, crop: Crop): Promise<string> => {
@@ -196,7 +209,6 @@ const OnboardingProfile: React.FC = () => {
       return Promise.reject(new Error('Could not get canvas context'));
     }
     
-    // Draw the cropped image on the canvas (with resizing)
     ctx.drawImage(
       image,
       cropX,
@@ -230,7 +242,6 @@ const OnboardingProfile: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Check file size (5MB = 5 * 1024 * 1024 bytes)
       if (file.size > 5 * 1024 * 1024) {
         toast.error("Image size should not exceed 5MB", {
           pauseOnHover: false,
@@ -277,7 +288,6 @@ const OnboardingProfile: React.FC = () => {
     }
   };
 
-  // Step titles
   const stepTitles = ["Choose Your Expertise", "Complete Your Profile"];
 
   return (

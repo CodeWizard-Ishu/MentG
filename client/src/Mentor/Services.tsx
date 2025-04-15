@@ -54,14 +54,23 @@ const Services: React.FC = () => {
             credentials: "include",
           }
         );
+
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          const errorData = await response.json();
+          toast.error(`${errorData.message}`, {
+            pauseOnHover: false,
+            draggable: true,
+          });
+          return;
         }
+
         const data = await response.json();
         setDomains(Array.isArray(data.domains) ? data.domains : []);
         setServices(Array.isArray(data.services) ? data.services : []);
-      } catch (error) {
-        toast.error(`${error}`, {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error:any) {
+        toast.error(`Error, Check your Connection: ${error.message}`, {
           pauseOnHover: false,
           draggable: true,
         });
@@ -75,15 +84,12 @@ const Services: React.FC = () => {
   const handleDomain = (item: string) => {
     setDomains((prev) => {
       if (prev.includes(item)) {
-        // Remove domain if already selected
         return prev.filter((domain) => domain !== item);
       } else if (prev.length >= MAX_DOMAINS) {
-        // Show alert if trying to add more than MAX_DOMAINS
         setShowMaxDomainsAlert(true);
         setTimeout(() => setShowMaxDomainsAlert(false), 3000);
         return prev;
       } else {
-        // Add new domain
         return [...prev, item];
       }
     });
@@ -126,15 +132,21 @@ const Services: React.FC = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
 
       toast.success("Profile updated successfully!", {
         pauseOnHover: false,
         draggable: true,
       });
-    } catch (error) {
-      toast.error(`Failed to update profile, ${error}`, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

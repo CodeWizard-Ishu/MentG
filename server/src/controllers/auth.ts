@@ -12,10 +12,16 @@ const otpCache = new NodeCache({
   checkperiod: 120
 });
 
-const capitalize = (string : string) => {
-  return string.toLowerCase().split(' ').map(function(word) {
-    return word.charAt(0).toUpperCase() + word.slice(1);
-  }).join(' ');
+const sanitizeName = (input: string): string => {
+  return input
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/[^a-zA-Z-' ]/g, '')
+    .split(' ')
+    .map(word =>
+      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    )
+    .join(' ');
 }
 
 const emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
@@ -97,28 +103,30 @@ export const signupMentor = async (req: any, res: any) => {
     const secret: any = process.env.JWT_SECRET;
     const decoded: any = jwt.verify(tempToken, secret);
     if (decoded.emailId !== email) {
-      throw new Error("Invalid or expired verification token");
+      return res.status(400).json({ success: false, message: "Invalid or expired verification token!"});
     }
 
     if (!firstName || !email || !password) {
-      throw new Error("First name, email, and password are required");
+      return res.status(400).json({ success: false, message: "First name, email, and password are required!"});
     }
     if (password.length < 6) {
-      throw new Error("Password must be at least 6 characters long");
+      return res.status(400).json({ success: false, message: "Password must be at least 6 characters long!"});
     }
     if (!emailRegex.test(email)){
-      throw new Error("Invalid email format");
+      return res.status(400).json({ success: false, message: "Invalid email format!"});
     }
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await prisma.user.findUnique({
+      where: { email } 
+    });
     if (existingUser && existingUser.isActive) {
-      return res.status(400).json({ success: false, message: "User already exists" });
+      return res.status(400).json({ success: false, message: "User already exists!" });
     }
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
-    const formattedFirstName = capitalize(firstName);
-    const formattedLastName = capitalize(lastName);
+    const formattedFirstName = sanitizeName(firstName);
+    const formattedLastName = sanitizeName(lastName);
     const username = await generateUniqueUsername(formattedFirstName, formattedLastName);
 
     const user = await prisma.user.create({
@@ -137,31 +145,31 @@ export const signupMentor = async (req: any, res: any) => {
         userId: user.id,
         bio: null,
         profilePicture: null,
-        services: { create: [] },
         experience: null,
         rating: 0,
         totalEarnings: 0,
         totalBookings: 0,
         uniqueMentees: 0,
         domains: { create: [] },
+        services: { create: [] },
         availability: { create: [] },
       },
     });
 
     const token = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
-    const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
+    const formattedName = `${sanitizeName(firstName)} ${sanitizeName(lastName)}`;
     sendMentorSignupMail(email, formattedName);
 
     res.status(201).json({
       success: true,
-      message: "User Created Successfully",
+      message: "User Created Successfully!",
       user: { ...user, password: undefined },
       token,
     });
     console.log(`User signed up as mentor: ${email}`);
   } catch (error: any) {
     console.error(error);
-    res.status(400).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -173,28 +181,28 @@ export const signupMentee = async (req: any, res: any) => {
     const secret: any = process.env.JWT_SECRET;
     const decoded: any = jwt.verify(tempToken, secret);
     if (decoded.emailId !== email) {
-      throw new Error("Invalid or expired verification token");
+      return res.status(400).json({ success: false, message: "Invalid or expired verification token!"});
     }
 
     if (!firstName || !email || !password) {
-      throw new Error("First name, email, and password are required");
+      return res.status(400).json({ success: false, message: "First name, email, and password are required!"});
     }
     if (password.length < 6) {
-      throw new Error("Password must be at least 6 characters long");
+      return res.status(400).json({ success: false, message: "Password must be at least 6 characters long!"});
     }
     if (!emailRegex.test(email)){
-      throw new Error("Invalid email format");
+      return res.status(400).json({ success: false, message: "Invalid email format!"});
     }
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser && existingUser.isActive) {
-      return res.status(400).json({ success: false, message: "User already exists" });
+      return res.status(400).json({ success: false, message: "User already exists!" });
     }
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
-    const formattedFirstName = capitalize(firstName);
-    const formattedLastName = capitalize(lastName);
+    const formattedFirstName = sanitizeName(firstName);
+    const formattedLastName = sanitizeName(lastName);
     const username = await generateUniqueUsername(formattedFirstName, formattedLastName);
 
     const user = await prisma.user.create({
@@ -219,12 +227,12 @@ export const signupMentee = async (req: any, res: any) => {
     });
 
     const token = jwt.sign({ id: user.id }, secret, { expiresIn: "7d" });
-    const formattedName = `${capitalize(firstName)} ${capitalize(lastName)}`;
+    const formattedName = `${sanitizeName(firstName)} ${sanitizeName(lastName)}`;
     sendMenteeSignupMail(email, formattedName);
 
     res.status(201).json({
       success: true,
-      message: "User Created Successfully",
+      message: "User Created Successfully!",
       user: { ...user, password: undefined },
       token,
     });
@@ -240,22 +248,22 @@ export const login = async (req: any, res: any) => {
 
   try {
     if (!email || !password) {
-      throw new Error("Email and password are required");
+      return res.status(400).json({ success: false, message: "Email and password are required!" });
     }
     if (!emailRegex.test(email)){
-      throw new Error("Invalid email format");
+      return res.status(400).json({ success: false, message: "Invalid email format!" });
     }
 
     const user = await prisma.user.findUnique({
       where: { email },
     });
     if (!user || user.isActive == false) {
-      return res.status(400).json({ success: false, message: "User does not exist" });
+      return res.status(400).json({ success: false, message: "User does not exist!" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ success: false, message: "Email/Password not matched!" });
+      return res.status(400).json({ success: false, message: "Email/Password does not match!" });
     }
 
     const secret: any = process.env.JWT_SECRET;
@@ -263,7 +271,7 @@ export const login = async (req: any, res: any) => {
 
     res.status(200).json({
       success: true,
-      message: "Logged in Successfully",
+      message: "Logged in Successfully!",
       user: {
         ...user,
         password: undefined,
@@ -296,7 +304,7 @@ export const checkAuth = async (req: any, res: any) => {
       const requestedId = parseInt(id, 10);
       const tokenUserId = parseInt(verified.id, 10);
       if (requestedId && requestedId !== tokenUserId) {
-        return res.status(403).json({ message: "Unauthorized" });
+        return res.status(403).json({ success: false, message: "Unauthorized" });
       }
       res.status(200).json({ success: true, message: "Authorized" });
     } catch (error) {
@@ -308,5 +316,5 @@ export const checkAuth = async (req: any, res: any) => {
 };
 
 export const logout = async (req: any, res: any) => {
-  res.status(200).json({ success: true, message: "Logged out successfully" });
+  res.status(200).json({ success: true, message: "Logged out successfully!" });
 };

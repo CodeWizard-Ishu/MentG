@@ -113,6 +113,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
+
       if (!response.ok) {
         const errorData = await response.json();
         toast.error(errorData.message || "Failed to send OTP", {
@@ -121,13 +122,15 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
         });
         return;
       }
+
       setShowOTPInput(true);
       toast.success("OTP sent successfully", {
         pauseOnHover: false,
         draggable: true,
       });
-    } catch (error) {
-      toast.error(`Network error: ${error}`,{
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });
@@ -152,14 +155,16 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp }),
       });
+
       if (!response.ok) {
         const errorData = await response.json();
-        toast.error(errorData.message || "Invalid OTP", {
+        toast.error(errorData.message || "Something went wrong!", {
           pauseOnHover: false,
           draggable: true,
         });
         return;
       }
+
       const data = await response.json();
       setTempToken(data.tempToken);
       setEmailVerified(true);
@@ -168,8 +173,10 @@ const SignupPage: React.FC<SignupPageProps> = ({ onSignup = () => {} }) => {
         pauseOnHover: false,
         draggable: true,
       });
-    } catch (error) {
-      toast.error(`Network error: ${error}`, {
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

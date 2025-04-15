@@ -10,7 +10,6 @@ const getMentorsOfDomain = async (domain: any, page: any, limit: any) => {
     });
 
     if (!domainRecord) {
-      console.error(`Domain not found: ${domain}`);
       throw new Error("Domain not found");
     }
 
@@ -71,6 +70,6 @@ export const getMentors = async (req: any, res: any) => {
     res.json(result);
   } catch (error: any) {
     console.error("API Error:", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };

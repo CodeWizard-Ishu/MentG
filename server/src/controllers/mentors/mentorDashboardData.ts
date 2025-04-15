@@ -9,15 +9,14 @@ export const getMentorData = async (req: any, res: any) => {
     const mentorData = await prisma.mentorProfile.findUnique({
       where: { userId: Number(id) },
       include: {
-        bookings: true, // Include bookings to calculate totals
+        bookings: true,
       },
     });
 
-    if (!mentorData) {
-      return res.status(404).json({ error: "Mentor not found" });
+    if(!mentorData){
+      return res.status(404).json({ success: false, message: "Mentor not found!" });
     }
 
-    // Calculate total earnings, total bookings, and unique mentees
     const totalEarnings = mentorData.bookings.reduce(
       (sum, booking) => sum + booking.payment,
       0
@@ -27,7 +26,6 @@ export const getMentorData = async (req: any, res: any) => {
       mentorData.bookings.map((booking) => booking.menteeId)
     ).size;
     const profilePicture = mentorData.profilePicture;
-    // Get recent meetings (last 5 bookings)
     const recentMeetings = await prisma.booking.findMany({
       where: { mentorId: mentorData.userId },
       orderBy: { dateTime: "desc" },
@@ -43,7 +41,6 @@ export const getMentorData = async (req: any, res: any) => {
       },
     });
 
-    // Prepare response data without full name
     const responseData = {
       profilePicture,
       totalEarnings,
@@ -51,9 +48,7 @@ export const getMentorData = async (req: any, res: any) => {
       uniqueMentees,
       recentMeetings: recentMeetings.map((meeting: any) => ({
         dateTime: meeting.dateTime,
-        menteeName: `${meeting.mentee.user.firstName} ${
-          meeting.mentee.user.lastName || ""
-        }`,
+        menteeName: `${meeting.mentee.user.firstName} ${meeting.mentee.user.lastName || ""}`,
         duration: meeting.duration,
         status: meeting.status,
       })),
@@ -62,6 +57,6 @@ export const getMentorData = async (req: any, res: any) => {
     res.json(responseData);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

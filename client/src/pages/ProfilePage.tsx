@@ -96,14 +96,13 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await fetch(
-          `${BACKEND_URL}/api/data/mentor/${username}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(`${BACKEND_URL}/api/data/mentor/${username}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
         if (!response.ok){
           const errorData = await response.json();
           toast.error(`${errorData.message}`, {
@@ -112,10 +111,12 @@ const ProfilePage: React.FC = () => {
           });
           return;
         }
+
         const data = await response.json();
         setProfileData(data);
         if (data.profilePicture) setProfilePicture(data.profilePicture);
         setServices(data.services);
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error:any) {
         toast.error(`Error, Check your Connection: ${error.message}`, {
@@ -152,14 +153,11 @@ const ProfilePage: React.FC = () => {
         queryParams.append('sort', sortOrder);
       }
       
-      const response = await fetch(
-        `${BACKEND_URL}/api/getRating/${username}?${queryParams.toString()}`, 
-        {
+      const response = await fetch(`${BACKEND_URL}/api/getRating/${username}?${queryParams.toString()}`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-        }
-      );
+      });
 
       if(!response.ok){
         const errorData = await response.json();
@@ -172,8 +170,9 @@ const ProfilePage: React.FC = () => {
       
       const data = await response.json();
       setTestimonialData(data);
-    } catch (error) {
-      toast.error(`${error}`, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(`Error, Check your Connection: ${error.message}`, {
         pauseOnHover: false,
         draggable: true,
       });

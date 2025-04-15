@@ -12,9 +12,7 @@ export const getAllMenteeMeetings = async (req: any, res: any) => {
 
   // Validate page and limit
   if (pageNumber < 1 || pageSize < 1) {
-    return res
-      .status(400)
-      .json({ error: "Page and limit must be greater than 0" });
+    return res.status(400).json({ success: false, message: "Page and limit must be greater than 0" });
   }
 
   try {
@@ -23,7 +21,7 @@ export const getAllMenteeMeetings = async (req: any, res: any) => {
     });
 
     if (!menteeProfile) {
-      return res.status(404).json({ error: "Mentee not found" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     const menteeId = menteeProfile.userId; // Get internal mentee ID
@@ -54,19 +52,17 @@ export const getAllMenteeMeetings = async (req: any, res: any) => {
       currentPage: pageNumber,
       bookings: bookings.map((booking) => ({
         dateTime: booking.dateTime,
-        amount: booking.payment, // Amount of each booking
+        amount: booking.payment,
         status: booking.status,
         duration: booking.duration,
         mentorId: booking.mentorId,
-        mentorName: `${booking.mentor.user.firstName} ${
-          booking.mentor.user.lastName || ""
-        }`, // Concatenate first and last name
+        mentorName: `${booking.mentor.user.firstName} ${booking.mentor.user.lastName || ""}`,
       })),
     };
 
-    res.json(responseData);
+    res.status(200).json(responseData);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

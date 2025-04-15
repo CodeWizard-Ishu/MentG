@@ -29,8 +29,7 @@ const ProtectedBookingRoutes: React.FC<ProtectedBookingRoutesProps> = ({
     } else {
       setIsAuthenticated(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigate, onLogout]);
 
   if (isAuthenticated === null) {
     return <Spinner clasName="min-h-screen content-center" />;
@@ -68,11 +67,11 @@ const ProtectedBookingRoutes: React.FC<ProtectedBookingRoutesProps> = ({
   };
 
   if (!isAllowed()) {
-    const mentorId = location.pathname.split("/")[2];
+    const mentorUsername = location.pathname.split("/")[2];
     
     // If booking is complete, redirect to mentee dashboard
     if (isBookingComplete) {
-      return <Navigate to={`/profile/${mentorId}`} replace />;
+      return <Navigate to={`/profile/${mentorUsername}`} replace />;
     }
 
     // If accessing success page without completing booking, redirect to home
@@ -81,7 +80,7 @@ const ProtectedBookingRoutes: React.FC<ProtectedBookingRoutesProps> = ({
     }
 
     // For other booking routes, redirect to profile page if no service selected
-    return <Navigate to={`/profile/${mentorId}`} replace />;
+    return <Navigate to={`/profile/${mentorUsername}`} replace />;
   }
 
   return <Outlet />;

@@ -58,19 +58,24 @@ const BookingSuccessPage: React.FC = () => {
           body: JSON.stringify(values),
         });
 
-        const data = await response.json();
-
-        if (data.success) {
-          toast.success("Thank you for your feedback!", {
+        if (!response.ok) {
+          const errorData = await response.json();
+          toast.error(`${errorData.message}`, {
             pauseOnHover: false,
             draggable: true,
           });
-          resetForm();
-        } else {
-          throw new Error("Something went wrong!")
+          return;
         }
-      } catch (error) {
-        toast.error(`Failed to send feedback : ${error}`, {
+
+        toast.success("Thank you for your feedback!", {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        resetForm();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error:any) {
+        toast.error(`Error, Check your Connection: ${error.message}`, {
           pauseOnHover: false,
           draggable: true,
         });
