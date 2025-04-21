@@ -3,10 +3,12 @@ import { Search, X, Loader2, AlertCircle } from "lucide-react";
 import defaultImage from "../assets/defautProfilePic.jpg";
 import { Link } from "react-router-dom";
 import BACKEND_URL from "../endpoint";
+import { toast } from "react-toastify";
 
 interface Mentor {
   id: number;
   userId: number;
+  username: string;
   firstName: string;
   lastName: string | null;
   profilePicture: string | null;
@@ -95,7 +97,12 @@ const EnhancedSearchBox: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Search request failed");
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {
+          pauseOnHover: false,
+          draggable: true,
+        });
+        return;
       }
 
       const data = await response.json();
@@ -105,11 +112,14 @@ const EnhancedSearchBox: React.FC = () => {
         setSearchResults(data.mentors);
       } else {
         setSearchResults([]);
-        console.error("Invalid response format:", data);
       }
-    } catch (error) {
-      console.error("Error searching mentors:", error);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
       setSearchResults([]);
+      toast.error(`Error, Check your Connection: ${error.message}`, {
+        pauseOnHover: false,
+        draggable: true,
+      });
     } finally {
       setIsSearching(false);
     }
@@ -221,7 +231,7 @@ const EnhancedSearchBox: React.FC = () => {
               <div className="divide-y divide-gray-100">
                 {searchResults.map((mentor) => (
                   <Link
-                    to={`/profile/${mentor.userId}`}
+                    to={`/profile/${mentor.username}`}
                     key={mentor.id}
                     className="block hover:bg-blue-50 transition"
                     onClick={() => setShowResults(false)}

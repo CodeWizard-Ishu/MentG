@@ -23,14 +23,14 @@ const FALLBACK_KEYWORDS: Record<string, string[]> = {
   marketing: ['digital', 'content', 'seo', 'socialmedia', 'branding'],
   finance: ['investment', 'financial', 'money', 'budget', 'planning'],
   engineering: ['technical', 'design', 'hardware', 'systems', 'mechanical'],
-  health: ['wellbeing', 'mental', 'fitness', 'health', 'wellness']
+  health: ['wellbeing', 'mental', 'fitness', 'health', 'wellness', 'mental fitness']
 };
 
 export const searchMentors = async (req: any, res: any) => {
   const { query }: { query: string } = req.body;
 
   if (!query || query.trim() === '') {
-    return res.status(400).json({ error: 'Search query is required' });
+    return res.status(400).json({ success: false, message: 'Search query is required' });
   }
 
   try {
@@ -59,7 +59,7 @@ export const searchMentors = async (req: any, res: any) => {
     res.json({ mentors, keywords });
   } catch (error) {
     console.error('Error in searchMentors:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
 
@@ -142,6 +142,7 @@ async function fetchMentorsByKeywords(keywords: string[]): Promise<Mentor[]> {
 
   return mentors.map((mentor : any) => ({
     id: mentor.id,
+    username: mentor.user.username,
     userId: mentor.userId,
     firstName: mentor.user.firstName,
     lastName: mentor.user.lastName,
