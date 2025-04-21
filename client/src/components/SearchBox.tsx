@@ -240,7 +240,7 @@ const EnhancedSearchBox: React.FC = () => {
                       <img
                         src={mentor.profilePicture || defaultImage}
                         alt={`${mentor.firstName} ${mentor.lastName || ''}`}
-                        className="w-12 h-12 rounded-full object-cover border border-gray-200"
+                        className="w-12 h-12 rounded-full object-cover aspect-square border border-gray-200"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.onerror = null;
