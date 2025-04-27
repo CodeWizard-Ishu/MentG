@@ -130,7 +130,7 @@ const OnboardingServices: React.FC = () => {
         `${BACKEND_URL}/api/mentor/update/${userId}`,{
           method: "PUT",
           headers: {
-            Authorization: token,
+            "Authorization": token,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
