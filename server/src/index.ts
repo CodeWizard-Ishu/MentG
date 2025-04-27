@@ -8,6 +8,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URL, methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], credentials: true })); //for cross origin requests
+app.options('*', cors());
 app.use(express.json({ limit: "25mb" })); //allow us to parse incoming requets: req.body
 app.use(express.urlencoded({ extended: true, limit: "25mb" })); //payload size limit increased to 25mb
 app.use(cookieParser()); //allow us to parse incoming cookies
