@@ -443,10 +443,7 @@ const ProfilePage: React.FC = () => {
                           </div>
                         </div>
                         <span className="text-xs md:text-sm font-semibold text-black">
-                          <span className="line-through text-red-500">
-                            {service.formattedPrice}
-                          </span>{" "}
-                          <span className="text-black">Free</span>
+                          <span className="text-red-500">{service.formattedPrice}</span>
                           <div className="text-[10px] md:text-[12px] text-black">Limited time offer</div>
                         </span>
                       </button>
