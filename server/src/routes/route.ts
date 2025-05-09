@@ -30,7 +30,7 @@ const router = express.Router();
 
 // <---------CRON JOBS--------->
 cron.schedule('0 0 * * *', cleanupExpiredTokens);
-cron.schedule('15 20 * * 5', sendReminderEmails);
+// cron.schedule('15 20 * * 5', sendReminderEmails);
 
 // <---------AUTHENTICATION / AUTHORIZATION--------->
 router.get("/auth/verify/:id", checkAuth);
